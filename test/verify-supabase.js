@@ -8,7 +8,14 @@ const path = require("path");
 
 const cfgPath = path.join(__dirname, "..", "public", "hyanalt", "config.js");
 const src = fs.readFileSync(cfgPath, "utf8");
-const grab = (k) => (src.match(new RegExp(k + '\s*:\s*"([^"]*)"')) || [])[1] || "";
+// Регексп бус — арын ташуу зураас файл дамжихад эвдэрдэг тул энгийн хайлт.
+const grab = (k) => {
+  const i = src.indexOf(k + ":");
+  if (i < 0) return "";
+  const a = src.indexOf('"', i);
+  const b = src.indexOf('"', a + 1);
+  return a < 0 || b < 0 ? "" : src.slice(a + 1, b);
+};
 const URL_ = grab("supabaseUrl").replace(/\/+$/, "");
 const KEY = grab("supabaseAnonKey");
 

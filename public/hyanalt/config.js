@@ -20,6 +20,6 @@
    Тайлан хэсэг харагдах боловч бүртгэлүүд хоосон байна.
    ============================================================ */
 window.INEG_CONFIG = {
-  supabaseUrl:     "",
-  supabaseAnonKey: "",
+  supabaseUrl:     "https://bchmvnqxoeznjxknulcx.supabase.co",
+  supabaseAnonKey: "sb_publishable_NVRk5ePLR9c2J-4skrJi4w_b1BLMoFM",
 };
