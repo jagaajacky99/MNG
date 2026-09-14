@@ -297,9 +297,22 @@ const SEVS = ["Ноцтой","Дунд","Бага"];
 const STATUSES = ["Нээлттэй","Залруулж байгаа","Хаагдсан"];
 const CERT_ACTIONS = ["Шинээр олгосон","Сунгасан","Өөрчлөлт оруулсан","Түдгэлзүүлсэн","Хүчингүй болгосон"];
 
-/* ---------- хяналтын самбарын бүтэц ----------
-   Самбарын хэсэг бүрийг админ зочинд харуулах/нуух, нэрийг нь солих,
-   дарааллыг нь өөрчлөх боломжтой. Доорх жагсаалт нь анхны байдал. */
+/* ---------- цэсний хэсгүүд ба хяналтын самбарын бүтэц ----------
+   Цэсний хэсэг бүрийг, мөн самбарын хайрцаг, блок бүрийг админ зочинд
+   харуулах/нуух, нэрийг нь солих, дарааллыг нь өөрчлөх боломжтой.
+   Доорх жагсаалтууд нь анхны байдал. */
+const VIEW_DEFS = [
+  {id:"dash",   t:"Хяналтын самбар"},
+  {id:"orgs",   t:"Байгууллага, эрсдэл"},
+  {id:"cap",    t:"Үл нийцэл, CAP"},
+  {id:"insp",   t:"Хяналт шалгалт"},
+  {id:"certs",  t:"Гэрчилгээ"},
+  {id:"plan",   t:"Эрсдэлд суурилсан төлөвлөлт"},
+  {id:"regs",   t:"Дүрэм, журмын шинэчлэлт"},
+  {id:"actions",t:"Хэрэгжүүлэх арга хэмжээ"},
+  {id:"report", t:"Тайлан 2026-H1"},
+  {id:"cfg",    t:"Тохиргоо"},
+];
 const DASH_TILES = [
   {id:"orgs",    t:"Байгууллага"},
   {id:"high",    t:"Өндөр эрсдэл"},
@@ -318,7 +331,7 @@ const DASH_BLOCKS = [
   {id:"usoap",      t:"USOAP-CMA дүгнэлт"},
 ];
 const dashDefaults = () => ({
-  guest:true,
+  views:  VIEW_DEFS.map(b=>({id:b.id, title:b.t, on:true})),
   blocks: DASH_BLOCKS.map(b=>({id:b.id, title:b.t, on:true})),
   tiles:  DASH_TILES.map(b=>({id:b.id, title:b.t, on:true})),
 });
@@ -367,7 +380,12 @@ function normDash(defs, saved){
 }
 function dashCfg(){
   const raw = settings().dash || {};
-  return {guest: raw.guest!==false,
+  const views = normDash(VIEW_DEFS, raw.views);
+  // Хуучин хувилбарын dash.guest талбарыг цэсний тохиргоо руу шилжүүлнэ
+  if(!Array.isArray(raw.views) && raw.guest===false){
+    const d=views.find(v=>v.id==="dash"); if(d) d.on=false;
+  }
+  return {views,
           blocks: normDash(DASH_BLOCKS, raw.blocks),
           tiles:  normDash(DASH_TILES,  raw.tiles)};
 }
@@ -378,9 +396,18 @@ function dashDraft(){
 }
 const dashDirty = () => !!state.dashDraft &&
   JSON.stringify(state.dashDraft) !== JSON.stringify(dashCfg());
-/* Самбарыг тухайн хэрэглэгч харах эрхтэй эсэх (админ үргэлж харна) */
-const dashVisible = () => state.canWrite || dashCfg().guest;
-const viewAllowed = id => id!=="dash" || dashVisible();
+/* Цэсний хэсгийг тухайн хэрэглэгч харах эрхтэй эсэх (админ үргэлж бүгдийг харна) */
+function viewAllowed(id){
+  if(state.canWrite) return true;
+  const v=dashCfg().views.find(x=>x.id===id);
+  return v ? v.on : true;
+}
+const dashVisible = () => viewAllowed("dash");
+/* Цэсэнд харагдах хэсгүүд — тохиргооны дарааллаар */
+function navItems(){
+  return dashCfg().views.filter(v=>viewAllowed(v.id))
+    .map(v=>({...v, n:VIEW_COUNT[v.id]||(()=>"")}));
+}
 /* Самбарын хэсэг тухайн хэрэглэгчид харагдах эсэх */
 function dashShow(item){ return item.on || state.canWrite; }
 async function saveDash(next){
@@ -536,21 +563,23 @@ async function remove(path,id){
 }
 
 /* ============================================================ нэвигаци */
-const VIEWS=[
-  {id:"dash",  t:"Хяналтын самбар",  n:()=>""},
-  {id:"orgs",  t:"Байгууллага, эрсдэл", n:()=>state.orgs.length},
-  {id:"cap",   t:"Үл нийцэл, CAP",   n:()=>state.findings.filter(f=>effStatus(f)!=="Хаагдсан").length},
-  {id:"insp",  t:"Хяналт шалгалт",   n:()=>state.inspections.length},
-  {id:"certs", t:"Гэрчилгээ",        n:()=>state.certs.length},
-  {id:"plan",  t:"Эрсдэлд суурилсан төлөвлөлт", n:()=>state.plan.length},
-  {id:"regs",  t:"Дүрэм, журмын шинэчлэлт", n:()=>state.regs.length},
-  {id:"actions",t:"Хэрэгжүүлэх арга хэмжээ", n:()=>state.actions.filter(a=>a.status!=="Хэрэгжсэн").length},
-  {id:"report",t:"Тайлан 2026-H1",   n:()=>""},
-  {id:"cfg",   t:"Тохиргоо",         n:()=>""},
-];
+/* Цэсний мөрийн тоолуур — нэр ба дараалал нь тохиргооноос ирнэ (VIEW_DEFS) */
+const VIEW_COUNT = {
+  dash:   ()=>"",
+  orgs:   ()=>state.orgs.length,
+  cap:    ()=>state.findings.filter(f=>effStatus(f)!=="Хаагдсан").length,
+  insp:   ()=>state.inspections.length,
+  certs:  ()=>state.certs.length,
+  plan:   ()=>state.plan.length,
+  regs:   ()=>state.regs.length,
+  actions:()=>state.actions.filter(a=>a.status!=="Хэрэгжсэн").length,
+  report: ()=>"",
+  cfg:    ()=>"",
+};
 function drawNav(){
-  $("#nav").innerHTML = VIEWS.filter(v=>viewAllowed(v.id)).map(v=>
-    `<button data-v="${v.id}" aria-current="${state.view===v.id}">${esc(v.t)}
+  $("#nav").innerHTML = navItems().map(v=>
+    `<button data-v="${v.id}" aria-current="${state.view===v.id}" class="${v.on?"":"ghost"}"
+      ${v.on?"":`title="Зочинд харагдахгүй"`}>${esc(v.title)}
       <span class="ct">${v.n()===""?"":v.n()}</span></button>`).join("");
   $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{
     state.view=b.dataset.v; state.exportRows=null; state.dashDraft=null; render();
@@ -565,12 +594,19 @@ function drawNav(){
 
 /* ============================================================ render */
 function render(){
-  // Самбарыг зочинд хаасан бол зочныг эхний нээлттэй хэсэг рүү шилжүүлнэ
-  if(!viewAllowed(state.view)) state.view = (VIEWS.find(v=>viewAllowed(v.id))||VIEWS[1]).id;
+  const nav=navItems();
+  // Зочинд хаасан хэсэг рүү орсон бол эхний нээлттэй хэсэг рүү шилжүүлнэ
+  if(!viewAllowed(state.view) && nav.length) state.view = nav[0].id;
   drawNav();
-  const v=VIEWS.find(x=>x.id===state.view);
-  $("#viewTitle").textContent = v ? v.t : "";
+  const v=nav.find(x=>x.id===state.view);
+  $("#viewTitle").textContent = v ? v.title : "";
   const el=$("#view");
+  if(!nav.length){   // админ бүх хэсгийг зочинд хаасан тохиолдол
+    $("#viewTitle").textContent="Хяналтын сан";
+    el.innerHTML=`<div class="banner warn"><div>Энэ сангийн хэсгүүдийг түр хаасан байна.
+      Дэлгэрэнгүй мэдээллийг Иргэний нисэхийн ерөнхий газраас авна уу.</div></div>`;
+    return;
+  }
   if(!state.ready){ el.innerHTML=`<div class="panel"><div class="body muted">Мэдээллийн санг ачаалж байна…</div></div>`; return; }
   const offline = !state.db && state.view!=="report" ? `<div class="banner warn" style="margin-bottom:14px">
     <div><b>${INEG_DB.configured
@@ -962,13 +998,14 @@ function viewDash(){
   });
   flush();
 
-  const adminBar = adm ? `<div class="banner ${cfg.guest?"info":"warn"}">
-    <div><b>Зочны харагдац:</b> ${cfg.guest
+  const dashOn = (cfg.views.find(v=>v.id==="dash")||{on:true}).on;
+  const adminBar = adm ? `<div class="banner ${dashOn?"info":"warn"}">
+    <div><b>Зочны харагдац:</b> ${dashOn
       ? "хяналтын самбар зочинд нээлттэй байна."
       : "хяналтын самбар зочинд хаалттай — зөвхөн нэвтэрсэн хүн харна."}
-      Хэсэг бүрийн <b>Нуух / Харуулах</b> товчоор шууд соль, нэр ба дарааллыг нь
-      “Тохиргоо” хэсгээс өөрчил.</div>
-    <button class="btn sm ${cfg.guest?"":"primary"}" data-act="dashGuest">${cfg.guest?"Зочинд хаах":"Зочинд нээх"}</button>
+      Хэсэг бүрийн <b>Нуух / Харуулах</b> товчоор шууд соль; цэсний бүх хэсгийн
+      нэр, дараалал, зочинд харагдахыг “Тохиргоо” хэсгээс өөрчил.</div>
+    <button class="btn sm ${dashOn?"":"primary"}" data-act="dashGuest">${dashOn?"Зочинд хаах":"Зочинд нээх"}</button>
   </div>` : "";
 
   const empty = parts.length ? "" :
@@ -1588,23 +1625,31 @@ function dashCfgPanel(){
     <span class="chip ${it.on?"good":"warn"}"><span class="dot"></span>${it.on?"Нээлттэй":"Нуусан"}</span>
   </div>`;
 
+  const offViews = d.views.filter(v=>!v.on).length;
   return `
   <section class="panel">
-    <header><h2>Хяналтын самбарын харагдац</h2>
-      <span class="hint">зочинд юу харагдахыг тогтооно</span>
+    <header><h2>Зочны харагдац</h2>
+      <span class="hint">цэс ба хяналтын самбарт зочин юу харахыг тогтооно</span>
       <span style="flex:1"></span>
-      <span class="chip ${d.guest?"good":"warn"}"><span class="dot"></span>${d.guest?"Самбар зочинд нээлттэй":"Самбар зочинд хаалттай"}</span>
+      <span class="chip ${offViews?"warn":"good"}"><span class="dot"></span>${
+        offViews? `${offViews} хэсэг зочинд хаалттай` : "Бүх хэсэг зочинд нээлттэй"}</span>
     </header>
     <div class="body">
       <div class="banner info" style="margin-bottom:14px">
-        <div>Нэрийг нь шууд засаж, ↑↓ товчоор дарааллыг солино. Унтраасан хэсэг зочинд харагдахгүй боловч танд саарал өнгөөр харагдана. Өөрчлөлт <b>Харагдацыг хадгалах</b> дарсны дараа хүчинтэй.</div>
-        <button class="btn sm ${d.guest?"":"primary"}" data-act="dashGuestDraft">${d.guest?"Самбарыг зочинд хаах":"Самбарыг зочинд нээх"}</button>
+        <div>Нэрийг нь шууд засаж, ↑↓ товчоор дарааллыг солино. Унтраасан хэсэг зочинд
+        харагдахгүй боловч танд саарал өнгөөр харагдана. Өөрчлөлт
+        <b>Харагдацыг хадгалах</b> дарсны дараа хүчинтэй.</div>
       </div>
 
-      <div class="eyebrow" style="margin-bottom:4px">Үзүүлэлтийн хайрцаг</div>
+      <div class="eyebrow" style="margin-bottom:4px">Цэсний хэсгүүд</div>
+      ${d.views.map((it,i)=>row("views",it,i,d.views.length)).join("")}
+      <p class="small muted" style="margin:8px 0 0">Унтраасан хэсэг зочны зүүн цэснээс
+      бүрмөсөн алга болно. Админ нэвтэрсэн үед бүх хэсэг үргэлж харагдана.</p>
+
+      <div class="eyebrow" style="margin:18px 0 4px">Самбарын үзүүлэлтийн хайрцаг</div>
       ${d.tiles.map((it,i)=>row("tiles",it,i,d.tiles.length)).join("")}
 
-      <div class="eyebrow" style="margin:16px 0 4px">Самбарын хэсгүүд</div>
+      <div class="eyebrow" style="margin:18px 0 4px">Самбарын хэсгүүд</div>
       ${d.blocks.map((it,i)=>row("blocks",it,i,d.blocks.length)).join("")}
 
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1624,6 +1669,8 @@ function viewCfg(){
     <div class="banner ${state.canWrite?"info":"warn"}"><div>${state.canWrite
       ? "Жин, торгууль, түвшний босгыг өөрчлөхөд эрсдэлийн бүх оноо шууд дахин тооцогдоно."
       : "Танд засварлах эрх алга — утгыг харах боломжтой."}</div></div>
+
+    ${dashCfgPanel()}
 
     <div class="split">
       <section class="panel">
@@ -1690,7 +1737,6 @@ function viewCfg(){
         <button class="btn" data-act="resetCfg">Анхны утга руу буцаах</button></div>`:""}
     </section>
 
-    ${dashCfgPanel()}
 
     <section class="panel">
       <header><h2>Загварын үндэслэл</h2></header>
@@ -1782,20 +1828,22 @@ async function act(a){
     return;
   }
   if(a==="dashGuest"){
-    const next=dashCfg(); next.guest=!next.guest;
-    if(!next.guest && !confirm("Хяналтын самбарыг зочинд бүрэн хаах уу?\n\nНэвтрээгүй хүн энэ хэсгийг цэснээс ч харахгүй.")) return;
-    if(await saveDash(next)){ state.dashDraft=null; toast(next.guest?"Самбарыг зочинд нээлээ":"Самбарыг зочинд хаалаа"); }
+    const next=dashCfg(), it=next.views.find(v=>v.id==="dash");
+    if(!it) return;
+    it.on=!it.on;
+    if(!it.on && !confirm("Хяналтын самбарыг зочинд бүрэн хаах уу?\n\nНэвтрээгүй хүн энэ хэсгийг цэснээс ч харахгүй.")) return;
+    if(await saveDash(next)){ state.dashDraft=null; toast(it.on?"Самбарыг зочинд нээлээ":"Самбарыг зочинд хаалаа"); }
     return;
   }
-  if(a==="dashGuestDraft"){ const d=dashDraft(); d.guest=!d.guest; render(); return; }
   if(a.startsWith("dashUp:"))   { const [,k,id]=a.split(":"); return dashMove(k,id,-1); }
   if(a.startsWith("dashDown:")) { const [,k,id]=a.split(":"); return dashMove(k,id, 1); }
   if(a==="dropDash"){ state.dashDraft=null; render(); toast("Өөрчлөлтийг болилоо"); return; }
   if(a==="saveDash"){
     const d=dashDraft();
     const clean=x=>({id:x.id, title:String(x.title||"").trim(), on:!!x.on});
-    const next={guest:!!d.guest, blocks:d.blocks.map(clean), tiles:d.tiles.map(clean)};
-    if(await saveDash(next)){ state.dashDraft=null; toast("Самбарын харагдацыг хадгаллаа"); render(); }
+    const next={views:d.views.map(clean), blocks:d.blocks.map(clean), tiles:d.tiles.map(clean)};
+    if(!next.views.some(v=>v.on) && !confirm("Зочинд нэг ч хэсэг харагдахгүй болно.\n\nҮргэлжлүүлэх үү?")) return;
+    if(await saveDash(next)){ state.dashDraft=null; toast("Харагдацыг хадгаллаа"); render(); }
     return;
   }
   if(a==="resetDash"){
