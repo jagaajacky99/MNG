@@ -53,10 +53,10 @@ serve.js                ← локал сервер (нийтлэгдэхгүй)
 
 **GitHub-аар (зөвлөж байна — дараа нь push хийхэд автоматаар шинэчлэгдэнэ):**
 
-1. GitHub дээр шинэ **хувийн (private)** репозитор үүсгэнэ, жишээ нь `ineg-hyanalt`.
-2. Энэ хавтсаас:
+1. GitHub репозитор: **https://github.com/jagaajacky99/MNG** — үүсгэж, түлхсэн. ✅
+2. Дахин холбох шаардлагатай бол (remote аль хэдийн тохируулагдсан):
    ```bash
-   git remote add origin https://github.com/<таны-нэр>/ineg-hyanalt.git
+   git remote add origin https://github.com/jagaajacky99/MNG.git
    git push -u origin main
    ```
 3. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** →
