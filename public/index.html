@@ -3,166 +3,232 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ИНЕГ · Нисэхийн аюулгүй ажиллагааны хяналт</title>
+<title>ИНЕГ · Нислэгийн аюулгүй ажиллагааны хяналт</title>
 <meta name="description" content="Иргэний нисэхийн ерөнхий газар — хяналт шалгалтын мэдээллийн сан ба байцаагчийн сургалтын гарын авлага">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9992;</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%230b3d6b'/><text x='50' y='72' font-size='62' text-anchor='middle' fill='%23fff'>&#9992;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Roboto+Condensed:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Roboto+Condensed:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/theme.css">
 <style>
-:root{
-  --bg:#eef2f5; --surface:#ffffff; --surface-2:#f6f9fb; --surface-3:#e7edf2;
-  --line:#d3dde5; --line-strong:#b6c5d1;
-  --ink:#0d1720; --ink-2:#43535f; --ink-3:#75858f;
-  --accent:#12799e; --accent-ink:#0d5f7d; --accent-soft:#dbeef6;
-  --good:#1c7247; --good-soft:#dcefe5;
-  --warn:#8d6404; --warn-soft:#f7ecd2;
-  --shadow:0 1px 2px rgba(13,23,32,.06),0 4px 14px rgba(13,23,32,.05);
-  --r:8px;
-  --fd:"Roboto Condensed","Arial Narrow",Arial,sans-serif;
-  --fb:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
-  --fm:"IBM Plex Mono","Courier New",monospace;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#0e161c; --surface:#151f27; --surface-2:#1b2831; --surface-3:#22313c;
-    --line:#2a3a46; --line-strong:#3a4d5b;
-    --ink:#e9f0f5; --ink-2:#a8bac6; --ink-3:#7b8f9c;
-    --accent:#3ba5c9; --accent-ink:#6cc3e0; --accent-soft:#15303c;
-    --good:#4fb384; --good-soft:#143024;
-    --warn:#d3a23c; --warn-soft:#332714;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0e161c; --surface:#151f27; --surface-2:#1b2831; --surface-3:#22313c;
-  --line:#2a3a46; --line-strong:#3a4d5b;
-  --ink:#e9f0f5; --ink-2:#a8bac6; --ink-3:#7b8f9c;
-  --accent:#3ba5c9; --accent-ink:#6cc3e0; --accent-soft:#15303c;
-  --good:#4fb384; --good-soft:#143024;
-  --warn:#d3a23c; --warn-soft:#332714;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
-}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:15px;line-height:1.55;
-  -webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);background-image:var(--page-bg);background-attachment:fixed;
+  color:var(--ink);font-family:var(--fb);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:var(--fd);margin:0;letter-spacing:.01em;text-wrap:balance}
 a{color:var(--accent)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 
-.wrap{max-width:960px;margin:0 auto;padding:0 20px 72px}
-
-header.top{border-bottom:1px solid var(--line);background:var(--surface);margin-bottom:44px}
-header.top .inner{max-width:960px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.mark{font-family:var(--fd);font-weight:700;font-size:11.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
-.sp{flex:1}
-.tbtn{font:500 12px/1 var(--fm);background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-strong);
-  border-radius:6px;padding:7px 11px;cursor:pointer}
+/* ---------- толгой ---------- */
+.masthead{background:var(--surface);border-bottom:1px solid var(--line)}
+.masthead .in{max-width:1180px;margin:0 auto;padding:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.emblem{width:52px;height:52px;border-radius:8px;background:var(--accent);color:#fff;flex:none;
+  display:grid;place-items:center;font-size:26px;box-shadow:var(--shadow)}
+.masthead .tt h1{font-size:20px;font-weight:700;line-height:1.2}
+.masthead .tt p{margin:3px 0 0;font-size:12.5px;color:var(--ink-3)}
+.masthead .sp{flex:1}
+.tbtn{font:500 12px/1 var(--fm);background:var(--surface-2);color:var(--ink-2);
+  border:1px solid var(--line-strong);border-radius:5px;padding:8px 12px;cursor:pointer}
 .tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
 
-.hero{padding:8px 0 36px;border-bottom:1px solid var(--line)}
-.eyebrow{font:500 11px/1 var(--fm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:14px}
-.hero h1{font-size:clamp(29px,5.2vw,44px);font-weight:700;letter-spacing:-.01em}
-.hero p{margin:16px 0 0;font-size:16.5px;color:var(--ink-2);max-width:62ch}
+/* ---------- hero ---------- */
+.hero{padding:46px 0 34px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 10.5px/1 var(--fd);letter-spacing:.17em;
+  text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:7px 12px;border-radius:3px}
+.hero h2{margin-top:18px;font-size:clamp(28px,4.6vw,42px);font-weight:700;letter-spacing:-.015em;max-width:19ch}
+.hero .rule{height:3px;width:52px;background:var(--gold);margin:20px 0}
+.hero p{margin:0;font-size:16.5px;color:var(--ink-2);max-width:60ch}
+.hero dl{margin:26px 0 0;display:flex;gap:26px;flex-wrap:wrap;font-family:var(--fm)}
+.hero dt{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.hero dd{margin:4px 0 0;font-size:14px;font-weight:600;color:var(--ink-2)}
 
-.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:34px}
-.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  box-shadow:var(--shadow);overflow:hidden;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
-.card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.card .ch{padding:18px 20px 0;display:flex;align-items:center;gap:10px}
-.card .ico{font-size:26px;line-height:1}
-.card h2{font-size:19px;font-weight:700}
-.card .cb{padding:10px 20px 18px;flex:1}
-.card .cb p{margin:0;font-size:14.2px;color:var(--ink-2)}
-.card ul{margin:12px 0 0;padding-left:18px;font-size:13.4px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px}
-.card li::marker{color:var(--accent)}
-.card .cf{padding:11px 20px;border-top:1px solid var(--line);background:var(--surface-2);
-  font:500 12.5px/1 var(--fm);color:var(--accent-ink);display:flex;align-items:center;gap:7px}
+/* ---------- орц ---------- */
+.sec-h{display:flex;align-items:baseline;gap:12px;margin:0 0 16px;flex-wrap:wrap}
+.sec-h h3{font-size:14px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2)}
+.sec-h span{font-size:12.5px;color:var(--ink-3)}
+.gates{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));padding-bottom:8px}
+.gate{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
+  border-top:4px solid var(--line-strong);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.gate.admin{border-top-color:var(--accent)}
+.gate.guest{border-top-color:var(--gold)}
+.gate .gh{padding:20px 22px 0;display:flex;align-items:center;gap:11px}
+.gate .gi{width:34px;height:34px;border-radius:6px;display:grid;place-items:center;font-size:17px;flex:none}
+.gate.guest .gi{background:var(--gold-soft);color:var(--gold)}
+.gate.admin .gi{background:var(--accent-soft);color:var(--accent)}
+.gate h4{margin:0;font-family:var(--fd);font-size:19px;font-weight:700}
+.gate .gb{padding:12px 22px 20px;flex:1}
+.gate .gb>p{margin:0;font-size:14px;color:var(--ink-2)}
+.gate ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:var(--ink-2)}
+.gate li{display:grid;grid-template-columns:17px 1fr;gap:9px;align-items:start}
+.gate li i{font-style:normal;color:var(--accent);font-weight:700}
+.gate.guest li i{color:var(--gold)}
+.gate .gf{padding:16px 22px;border-top:1px solid var(--line);background:var(--surface-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  padding:12px 18px;border-radius:5px;font:600 14.5px/1 var(--fb);text-decoration:none;cursor:pointer;border:1px solid transparent}
+.btn.pri{background:var(--accent);color:#fff}
+.btn.pri:hover{background:var(--accent-2)}
+.btn.sec{background:var(--surface);color:var(--accent);border-color:var(--line-strong)}
+.btn.sec:hover{border-color:var(--accent);background:var(--accent-soft)}
 
-.meta{margin-top:36px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:18px 20px}
-.meta h3{font-size:14px;font-weight:700;letter-spacing:.03em}
-.meta dl{margin:12px 0 0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;
-  overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.meta dl>div{background:var(--surface);padding:11px 14px}
-.meta dt{font:700 10px/1.4 var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
-.meta dd{margin:0;font:600 19px/1.15 var(--fd);font-variant-numeric:tabular-nums}
-.meta dd small{display:block;font:400 11.5px/1.4 var(--fb);color:var(--ink-3);margin-top:3px}
+/* ---------- системүүд ---------- */
+.mods{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.mod{background:var(--surface);padding:20px 22px;display:flex;flex-direction:column;gap:9px}
+.mod .mt{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.mod h4{margin:0;font-family:var(--fd);font-size:16.5px;font-weight:700}
+.tag{font:600 10px/1.7 var(--fm);letter-spacing:.09em;text-transform:uppercase;padding:1px 8px;border-radius:3px}
+.tag.open{background:var(--good-soft);color:var(--good)}
+.tag.lock{background:var(--surface-3);color:var(--ink-2)}
+.mod p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.mod .meta{margin-top:auto;padding-top:10px;font:500 11.5px/1.6 var(--fm);color:var(--ink-3)}
 
-.note{margin-top:18px;border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--accent-ink);
-  padding:12px 16px;border-radius:0 6px 6px 0;font-size:13.5px}
-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);line-height:1.7}
+/* ---------- үзүүлэлт ---------- */
+.figs{margin-top:14px;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+.fig{background:var(--surface);padding:16px 18px}
+.fig dt{font:700 10px/1.4 var(--fd);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.fig dd{margin:7px 0 0;font:700 27px/1.1 var(--fd);color:var(--accent);font-variant-numeric:tabular-nums}
+.fig dd small{display:block;font:400 11.5px/1.45 var(--fb);color:var(--ink-3);margin-top:5px}
+.src{margin-top:14px;padding:12px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);
+  color:var(--accent-ink);border-radius:0 4px 4px 0;font-size:12.5px}
+section.blk{padding:30px 0}
 </style>
 </head>
 <body>
 
-<header class="top">
-  <div class="inner">
-    <span class="mark">ИНЕГ · Иргэний нисэхийн ерөнхий газар</span>
+<div class="gov-bar">
+  <div class="in">
+    <span class="org">Иргэний нисэхийн ерөнхий газар</span>
+    <span class="dot"></span>
+    <span class="sub">Нислэгийн аюулгүй ажиллагааны хяналт</span>
     <span class="sp"></span>
-    <button class="tbtn" id="theme" type="button">Өнгө</button>
+    <button class="tbtn" id="theme" type="button" style="padding:4px 9px;font-size:11px">Өнгө</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="in">
+    <div class="emblem" aria-hidden="true">✈</div>
+    <div class="tt">
+      <h1>Хяналт шалгалтын нэгдсэн систем</h1>
+      <p>Нислэгийн стандартын газар · Агаарын навигаци, аэродромын стандартын газар</p>
+    </div>
+    <span class="sp"></span>
+    <a class="tbtn" href="hyanalt/" style="text-decoration:none">Систем рүү →</a>
   </div>
 </header>
 
-<div class="wrap">
-  <div class="hero">
-    <span class="eyebrow">Нислэгийн аюулгүй ажиллагааны хяналт</span>
-    <h1>Хяналт шалгалтын мэдээллийн сан ба байцаагчийн гарын авлага</h1>
-    <p>Хоёр систем нэг дор. Эхнийх нь өдөр тутмын хяналтын ажлыг эрсдэлд суурилсан загвараар удирдана;
-      хоёр дахь нь байцаагчийн бэлтгэл, давтан сургалтад зориулагдсан.</p>
-  </div>
+<main class="wrap">
 
-  <div class="cards">
-    <a class="card" href="hyanalt/">
-      <div class="ch"><span class="ico">✈️</span><h2>Хяналтын сан</h2></div>
-      <div class="cb">
-        <p>Байгууллагын эрсдэлийн профайл, үл нийцэл ба залруулах төлөвлөгөө (CAP), шалгалт, гэрчилгээ,
-          эрсдэлд суурилсан жилийн төлөвлөлт.</p>
-        <ul>
-          <li>EASA RBO — 3 хүчин зүйлийн эрсдэлийн загвар</li>
-          <li>Админ нэвтрээд нэмэх, засах, устгах</li>
-          <li>CSV татах, бүртгэл бүрт хайлт</li>
-          <li>RBO-д шилжих 10 арга хэмжээний явц</li>
-        </ul>
-      </div>
-      <div class="cf">Нээх →</div>
-    </a>
-
-    <a class="card" href="garyn-avlaga/">
-      <div class="ch"><span class="ico">📋</span><h2>Байцаагчийн гарын авлага</h2></div>
-      <div class="cb">
-        <p>Чикагогийн конвенцоос эхлээд SMS, гэрчилгээжүүлэлт, ramp check хүртэл — 12 модулийн
-          бүтэцтэй сургалтын материал.</p>
-        <ul>
-          <li>19 хавсралт, 8 Critical Element</li>
-          <li>48 цээжлэх карт, зайтай давталттай</li>
-          <li>Түүхэн ба ажлын кэйсүүд</li>
-          <li>Тайлбар бүхий 20 асуултын тест</li>
-        </ul>
-      </div>
-      <div class="cf">Нээх →</div>
-    </a>
-  </div>
-
-  <section class="meta">
-    <h3>2026 ОНЫ I ХАГАС ЖИЛИЙН ҮЗҮҮЛЭЛТ</h3>
+  <section class="hero">
+    <span class="eyebrow">Албан ёсны мэдээллийн систем</span>
+    <h2>Эрсдэлд суурилсан хяналтын мэдээллийн сан</h2>
+    <div class="rule"></div>
+    <p>Гэрчилгээ эзэмшигч байгууллагын эрсдэлийн профайл, илэрсэн үл нийцэл ба залруулах
+      арга хэмжээний хэрэгжилт, хяналт шалгалтын төлөвлөлтийг нэг системд нэгтгэв.</p>
     <dl>
-      <div><dt>Хяналт шалгалт</dt><dd>517<small>5 хэлтэс</small></dd></div>
-      <div><dt>Гэрчилгээ, үнэмлэх</dt><dd>1 041<small>20 ИНД-ийн хүрээнд</small></dd></div>
-      <div><dt>Үл нийцэл</dt><dd>39<small>327 шаардлагын хамт</small></dd></div>
-      <div><dt>USOAP-CMA</dt><dd>83.06<small>AGA чиглэл, 153 PQ</small></dd></div>
+      <div><dt>Тайлант хугацаа</dt><dd>2026.01.01 – 06.30</dd></div>
+      <div><dt>Эрсдэлийн загвар</dt><dd>EASA RBO · 3 хүчин зүйл</dd></div>
+      <div><dt>Хамрах хэлтэс</dt><dd>5</dd></div>
     </dl>
-    <div class="note">Эх сурвалж: «Нисэхийн аюулгүй ажиллагааны хяналт шалгалтын танилцуулга —
-      2026 оны эхний хагас жил» (2026.01.01–06.30).</div>
   </section>
 
-  <footer>
-    <p>Хяналтын сан нь <b>нийтэд нээлттэй харагдана</b>; өгөгдөл нэмэх, засах, устгах эрхийг зөвхөн
-      нэвтэрсэн ИНЕГ-ын админ хэрэглэгч эдэлнэ.</p>
-    <p style="margin-top:10px">Гарын авлага нь сургалтын материал бөгөөд эрх зүйн эх сурвалж биш.
-      Акт бичих, шийдвэр гаргахдаа хүчин төгөлдөр МИНД/ИНД-ын эх бичвэрээс шалгана уу.</p>
-  </footer>
-</div>
+  <section class="blk">
+    <div class="sec-h">
+      <h3>Системд нэвтрэх</h3>
+      <span>Эрхийн түвшнээ сонгоно уу</span>
+    </div>
+    <div class="gates">
+
+      <div class="gate guest">
+        <div class="gh"><span class="gi" aria-hidden="true">◷</span><h4>Зочин</h4></div>
+        <div class="gb">
+          <p>Нэвтрэхгүйгээр хяналтын сангийн мэдээллийг үзэх. Өгөгдөл өөрчлөгдөхгүй.</p>
+          <ul>
+            <li><i>✓</i><span>Байгууллагын бүртгэл, эрсдэлийн профайл</span></li>
+            <li><i>✓</i><span>Үл нийцэл, залруулах төлөвлөгөөний явц</span></li>
+            <li><i>✓</i><span>Тайлан, төлөвлөлт, CSV татах</span></li>
+            <li><i>✗</i><span style="color:var(--ink-3)">Нэмэх, засах, устгах боломжгүй</span></li>
+          </ul>
+        </div>
+        <div class="gf"><a class="btn sec" href="hyanalt/">Зочноор үзэх</a></div>
+      </div>
+
+      <div class="gate admin">
+        <div class="gh"><span class="gi" aria-hidden="true">⚿</span><h4>Админ</h4></div>
+        <div class="gb">
+          <p>ИНЕГ-ын эрх бүхий ажилтан. Байгууллагын и-мэйл, нууц үгээр нэвтэрнэ.</p>
+          <ul>
+            <li><i>✓</i><span>Бүх бүртгэлд нэмэх, засах, устгах</span></li>
+            <li><i>✓</i><span>Эрсдэлийн үнэлгээ, загварын тохиргоо</span></li>
+            <li><i>✓</i><span><b>Байцаагчийн гарын авлага</b> нээгдэнэ</span></li>
+            <li><i>✓</i><span>Залруулах хугацааг дүрмээр тогтоох</span></li>
+          </ul>
+        </div>
+        <div class="gf"><a class="btn pri" href="hyanalt/?admin=1">Админаар нэвтрэх</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="sec-h"><h3>Системийн бүрэлдэхүүн</h3></div>
+    <div class="mods">
+      <div class="mod">
+        <div class="mt"><h4>Хяналтын сан</h4><span class="tag open">Нээлттэй</span></div>
+        <p>Байгууллага, үл нийцэл (CAP), хяналт шалгалт, гэрчилгээ, эрсдэлд суурилсан
+           төлөвлөлт, дүрмийн шинэчлэлт, RBO-д шилжих арга хэмжээний явц.</p>
+        <div class="meta">7 бүртгэл · EASA RBO загвар</div>
+      </div>
+      <div class="mod">
+        <div class="mt"><h4>Байцаагчийн гарын авлага</h4><span class="tag lock">⚿ Зөвхөн админ</span></div>
+        <p>Чикагогийн конвенцоос SMS, гэрчилгээжүүлэлт, ramp check хүртэл 12 модулийн
+           сургалтын хөтөлбөр. Цээжлэх карт, ажлын кэйс, шалгалтын тест.</p>
+        <div class="meta">12 модуль · 48 карт · 20 асуулт</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="sec-h">
+      <h3>2026 оны эхний хагас жилийн үзүүлэлт</h3>
+    </div>
+    <dl class="figs">
+      <div class="fig"><dt>Хяналт шалгалт</dt><dd>517<small>5 хэлтсийн гүйцэтгэл</small></dd></div>
+      <div class="fig"><dt>Гэрчилгээ, үнэмлэх</dt><dd>1 041<small>20 ИНД-ийн хүрээнд</small></dd></div>
+      <div class="fig"><dt>Илэрсэн үл нийцэл</dt><dd>39<small>327 шаардлагын хамт</small></dd></div>
+      <div class="fig"><dt>USOAP-CMA оноо</dt><dd>83.06<small>AGA чиглэл · 153 PQ</small></dd></div>
+    </dl>
+    <div class="src">Эх сурвалж: «Нисэхийн аюулгүй ажиллагааны хяналт шалгалтын танилцуулга —
+      2026 оны эхний хагас жил» (2026.01.01–06.30), ИНЕГ.</div>
+  </section>
+
+</main>
+
+<footer class="gov-foot">
+  <div class="in">
+    <div class="rule"></div>
+    <div class="cols">
+      <div>
+        <h4>Систем</h4>
+        <p><a href="hyanalt/">Хяналтын сан</a><br>
+           <a href="hyanalt/?admin=1">Админаар нэвтрэх</a></p>
+      </div>
+      <div>
+        <h4>Эрх хандалт</h4>
+        <p>Мэдээллийг хүн бүр <b>үзэх</b> боломжтой.<br>
+           Нэмэх, засах, устгах эрхийг зөвхөн нэвтэрсэн админ эдэлнэ.</p>
+      </div>
+      <div>
+        <h4>Анхааруулга</h4>
+        <p>Гарын авлага нь <b>сургалтын материал</b> бөгөөд эрх зүйн эх сурвалж биш.
+           Акт бичих, шийдвэр гаргахдаа хүчин төгөлдөр ИНД-ын эх бичвэрээс шалгана уу.</p>
+      </div>
+    </div>
+    <div class="base">Иргэний нисэхийн ерөнхий газар · Нислэгийн аюулгүй ажиллагааны хяналт шалгалтын мэдээллийн систем</div>
+  </div>
+</footer>
 
 <script>
 (function(){
