@@ -1144,7 +1144,9 @@ function matrixHtml(risks){
     <p class="small muted" style="margin:8px 0 0">Нийцлийн түүх нь ҮЛ НИЙЦЭЛ бүртгэлээс автоматаар тооцогдоно.</p>
     ${unrated.length?`<div class="banner warn" style="margin-top:10px">
       <div><b>${unrated.length} байгууллагад</b> нарийн төвөгтэй байдал эсвэл УТ-ны төлөвшилтийн үнэлгээ дутуу тул матрицад ороогүй:
-      ${unrated.map(x=>esc(x.o.short||x.o.name)).join(", ")}.</div></div>`:""}`;
+      ${unrated.slice(0,10).map(x=>esc(x.o.short||x.o.name)).join(", ")}${
+        unrated.length>10?` ба бусад ${unrated.length-10}`:""}.
+      Үнэлгээг “Байгууллага, эрсдэл” хэсгээс оруулна.</div></div>`:""}`;
 }
 
 /* ---------- 2. Байгууллага ---------- */

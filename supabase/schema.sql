@@ -411,3 +411,257 @@ insert into regs (id,title,kind,ind,order_no,issuer,date,dept,impact) values
  'Үйл ажиллагааны заавар',null,null,'ИНЕГ',null,'АНХХ',
  'USOAP-CMA-ийн бэлтгэл ажлын хүрээнд ИНЕГ-ын хэмжээнд шинэчлэгдсэн баримт бичгүүдийн хамт боловсруулагдсан. Батлагдсан огноо тодруулах.')
 on conflict (id) do nothing;
+
+-- ============================================================================
+-- mcaa.gov.mn-ий нээлттэй бүртгэлээс (2026.09.14-нд татсан):
+--   ЗӨВШӨӨРӨЛ ГЭРЧИЛГЭЭ → «Иргэний нисэхийн үйл ажиллагаа эрхлэх зөвшөөрөл, гэрчилгээ»
+-- Эрсдэлийн үнэлгээ (нарийн төвөгтэй байдал, УТ-ны төлөвшилт) эх сурвалжид байхгүй тул
+-- хоосон. Мэргэжилтнүүдийн зөвлөл тогтоосны дараа «Засах» цонхноос бөглөнө.
+-- ============================================================================
+
+-- ---------- Гэрчилгээ эзэмшигч байгууллагууд ----------
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-hunnu','Хүннү Эйр ХХК','Хүннү Эйр','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-121'],'АТ-018',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-izinis','Изинис Эйрвэйз ХХК','Изинис','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-121'],'АТ-026',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-mn-airways-cargo','Монголиан Эйрвейс Карго ХХК','МН Карго','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-121'],'АТ-028',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-chinggis-unity','Чингис Аэрлайнс Юнити ХХК','Чингис Аэрлайнс','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-121'],'АТ-034',null,null,null,'2026 онд шинээр гэрчилгээжсэн.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-geosan','Геосан ХХК','Геосан','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-125'],'АТ-019',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-tengeriin-ulaach','Тэнгэрийн Улаач Шинэ ХХК','Тэнгэрийн Улаач','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-135'],'АТ-029',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-mongolian-airways','Монголиан Эйрвейс ХХК','Монголиан Эйрвейс','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-135'],'АТ-030',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-alfa-aurora','Альфа Аврора Авэйшн ХХК','Альфа Аврора','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-135'],'АТ-032',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-orange-air','Оранж Эйр ХХК','Оранж Эйр','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-135'],'АТ-033',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ajet','А-ЖЕТ АВИЭЙШН ХХК','А-ЖЕТ','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-135'],'АТ-015',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-zort-air','ЗОРТ ЭЙР ХХК','ЗОРТ ЭЙР','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-119','ИНД-135'],'АТ-031',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-tomas-air','Томас Эйр ХХК','Томас Эйр','Агаарын тээвэрлэгч','НХХ',ARRAY['ИНД-137'],'ХАА-003',null,null,null,'Хөдөө аж ахуйн нислэгийн үйл ажиллагаа.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-smart-drone','Монголиан Смарт Дрон Деливери ХХК','Смарт Дрон','Хүнгүй агаарын хөлөг','НХХ',ARRAY['ИНД-102'],'ХАХ-01',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-oyutolgoi','Оюутолгой ХХК','Оюутолгой','Хүнгүй агаарын хөлөг','НХХ',ARRAY['ИНД-102'],'ХАХ-02',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-top-extreme','Топ Экстрим Экшн Монголиа ХХК','Топ Экстрим','Нисэх клуб','НХХ',ARRAY['ИНД-149'],'МСАА.149.01.18',null,null,null,'Гэрчилгээний хугацаа 2025.11.30-нд дууссан — төлөвийг тодруулах.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-new-cleos','Нью Клеос ХХК','Нью Клеос','Нисэх клуб','НХХ',ARRAY['ИНД-149'],'МСАА.149.01.22',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-inut-abha','Иргэний нисэхийн үндэсний төвийн Аюулгүй байдал, хамгаалалтын алба','ИНҮТ АБХА','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-21',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-gurvansaikhan','Гурвансайхан нисэх буудал (Өмнөговь, Даланзадгад)','Гурвансайхан','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-03',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-otgontenger','Отгонтэнгэр нисэх буудал (Завхан, Алдархаан)','Отгонтэнгэр','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-04',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-khovd','Ховд нисэх буудал','Ховд','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-05',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-choibalsan','Чойбалсан нисэх буудал (Дорнод)','Чойбалсан','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-06',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-muren','Мөрөн нисэх буудал (Хөвсгөл)','Мөрөн','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-08',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-altai','Алтай нисэх буудал (Говь-Алтай)','Алтай','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-12',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-ulgii','Өлгий нисэх буудал (Баян-Өлгий)','Өлгий','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-15',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-deglii-tsagaan','Дэглий цагаан нисэх буудал (Увс, Улаангом)','Дэглий цагаан','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-17',null,null,null,'Гэрчилгээний хугацаа 2026.06.15-нд дууссан — төлөвийг тодруулах.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-bayankhongor','Баянхонгор нисэх буудал','Баянхонгор','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-14',null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ach-services','Эй Си Эйч Сервисес ХХК','Эй Си Эйч','Аюулгүйн хамгаалалт','ААХХХ',ARRAY['ИНД-140'],'140-18',null,null,null,null)
+on conflict (id) do nothing;
+
+-- ---------- Хүчинтэй гэрчилгээний бүртгэл ----------
+-- Үйлдэл: хугацаа сунгасан огноотой бол «Сунгасан», эс бөгөөс «Шинээр олгосон».
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-003','АТ-003','Байгууллага','ИНД-119','org-miat','МИАТ ТӨХК','Сунгасан','2023-05-17'::date,'2028-05-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-009','АТ-009','Байгууллага','ИНД-119','org-aeromongolia','Аэромонголиа ХХК','Сунгасан','2023-05-08'::date,'2028-05-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-018','АТ-018','Байгууллага','ИНД-121','org-hunnu','Хүннү Эйр ХХК','Сунгасан','2021-11-12'::date,'2026-11-11'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-026','АТ-026','Байгууллага','ИНД-121','org-izinis','Изинис Эйрвэйз ХХК','Сунгасан','2022-01-28'::date,'2027-01-28'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-028','АТ-028','Байгууллага','ИНД-121','org-mn-airways-cargo','Монголиан Эйрвейс Карго ХХК','Сунгасан','2025-01-27'::date,'2030-01-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-034','АТ-034','Байгууллага','ИНД-121','org-chinggis-unity','Чингис Аэрлайнс Юнити ХХК','Шинээр олгосон','2026-04-15'::date,'2027-04-30'::date,'НХХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-019','АТ-019','Байгууллага','ИНД-125','org-geosan','Геосан ХХК','Сунгасан','2026-03-16'::date,'2026-11-27'::date,'НХХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-029','АТ-029','Байгууллага','ИНД-135','org-tengeriin-ulaach','Тэнгэрийн Улаач Шинэ ХХК','Сунгасан','2023-02-17'::date,'2026-02-28'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-030','АТ-030','Байгууллага','ИНД-135','org-mongolian-airways','Монголиан Эйрвейс ХХК','Сунгасан','2023-07-07'::date,'2026-07-07'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-032','АТ-032','Байгууллага','ИНД-135','org-alfa-aurora','Альфа Аврора Авэйшн ХХК','Сунгасан','2024-12-03'::date,'2027-12-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-033','АТ-033','Байгууллага','ИНД-135','org-orange-air','Оранж Эйр ХХК','Сунгасан','2025-05-24'::date,'2028-05-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-015','АТ-015','Байгууллага','ИНД-135','org-ajet','А-ЖЕТ АВИЭЙШН ХХК','Сунгасан','2023-12-28'::date,'2026-12-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-at-031','АТ-031','Байгууллага','ИНД-135','org-zort-air','ЗОРТ ЭЙР ХХК','Сунгасан','2026-03-05'::date,'2031-03-05'::date,'НХХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-khaa-003','ХАА-003','Байгууллага','ИНД-137','org-tomas-air','Томас Эйр ХХК','Сунгасан','2024-03-19'::date,'2029-03-19'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-khakh-01','ХАХ-01','Байгууллага','ИНД-102','org-smart-drone','Монголиан Смарт Дрон Деливери ХХК','Сунгасан','2025-06-26'::date,'2028-06-26'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-khakh-02','ХАХ-02','Байгууллага','ИНД-102','org-oyutolgoi','Оюутолгой ХХК','Шинээр олгосон','2025-12-30'::date,'2026-12-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-msaa-149-01-18','МСАА.149.01.18','Байгууллага','ИНД-149','org-top-extreme','Топ Экстрим Экшн Монголиа ХХК','Сунгасан','2022-11-19'::date,'2025-11-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-msaa-149-01-22','МСАА.149.01.22','Байгууллага','ИНД-149','org-new-cleos','Нью Клеос ХХК','Сунгасан','2023-04-05'::date,'2026-04-03'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-21','140-21','Байгууллага','ИНД-140','org-inut-abha','Иргэний нисэхийн үндэсний төвийн Аюулгүй байдал, хамгаалалтын алба','Шинээр олгосон','2022-02-16'::date,'2029-05-16'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-03','140-03','Байгууллага','ИНД-140','org-ab-gurvansaikhan','Гурвансайхан нисэх буудал (Өмнөговь, Даланзадгад)','Шинээр олгосон','2010-09-16'::date,'2029-05-24'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-04','140-04','Байгууллага','ИНД-140','org-ab-otgontenger','Отгонтэнгэр нисэх буудал (Завхан, Алдархаан)','Шинээр олгосон','2010-09-23'::date,'2027-03-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-05','140-05','Байгууллага','ИНД-140','org-ab-khovd','Ховд нисэх буудал','Шинээр олгосон','2010-09-30'::date,'2026-10-29'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-06','140-06','Байгууллага','ИНД-140','org-ab-choibalsan','Чойбалсан нисэх буудал (Дорнод)','Шинээр олгосон','2010-10-06'::date,'2026-11-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-08','140-08','Байгууллага','ИНД-140','org-ab-muren','Мөрөн нисэх буудал (Хөвсгөл)','Шинээр олгосон','2010-11-08'::date,'2026-09-28'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-12','140-12','Байгууллага','ИНД-140','org-ab-altai','Алтай нисэх буудал (Говь-Алтай)','Шинээр олгосон','2010-12-03'::date,'2027-09-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-15','140-15','Байгууллага','ИНД-140','org-ab-ulgii','Өлгий нисэх буудал (Баян-Өлгий)','Шинээр олгосон','2010-12-10'::date,'2026-10-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-17','140-17','Байгууллага','ИНД-140','org-ab-deglii-tsagaan','Дэглий цагаан нисэх буудал (Увс, Улаангом)','Шинээр олгосон','2011-06-24'::date,'2026-06-15'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-14','140-14','Байгууллага','ИНД-140','org-ab-bayankhongor','Баянхонгор нисэх буудал','Шинээр олгосон','2010-12-10'::date,'2027-09-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-140-18','140-18','Байгууллага','ИНД-140','org-ach-services','Эй Си Эйч Сервисес ХХК','Шинээр олгосон','2015-01-30'::date,'2027-02-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+
+-- ---------- Гадаадын агаарын тээвэрлэгчийн гэрчилгээ (ИНД-129) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-001','FAOC-001','Гадаадын тээвэрлэгч','ИНД-129',null,'Aeroflot','Шинээр олгосон','2023-03-30'::date,'2028-03-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-002','FAOC-002','Гадаадын тээвэрлэгч','ИНД-129',null,'Korean Air','Шинээр олгосон','2023-04-12'::date,'2028-04-12'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-003','FAOC-003','Гадаадын тээвэрлэгч','ИНД-129',null,'Air China','Шинээр олгосон','2023-03-21'::date,'2028-03-21'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-006','FAOC-006','Гадаадын тээвэрлэгч','ИНД-129',null,'Turkish Airlines','Шинээр олгосон','2023-01-31'::date,'2028-01-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-012','FAOC-012','Гадаадын тээвэрлэгч','ИНД-129',null,'Air Busan','Шинээр олгосон','2021-10-11'::date,'2026-10-09'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-018','FAOC-018','Гадаадын тээвэрлэгч','ИНД-129',null,'Asiana Airlines','Шинээр олгосон','2025-05-23'::date,'2030-05-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-019','FAOC-019','Гадаадын тээвэрлэгч','ИНД-129',null,'Air Incheon','Шинээр олгосон','2021-10-29'::date,'2026-10-29'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-020','FAOC-020','Гадаадын тээвэрлэгч','ИНД-129',null,'Jeju Air','Шинээр олгосон','2022-07-04'::date,'2028-06-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-021','FAOC-021','Гадаадын тээвэрлэгч','ИНД-129',null,'T`Way Air','Шинээр олгосон','2023-05-30'::date,'2028-05-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-023','FAOC-023','Гадаадын тээвэрлэгч','ИНД-129',null,'MNG Airlines','Шинээр олгосон','2023-02-20'::date,'2028-02-29'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-026','FAOC-026','Гадаадын тээвэрлэгч','ИНД-129',null,'ИрАэро','Шинээр олгосон','2023-02-27'::date,'2031-02-28'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-025','FAOC-025','Гадаадын тээвэрлэгч','ИНД-129',null,'Красавиа','Шинээр олгосон','2023-02-10'::date,'2028-02-29'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-024','FAOC-024','Гадаадын тээвэрлэгч','ИНД-129',null,'Аврора','Шинээр олгосон','2023-01-10'::date,'2028-02-29'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-022','FAOC-022','Гадаадын тээвэрлэгч','ИНД-129',null,'SF Airlines','Шинээр олгосон','2022-09-21'::date,'2028-11-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-029','FAOC-029','Гадаадын тээвэрлэгч','ИНД-129',null,'Thai Vietjet','Шинээр олгосон','2023-06-15'::date,'2026-06-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-030','FAOC-030','Гадаадын тээвэрлэгч','ИНД-129',null,'Vista Jet Limited Ltd','Шинээр олгосон','2024-02-29'::date,'2029-02-28'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-031','FAOC-031','Гадаадын тээвэрлэгч','ИНД-129',null,'Jin Air','Шинээр олгосон','2024-03-08'::date,'2029-03-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-032','FAOC-032','Гадаадын тээвэрлэгч','ИНД-129',null,'Aero K Airlines','Шинээр олгосон','2024-04-29'::date,'2029-04-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-033','FAOC-033','Гадаадын тээвэрлэгч','ИНД-129',null,'My Freighter LLC','Шинээр олгосон','2024-12-20'::date,'2026-05-15'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-034','FAOC-034','Гадаадын тээвэрлэгч','ИНД-129',null,'Juneyao Airlines Co., Ltd','Шинээр олгосон','2025-01-01'::date,'2029-12-31'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-035','FAOC-035','Гадаадын тээвэрлэгч','ИНД-129',null,'United Airlines','Шинээр олгосон','2025-04-17'::date,'2030-04-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-036','FAOC-036','Гадаадын тээвэрлэгч','ИНД-129',null,'China United Airlines','Шинээр олгосон','2025-06-12'::date,'2030-06-30'::date,'НХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-foac-037','FOAC-037','Гадаадын тээвэрлэгч','ИНД-129',null,'Spring Airlines','Шинээр олгосон','2026-02-28'::date,'2031-02-28'::date,'НХХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-faoc-015','FAOC-015','Гадаадын тээвэрлэгч','ИНД-129',null,'JSC AIR COMPANY SCAT','Шинээр олгосон','2026-03-09'::date,'2026-11-10'::date,'НХХ','2026-H1')
+on conflict (id) do nothing;
