@@ -81,6 +81,21 @@ button,input,select,textarea{font:inherit;color:inherit}
 .tile .v{font-family:var(--fd);font-size:27px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
 .tile .n{font-size:11.5px;color:var(--ink-3);line-height:1.35}
 .tile.alert .v{color:var(--crit)}
+/* ---------- зочинд нуусан хэсэг (зөвхөн админд харагдана) ---------- */
+.ghost{opacity:.58}
+.panel.ghost{border-style:dashed}
+.tile.ghost{background:var(--surface-2)}
+.tiletog{align-self:flex-start;margin-top:7px;padding:1px 7px;font-size:11px}
+.hidmark{font-size:9.5px;letter-spacing:.04em;text-transform:none;color:var(--warn);
+  border:1px solid var(--warn);border-radius:99px;padding:0 5px;white-space:nowrap}
+.banner>.btn{margin-left:auto;align-self:center;flex:none}
+.dashrow{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;
+  padding:8px 0;border-top:1px solid var(--line)}
+.dashrow:first-child{border-top:0}
+.dashrow .ord{display:flex;gap:4px}
+.dashrow input[type=text]{width:100%;background:var(--surface);border:1px solid var(--line-strong);
+  border-radius:var(--r);padding:5px 9px;font-size:13px;color:var(--ink)}
+.dashrow .sw{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);white-space:nowrap}
 .tile.warnv .v{color:var(--warn)}
 .tile.goodv .v{color:var(--good)}
 
@@ -282,6 +297,32 @@ const SEVS = ["Ноцтой","Дунд","Бага"];
 const STATUSES = ["Нээлттэй","Залруулж байгаа","Хаагдсан"];
 const CERT_ACTIONS = ["Шинээр олгосон","Сунгасан","Өөрчлөлт оруулсан","Түдгэлзүүлсэн","Хүчингүй болгосон"];
 
+/* ---------- хяналтын самбарын бүтэц ----------
+   Самбарын хэсэг бүрийг админ зочинд харуулах/нуух, нэрийг нь солих,
+   дарааллыг нь өөрчлөх боломжтой. Доорх жагсаалт нь анхны байдал. */
+const DASH_TILES = [
+  {id:"orgs",    t:"Байгууллага"},
+  {id:"high",    t:"Өндөр эрсдэл"},
+  {id:"overdue", t:"Хугацаа хэтэрсэн"},
+  {id:"open",    t:"Нээлттэй CAP"},
+  {id:"need",    t:"Жилийн хэрэгцээ"},
+  {id:"certs",   t:"Гэрчилгээ"},
+];
+const DASH_BLOCKS = [
+  {id:"tiles",      t:"Үзүүлэлтийн хураангуй"},
+  {id:"attention",  t:"Анхаарал шаардсан залруулалт"},
+  {id:"matrix",     t:"Эрсдэлийн матриц"},
+  {id:"inspections",t:"2026 оны I хагас жилийн хяналт шалгалт"},
+  {id:"roadmap",    t:"RBO-д шилжих замын зураг"},
+  {id:"regs",       t:"Сүүлд шинэчлэгдсэн дүрэм, журам"},
+  {id:"usoap",      t:"USOAP-CMA дүгнэлт"},
+];
+const dashDefaults = () => ({
+  guest:true,
+  blocks: DASH_BLOCKS.map(b=>({id:b.id, title:b.t, on:true})),
+  tiles:  DASH_TILES.map(b=>({id:b.id, title:b.t, on:true})),
+});
+
 const DEFAULTS = {
   weights:{complexity:.30, compliance:.40, maturity:.30},
   penalty:{overdue:12, nonconformity:8, requirement:3},
@@ -289,12 +330,13 @@ const DEFAULTS = {
   levels:[{name:"Бага",min:0,perYear:.5},{name:"Дунд",min:30,perYear:1},
           {name:"Дунд-өндөр",min:50,perYear:2},{name:"Өндөр",min:70,perYear:3}],
   dueDays:{"Ноцтой":30,"Дунд":60,"Бага":90},
+  dash: dashDefaults(),
 };
 
 /* ============================================================ төлөв */
 const state = {db:null, ready:false, canWrite:false,
   orgs:[], findings:[], inspections:[], certs:[], plan:[], regs:[], actions:[], settings:null,
-  view:"dash", exportRows:null, modal:null, filter:{}, authOpen:false};
+  view:"dash", exportRows:null, modal:null, filter:{}, authOpen:false, dashDraft:null};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
@@ -308,6 +350,42 @@ function toast(msg){
   document.body.appendChild(t); setTimeout(()=>t.remove(),2600);
 }
 function settings(){ return state.settings || DEFAULTS; }
+
+/* ---------- самбарын харагдацын тохиргоо ----------
+   Хадгалсан утгыг анхны жагсаалттай тулгаж цэгцэлнэ: шинээр нэмэгдсэн хэсэг
+   автоматаар гарч ирнэ, устсан хэсгийн үлдэгдэл хаягдана. */
+function normDash(defs, saved){
+  const out=[], seen=new Set();
+  (Array.isArray(saved)?saved:[]).forEach(it=>{
+    if(!it || seen.has(it.id)) return;
+    const d=defs.find(x=>x.id===it.id); if(!d) return;
+    seen.add(d.id);
+    out.push({id:d.id, title:String(it.title||"").trim()||d.t, on:it.on!==false});
+  });
+  defs.forEach(d=>{ if(!seen.has(d.id)) out.push({id:d.id, title:d.t, on:true}); });
+  return out;
+}
+function dashCfg(){
+  const raw = settings().dash || {};
+  return {guest: raw.guest!==false,
+          blocks: normDash(DASH_BLOCKS, raw.blocks),
+          tiles:  normDash(DASH_TILES,  raw.tiles)};
+}
+/* Засварлаж байгаа (хараахан хадгалаагүй) хувилбар */
+function dashDraft(){
+  if(!state.dashDraft) state.dashDraft = JSON.parse(JSON.stringify(dashCfg()));
+  return state.dashDraft;
+}
+const dashDirty = () => !!state.dashDraft &&
+  JSON.stringify(state.dashDraft) !== JSON.stringify(dashCfg());
+/* Самбарыг тухайн хэрэглэгч харах эрхтэй эсэх (админ үргэлж харна) */
+const dashVisible = () => state.canWrite || dashCfg().guest;
+const viewAllowed = id => id!=="dash" || dashVisible();
+/* Самбарын хэсэг тухайн хэрэглэгчид харагдах эсэх */
+function dashShow(item){ return item.on || state.canWrite; }
+async function saveDash(next){
+  return save("meta","settings", {...settings(), dash:next});
+}
 
 /* ---------- эрсдэлийн тооцоо ---------- */
 function findingsOf(orgId){
@@ -370,7 +448,7 @@ async function boot(){
   if(!db){
     state.ready=true; drawMode(); render(); return;
   }
-  db.onAuth(()=>{ drawMode(); render(); });
+  db.onAuth(()=>{ state.dashDraft=null; drawMode(); render(); });
   drawMode();
   // Нүүр хуудаснаас «Админаар нэвтрэх» гэж ирсэн бол цонхыг шууд нээнэ
   if(/[?&]admin=1/.test(location.search) && !db.user()){ state.authOpen=true; drawAuth(); }
@@ -471,11 +549,11 @@ const VIEWS=[
   {id:"cfg",   t:"Тохиргоо",         n:()=>""},
 ];
 function drawNav(){
-  $("#nav").innerHTML = VIEWS.map(v=>
+  $("#nav").innerHTML = VIEWS.filter(v=>viewAllowed(v.id)).map(v=>
     `<button data-v="${v.id}" aria-current="${state.view===v.id}">${esc(v.t)}
       <span class="ct">${v.n()===""?"":v.n()}</span></button>`).join("");
   $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{
-    state.view=b.dataset.v; state.exportRows=null; render();
+    state.view=b.dataset.v; state.exportRows=null; state.dashDraft=null; render();
     document.querySelector(".main").scrollIntoView({block:"start"});
   });
   const open=state.findings.filter(f=>effStatus(f)!=="Хаагдсан").length;
@@ -487,6 +565,8 @@ function drawNav(){
 
 /* ============================================================ render */
 function render(){
+  // Самбарыг зочинд хаасан бол зочныг эхний нээлттэй хэсэг рүү шилжүүлнэ
+  if(!viewAllowed(state.view)) state.view = (VIEWS.find(v=>viewAllowed(v.id))||VIEWS[1]).id;
   drawNav();
   const v=VIEWS.find(x=>x.id===state.view);
   $("#viewTitle").textContent = v ? v.t : "";
@@ -776,82 +856,68 @@ function viewDash(){
     return d || (({"Ноцтой":0,"Дунд":1,"Бага":2}[a.severity]??3)-({"Ноцтой":0,"Дунд":1,"Бага":2}[b.severity]??3));
   }).slice(0,6);
 
-  return `
-  <div class="grid">
-    <div class="tiles">
-      <div class="tile"><div class="k">Байгууллага</div><div class="v">${state.orgs.length}</div>
-        <div class="n">${unrated?`${unrated}-д үнэлгээ дутуу`:"бүгд үнэлэгдсэн"}</div></div>
-      <div class="tile ${high?"alert":""}"><div class="k">Өндөр эрсдэл</div><div class="v">${high}</div>
-        <div class="n">Өндөр + дунд-өндөр түвшин</div></div>
-      <div class="tile ${overdue.length?"alert":""}"><div class="k">Хугацаа хэтэрсэн</div><div class="v">${overdue.length}</div>
-        <div class="n">залруулах арга хэмжээ</div></div>
-      <div class="tile ${openF.length?"warnv":"goodv"}"><div class="k">Нээлттэй CAP</div><div class="v">${openF.length}</div>
-        <div class="n">нийт ${state.findings.length} бичлэгээс</div></div>
-      <div class="tile"><div class="k">Жилийн хэрэгцээ</div><div class="v">${needYear.toFixed(1)}</div>
-        <div class="n">эрсдэлээр тооцсон шалгалт</div></div>
-      <div class="tile ${expired?"alert":(expSoon?"warnv":"")}"><div class="k">Гэрчилгээ</div><div class="v">${state.certs.length}</div>
-        <div class="n">${expired?`${expired} хугацаа дууссан`:(expSoon?`${expSoon} удахгүй дуусна`:"хүчинтэй")}</div></div>
-    </div>
+  const cfg = dashCfg(), adm = state.canWrite;
 
-    <div class="split">
-      <section class="panel">
-        <header><h2>Анхаарал шаардсан залруулалт</h2>
-          <span class="hint">${overdue.length} хугацаа хэтэрсэн · ${openF.length} нээлттэй</span></header>
-        <div class="body">
-          ${attention.length? `<div class="strips">${attention.map(stripHtml).join("")}</div>
-            <p class="small muted" style="margin:12px 0 0">Бүрэн жагсаалтыг “Үл нийцэл, CAP” хэсгээс харна.</p>`
-            : `<p class="muted small" style="margin:0">Нээлттэй үл нийцэл алга.</p>`}
-        </div>
-      </section>
+  /* --- үзүүлэлтийн хайрцаг бүрийн агуулга (нэр нь тохиргооноос ирнэ) --- */
+  const TILE = {
+    orgs:  t=>tile(t,"",state.orgs.length, unrated?`${unrated}-д үнэлгээ дутуу`:"бүгд үнэлэгдсэн"),
+    high:  t=>tile(t,high?"alert":"",high,"Өндөр + дунд-өндөр түвшин"),
+    overdue:t=>tile(t,overdue.length?"alert":"",overdue.length,"залруулах арга хэмжээ"),
+    open:  t=>tile(t,openF.length?"warnv":"goodv",openF.length,`нийт ${state.findings.length} бичлэгээс`),
+    need:  t=>tile(t,"",needYear.toFixed(1),"эрсдэлээр тооцсон шалгалт"),
+    certs: t=>tile(t,expired?"alert":(expSoon?"warnv":""),state.certs.length,
+                   expired?`${expired} хугацаа дууссан`:(expSoon?`${expSoon} удахгүй дуусна`:"хүчинтэй")),
+  };
+  function tile(it, cls, value, note){
+    return `<div class="tile ${cls}${it.on?"":" ghost"}">
+      <div class="k">${esc(it.title)}${adm&&!it.on?` <span class="hidmark">нуусан</span>`:""}</div>
+      <div class="v">${value}</div>
+      <div class="n">${note}</div>
+      ${adm?`<button class="btn sm tiletog" data-act="dashTile:${esc(it.id)}">${it.on?"Нуух":"Харуулах"}</button>`:""}
+    </div>`;
+  }
 
-      <section class="panel">
-        <header><h2>Эрсдэлийн матриц</h2>
-          <span class="hint">нарийн төвөгтэй байдал × нийцлийн түүх</span></header>
-        <div class="body">${matrixHtml(risks)}</div>
-      </section>
-    </div>
+  /* --- самбарын хэсгүүд --- */
+  const inspBody = () => `${REPORT.inspections.map(d=>{
+      const tot=d.planned+d.unplanned+d.docs;
+      const max=Math.max(...REPORT.inspections.map(x=>x.planned+x.unplanned+x.docs));
+      return `<div class="brow"><div class="lbl">${esc(d.dept)}</div>
+        <div class="sbar" style="width:${(tot/max*100).toFixed(1)}%">
+          <span style="width:${(d.planned/tot*100).toFixed(2)}%;background:var(--s1)" title="Төлөвлөгөөт ${d.planned}"></span>
+          <span style="width:${(d.unplanned/tot*100).toFixed(2)}%;background:var(--s2)" title="Төлөвлөгөөт бус ${d.unplanned}"></span>
+          <span style="width:${(d.docs/tot*100).toFixed(2)}%;background:var(--s3)" title="Баримт бичгийн хяналт ${d.docs}"></span>
+        </div><div class="tot">${tot}</div></div>`;
+    }).join("")}
+    <div class="legend">
+      <span><i style="background:var(--s1)"></i>Төлөвлөгөөт 187</span>
+      <span><i style="background:var(--s2)"></i>Төлөвлөгөөт бус 145</span>
+      <span><i style="background:var(--s3)"></i>Баримт бичгийн хяналт 185</span>
+    </div>`;
 
-    <section class="panel">
-      <header><h2>2026 оны I хагас жилийн хяналт шалгалт</h2>
-        <span class="hint">эх тайлангийн үзүүлэлт · нийт ${num(rt)}</span></header>
-      <div class="body">
-        ${REPORT.inspections.map(d=>{
-          const tot=d.planned+d.unplanned+d.docs;
-          const max=Math.max(...REPORT.inspections.map(x=>x.planned+x.unplanned+x.docs));
-          return `<div class="brow"><div class="lbl">${esc(d.dept)}</div>
-            <div class="sbar" style="width:${(tot/max*100).toFixed(1)}%">
-              <span style="width:${(d.planned/tot*100).toFixed(2)}%;background:var(--s1)" title="Төлөвлөгөөт ${d.planned}"></span>
-              <span style="width:${(d.unplanned/tot*100).toFixed(2)}%;background:var(--s2)" title="Төлөвлөгөөт бус ${d.unplanned}"></span>
-              <span style="width:${(d.docs/tot*100).toFixed(2)}%;background:var(--s3)" title="Баримт бичгийн хяналт ${d.docs}"></span>
-            </div><div class="tot">${tot}</div></div>`;
-        }).join("")}
-        <div class="legend">
-          <span><i style="background:var(--s1)"></i>Төлөвлөгөөт 187</span>
-          <span><i style="background:var(--s2)"></i>Төлөвлөгөөт бус 145</span>
-          <span><i style="background:var(--s3)"></i>Баримт бичгийн хяналт 185</span>
-        </div>
-      </div>
-    </section>
-
-    <div class="split">
-      <section class="panel">
-        <header><h2>RBO-д шилжих замын зураг</h2>
-          <span class="hint">${adone}/${state.actions.length} хэрэгжсэн</span></header>
-        <div class="body">
-          ${state.actions.length? [...state.actions].sort((a,b)=>(a.no??99)-(b.no??99)).slice(0,5).map(a=>`
-            <div class="brow"><div class="lbl">${esc(a.title||"").slice(0,58)}${(a.title||"").length>58?"…":""}</div>
-              <div class="prog-track"><span style="width:${Math.max(0,Math.min(100,+a.progress||0))}%"></span></div>
-              <div class="tot">${+a.progress||0}%</div></div>`).join("")
-            : `<p class="muted small" style="margin:0">Арга хэмжээ бүртгэгдээгүй.</p>`}
-          ${state.actions.length>5?`<p class="small muted" style="margin:10px 0 0">Бүгдийг “Хэрэгжүүлэх арга хэмжээ” хэсгээс харна.</p>`:""}
-        </div>
-      </section>
-
-      <section class="panel">
-        <header><h2>Сүүлд шинэчлэгдсэн дүрэм, журам</h2>
-          <span class="hint">${state.regs.length} бичлэг</span></header>
-        <div class="body">
-          ${state.regs.length? `<div class="strips">${[...state.regs]
+  const BLOCK = {
+    tiles:{half:false, html:it=>{
+      const list=cfg.tiles.filter(dashShow);
+      return list.length? `<div class="tiles">${list.map(t=>TILE[t.id](t)).join("")}</div>` : "";
+    }},
+    attention:{half:true, hint:()=>`${overdue.length} хугацаа хэтэрсэн · ${openF.length} нээлттэй`,
+      body:()=> attention.length
+        ? `<div class="strips">${attention.map(stripHtml).join("")}</div>
+           <p class="small muted" style="margin:12px 0 0">Бүрэн жагсаалтыг “Үл нийцэл, CAP” хэсгээс харна.</p>`
+        : `<p class="muted small" style="margin:0">Нээлттэй үл нийцэл алга.</p>`},
+    matrix:{half:true, hint:()=>"нарийн төвөгтэй байдал × нийцлийн түүх",
+      body:()=> matrixHtml(risks)},
+    inspections:{half:false, hint:()=>`эх тайлангийн үзүүлэлт · нийт ${num(rt)}`, body:inspBody},
+    roadmap:{half:true, hint:()=>`${adone}/${state.actions.length} хэрэгжсэн`,
+      body:()=> (state.actions.length
+        ? [...state.actions].sort((a,b)=>(a.no??99)-(b.no??99)).slice(0,5).map(a=>`
+          <div class="brow"><div class="lbl">${esc(a.title||"").slice(0,58)}${(a.title||"").length>58?"…":""}</div>
+            <div class="prog-track"><span style="width:${Math.max(0,Math.min(100,+a.progress||0))}%"></span></div>
+            <div class="tot">${+a.progress||0}%</div></div>`).join("")
+        : `<p class="muted small" style="margin:0">Арга хэмжээ бүртгэгдээгүй.</p>`)
+        + (state.actions.length>5?`<p class="small muted" style="margin:10px 0 0">Бүгдийг “Хэрэгжүүлэх арга хэмжээ” хэсгээс харна.</p>`:"")},
+    regs:{half:true, hint:()=>`${state.regs.length} бичлэг`,
+      body:()=> state.regs.length
+        ? `<div class="strips">${[...state.regs]
             .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).slice(0,4).map(r=>`
             <div class="strip"><div class="bar" style="background:var(--accent)"></div>
               <div class="mid"><div class="r1"><span class="ttl">${esc(r.title||"—")}</span>
@@ -859,19 +925,57 @@ function viewDash(){
                 <div class="r2"><span>${esc(r.issuer||"")}</span>
                   ${r.orderNo?`<span class="mono">${esc(r.orderNo)}</span>`:""}</div></div>
               <div class="right"><span class="small muted mono">${esc(r.date||"—")}</span></div></div>`).join("")}</div>`
-            : `<p class="muted small" style="margin:0">Шинэчлэлт бүртгэгдээгүй.</p>`}
-        </div>
-      </section>
-    </div>
-
-    <div class="banner info">
+        : `<p class="muted small" style="margin:0">Шинэчлэлт бүртгэгдээгүй.</p>`},
+    usoap:{half:false, html:it=>`<div class="banner info${it.on?"":" ghost"}">
       <div><b>USOAP-CMA ${esc(REPORT.usoap.dates)}:</b> ${esc(REPORT.usoap.area)} чиглэлээр
       ${REPORT.usoap.pq} протокол асуулгад хамрагдаж <b>${REPORT.usoap.score}</b> оноо авсан.
       ${esc(REPORT.usoap.note)} ${REPORT.usoap.icvm.year} оны ICVM-ээр нэгдсэн EI
       <b>${REPORT.usoap.icvm.ei}%</b> байсан бөгөөд хамгийн сул элементүүд нь
       ${REPORT.usoap.icvm.weak.map(w=>`${w[0]} (${w[2]}%)`).join(", ")} байв.</div>
-    </div>
-  </div>`;
+      ${adm?`<button class="btn sm" data-act="dashBlock:${esc(it.id)}">${it.on?"Нуух":"Харуулах"}</button>`:""}</div>`},
+  };
+
+  /* Хэсгийг самбарын хайрцагт хийнэ — админд нуух/харуулах товчтой */
+  function blockHtml(it){
+    const m=BLOCK[it.id]; if(!m) return "";
+    if(m.html) return m.html(it);
+    const hint=m.hint?m.hint():"";
+    return `<section class="panel${it.on?"":" ghost"}">
+      <header><h2>${esc(it.title)}</h2>
+        ${hint?`<span class="hint">${hint}</span>`:""}
+        ${adm?`<span style="flex:1"></span>
+          ${it.on?"":`<span class="chip warn"><span class="dot"></span>Зочинд нуусан</span>`}
+          <button class="btn sm" data-act="dashBlock:${esc(it.id)}">${it.on?"Нуух":"Харуулах"}</button>`:""}
+      </header>
+      <div class="body">${m.body()}</div></section>`;
+  }
+
+  /* Хагас өргөнтэй хоёр хэсгийг зэрэгцүүлж, бусдыг бүтэн мөрөөр байрлуулна */
+  const parts=[]; let pair=[];
+  const flush=()=>{ if(!pair.length) return;
+    parts.push(pair.length===2?`<div class="split">${pair.join("")}</div>`:pair[0]); pair=[]; };
+  cfg.blocks.filter(dashShow).forEach(it=>{
+    const m=BLOCK[it.id]; if(!m) return;
+    const h=blockHtml(it); if(!h) return;
+    if(m.half){ pair.push(h); if(pair.length===2) flush(); }
+    else { flush(); parts.push(h); }
+  });
+  flush();
+
+  const adminBar = adm ? `<div class="banner ${cfg.guest?"info":"warn"}">
+    <div><b>Зочны харагдац:</b> ${cfg.guest
+      ? "хяналтын самбар зочинд нээлттэй байна."
+      : "хяналтын самбар зочинд хаалттай — зөвхөн нэвтэрсэн хүн харна."}
+      Хэсэг бүрийн <b>Нуух / Харуулах</b> товчоор шууд соль, нэр ба дарааллыг нь
+      “Тохиргоо” хэсгээс өөрчил.</div>
+    <button class="btn sm ${cfg.guest?"":"primary"}" data-act="dashGuest">${cfg.guest?"Зочинд хаах":"Зочинд нээх"}</button>
+  </div>` : "";
+
+  const empty = parts.length ? "" :
+    `<div class="banner warn"><div>Самбарт харуулах хэсэг сонгогдоогүй байна.${
+      adm?" “Тохиргоо” хэсгээс хэсгүүдийг буцааж асаана уу.":""}</div></div>`;
+
+  return `<div class="grid">${adminBar}${empty}${parts.join("")}</div>`;
 }
 function stripHtml(f){
   const st=effStatus(f);
@@ -1466,6 +1570,53 @@ function viewReport(){
 }
 
 /* ---------- 8. Тохиргоо ---------- */
+
+/* Хяналтын самбарын харагдац — зочинд юу харуулахыг админ эндээс удирдана. */
+function dashCfgPanel(){
+  if(!state.canWrite) return "";           // зөвхөн админд — зочин нуусан хэсгийн жагсаалтыг харах шаардлагагүй
+  const d = dashDraft(), dirty = dashDirty();
+
+  const row=(kind, it, i, n)=>`<div class="dashrow">
+    <div class="ord">
+      <button class="btn sm" data-act="dashUp:${kind}:${esc(it.id)}" title="Дээш" ${i>0?"":"disabled"}>↑</button>
+      <button class="btn sm" data-act="dashDown:${kind}:${esc(it.id)}" title="Доош" ${i<n-1?"":"disabled"}>↓</button>
+    </div>
+    <input type="text" data-dashttl="${kind}:${esc(it.id)}" value="${esc(it.title)}"
+      aria-label="Хэсгийн нэр">
+    <label class="sw"><input type="checkbox" data-dashon="${kind}:${esc(it.id)}"
+      ${it.on?"checked":""}> Зочинд харуулах</label>
+    <span class="chip ${it.on?"good":"warn"}"><span class="dot"></span>${it.on?"Нээлттэй":"Нуусан"}</span>
+  </div>`;
+
+  return `
+  <section class="panel">
+    <header><h2>Хяналтын самбарын харагдац</h2>
+      <span class="hint">зочинд юу харагдахыг тогтооно</span>
+      <span style="flex:1"></span>
+      <span class="chip ${d.guest?"good":"warn"}"><span class="dot"></span>${d.guest?"Самбар зочинд нээлттэй":"Самбар зочинд хаалттай"}</span>
+    </header>
+    <div class="body">
+      <div class="banner info" style="margin-bottom:14px">
+        <div>Нэрийг нь шууд засаж, ↑↓ товчоор дарааллыг солино. Унтраасан хэсэг зочинд харагдахгүй боловч танд саарал өнгөөр харагдана. Өөрчлөлт <b>Харагдацыг хадгалах</b> дарсны дараа хүчинтэй.</div>
+        <button class="btn sm ${d.guest?"":"primary"}" data-act="dashGuestDraft">${d.guest?"Самбарыг зочинд хаах":"Самбарыг зочинд нээх"}</button>
+      </div>
+
+      <div class="eyebrow" style="margin-bottom:4px">Үзүүлэлтийн хайрцаг</div>
+      ${d.tiles.map((it,i)=>row("tiles",it,i,d.tiles.length)).join("")}
+
+      <div class="eyebrow" style="margin:16px 0 4px">Самбарын хэсгүүд</div>
+      ${d.blocks.map((it,i)=>row("blocks",it,i,d.blocks.length)).join("")}
+
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn primary" data-act="saveDash">Харагдацыг хадгалах</button>
+        ${dirty?`<button class="btn" data-act="dropDash">Өөрчлөлтийг болих</button>`:""}
+        <button class="btn" data-act="resetDash">Анхны байдалд буцаах</button>
+        ${dirty?`<span class="chip warn"><span class="dot"></span>Хадгалаагүй өөрчлөлт байна</span>`:""}
+      </div>
+    </div>
+  </section>`;
+}
+
 function viewCfg(){
   const s=settings();
   return `
@@ -1539,6 +1690,8 @@ function viewCfg(){
         <button class="btn" data-act="resetCfg">Анхны утга руу буцаах</button></div>`:""}
     </section>
 
+    ${dashCfgPanel()}
+
     <section class="panel">
       <header><h2>Загварын үндэслэл</h2></header>
       <div class="body">
@@ -1590,12 +1743,66 @@ function wire(){
     if(await patch("plan", el.dataset.plan, {[el.dataset.f]:v})) toast("Хадгаллаа");
   });
   root.querySelectorAll("[data-lvl]").forEach(el=>el.onchange=()=>{});
+  // самбарын харагдац — нэр, харуулах эсэх (хадгалах хүртэл зөвхөн ноорогт)
+  root.querySelectorAll("[data-dashttl]").forEach(el=>el.oninput=()=>{
+    const it=dashItem(el.dataset.dashttl); if(it) it.title=el.value;
+  });
+  root.querySelectorAll("[data-dashon]").forEach(el=>el.onchange=()=>{
+    const it=dashItem(el.dataset.dashon); if(it){ it.on=el.checked; render(); }
+  });
+}
+/* "blocks:matrix" гэх мэт хаягаар ноорог дахь мөрийг олно */
+function dashItem(key){
+  const [kind,id]=String(key).split(":");
+  const d=dashDraft();
+  return (d[kind]||[]).find(x=>x.id===id) || null;
+}
+function dashMove(kind, id, dir){
+  const d=dashDraft(), list=d[kind]||[];
+  const i=list.findIndex(x=>x.id===id), j=i+dir;
+  if(i<0 || j<0 || j>=list.length) return;
+  list.splice(j,0,list.splice(i,1)[0]);
+  render();
 }
 document.addEventListener("keydown", e=>{
   if(e.key==="Escape" && state.modal) closeForm();
 });
 
 async function act(a){
+  /* ---- хяналтын самбарын харагдац ---- */
+  if(a.startsWith("dashTile:") || a.startsWith("dashBlock:")){
+    // Самбар дээрээс шууд нуух/харуулах — тэр дороо хадгална
+    const kind = a.startsWith("dashTile:") ? "tiles" : "blocks";
+    const id = a.split(":")[1];
+    const next = dashCfg();
+    const it = next[kind].find(x=>x.id===id);
+    if(!it) return;
+    it.on = !it.on;
+    if(await saveDash(next)){ state.dashDraft=null; toast(it.on?"Зочинд харуулна":"Зочинд харагдахгүй"); }
+    return;
+  }
+  if(a==="dashGuest"){
+    const next=dashCfg(); next.guest=!next.guest;
+    if(!next.guest && !confirm("Хяналтын самбарыг зочинд бүрэн хаах уу?\n\nНэвтрээгүй хүн энэ хэсгийг цэснээс ч харахгүй.")) return;
+    if(await saveDash(next)){ state.dashDraft=null; toast(next.guest?"Самбарыг зочинд нээлээ":"Самбарыг зочинд хаалаа"); }
+    return;
+  }
+  if(a==="dashGuestDraft"){ const d=dashDraft(); d.guest=!d.guest; render(); return; }
+  if(a.startsWith("dashUp:"))   { const [,k,id]=a.split(":"); return dashMove(k,id,-1); }
+  if(a.startsWith("dashDown:")) { const [,k,id]=a.split(":"); return dashMove(k,id, 1); }
+  if(a==="dropDash"){ state.dashDraft=null; render(); toast("Өөрчлөлтийг болилоо"); return; }
+  if(a==="saveDash"){
+    const d=dashDraft();
+    const clean=x=>({id:x.id, title:String(x.title||"").trim(), on:!!x.on});
+    const next={guest:!!d.guest, blocks:d.blocks.map(clean), tiles:d.tiles.map(clean)};
+    if(await saveDash(next)){ state.dashDraft=null; toast("Самбарын харагдацыг хадгаллаа"); render(); }
+    return;
+  }
+  if(a==="resetDash"){
+    if(!confirm("Самбарын нэр, дараалал, харагдацыг анхны байдалд буцаах уу?")) return;
+    if(await saveDash(dashDefaults())){ state.dashDraft=null; toast("Анхны байдал сэргээлээ"); render(); }
+    return;
+  }
   if(a==="closeForm") return closeForm();
   if(a==="submitForm") return submitForm();
   if(a==="deleteRec") return deleteRec();
@@ -1622,14 +1829,20 @@ async function act(a){
       const py=$(`[data-lvl="${CSS.escape(l.name)}"][data-f="perYear"]`);
       return {name:l.name, min:mn?+mn.value:l.min, perYear:py?+py.value:l.perYear};
     });
-    const ok=await save("meta","settings",{weights:{complexity:cx/100,compliance:co/100,maturity:ms/100},
+    // Самбарын харагдац зэрэг бусад утгыг дарж бичихгүйн тулд эхлээд хуулна
+    const ok=await save("meta","settings",{...settings(),
+      weights:{complexity:cx/100,compliance:co/100,maturity:ms/100},
       penalty:{overdue:+$("#p_od").value, nonconformity:+$("#p_nc").value, requirement:+$("#p_rq").value},
       lookbackMonths:+$("#p_lb").value, levels,
       dueDays:{"Ноцтой":+$("#d_hi").value, "Дунд":+$("#d_md").value, "Бага":+$("#d_lo").value}});
     if(ok) toast("Тохиргоог хадгаллаа");
     return;
   }
-  if(a==="resetCfg"){ if(await save("meta","settings",DEFAULTS)) toast("Анхны утга сэргээлээ"); return; }
+  if(a==="resetCfg"){
+    // Энэ товч зөвхөн эрсдэлийн загварт хамаарна — самбарын харагдацыг хөндөхгүй
+    if(await save("meta","settings",{...DEFAULTS, dash:dashCfg()})) toast("Анхны утга сэргээлээ");
+    return;
+  }
 }
 
 /* ---------- CSV ---------- */
