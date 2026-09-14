@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ИНЕГ · Нисэхийн аюулгүй ажиллагааны хяналт</title>
+<meta name="description" content="Иргэний нисэхийн ерөнхий газар — хяналт шалгалтын мэдээллийн сан ба байцаагчийн сургалтын гарын авлага">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9992;</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Roboto+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#eef2f5; --surface:#ffffff; --surface-2:#f6f9fb; --surface-3:#e7edf2;
+  --line:#d3dde5; --line-strong:#b6c5d1;
+  --ink:#0d1720; --ink-2:#43535f; --ink-3:#75858f;
+  --accent:#12799e; --accent-ink:#0d5f7d; --accent-soft:#dbeef6;
+  --good:#1c7247; --good-soft:#dcefe5;
+  --warn:#8d6404; --warn-soft:#f7ecd2;
+  --shadow:0 1px 2px rgba(13,23,32,.06),0 4px 14px rgba(13,23,32,.05);
+  --r:8px;
+  --fd:"Roboto Condensed","Arial Narrow",Arial,sans-serif;
+  --fb:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
+  --fm:"IBM Plex Mono","Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e161c; --surface:#151f27; --surface-2:#1b2831; --surface-3:#22313c;
+    --line:#2a3a46; --line-strong:#3a4d5b;
+    --ink:#e9f0f5; --ink-2:#a8bac6; --ink-3:#7b8f9c;
+    --accent:#3ba5c9; --accent-ink:#6cc3e0; --accent-soft:#15303c;
+    --good:#4fb384; --good-soft:#143024;
+    --warn:#d3a23c; --warn-soft:#332714;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e161c; --surface:#151f27; --surface-2:#1b2831; --surface-3:#22313c;
+  --line:#2a3a46; --line-strong:#3a4d5b;
+  --ink:#e9f0f5; --ink-2:#a8bac6; --ink-3:#7b8f9c;
+  --accent:#3ba5c9; --accent-ink:#6cc3e0; --accent-soft:#15303c;
+  --good:#4fb384; --good-soft:#143024;
+  --warn:#d3a23c; --warn-soft:#332714;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--fd);margin:0;letter-spacing:.01em;text-wrap:balance}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 72px}
+
+header.top{border-bottom:1px solid var(--line);background:var(--surface);margin-bottom:44px}
+header.top .inner{max-width:960px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mark{font-family:var(--fd);font-weight:700;font-size:11.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
+.sp{flex:1}
+.tbtn{font:500 12px/1 var(--fm);background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-strong);
+  border-radius:6px;padding:7px 11px;cursor:pointer}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+.hero{padding:8px 0 36px;border-bottom:1px solid var(--line)}
+.eyebrow{font:500 11px/1 var(--fm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:14px}
+.hero h1{font-size:clamp(29px,5.2vw,44px);font-weight:700;letter-spacing:-.01em}
+.hero p{margin:16px 0 0;font-size:16.5px;color:var(--ink-2);max-width:62ch}
+
+.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:34px}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);overflow:hidden;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card .ch{padding:18px 20px 0;display:flex;align-items:center;gap:10px}
+.card .ico{font-size:26px;line-height:1}
+.card h2{font-size:19px;font-weight:700}
+.card .cb{padding:10px 20px 18px;flex:1}
+.card .cb p{margin:0;font-size:14.2px;color:var(--ink-2)}
+.card ul{margin:12px 0 0;padding-left:18px;font-size:13.4px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px}
+.card li::marker{color:var(--accent)}
+.card .cf{padding:11px 20px;border-top:1px solid var(--line);background:var(--surface-2);
+  font:500 12.5px/1 var(--fm);color:var(--accent-ink);display:flex;align-items:center;gap:7px}
+
+.meta{margin-top:36px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:18px 20px}
+.meta h3{font-size:14px;font-weight:700;letter-spacing:.03em}
+.meta dl{margin:12px 0 0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;
+  overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.meta dl>div{background:var(--surface);padding:11px 14px}
+.meta dt{font:700 10px/1.4 var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.meta dd{margin:0;font:600 19px/1.15 var(--fd);font-variant-numeric:tabular-nums}
+.meta dd small{display:block;font:400 11.5px/1.4 var(--fb);color:var(--ink-3);margin-top:3px}
+
+.note{margin-top:18px;border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--accent-ink);
+  padding:12px 16px;border-radius:0 6px 6px 0;font-size:13.5px}
+footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);line-height:1.7}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <span class="mark">ИНЕГ · Иргэний нисэхийн ерөнхий газар</span>
+    <span class="sp"></span>
+    <button class="tbtn" id="theme" type="button">Өнгө</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="eyebrow">Нислэгийн аюулгүй ажиллагааны хяналт</span>
+    <h1>Хяналт шалгалтын мэдээллийн сан ба байцаагчийн гарын авлага</h1>
+    <p>Хоёр систем нэг дор. Эхнийх нь өдөр тутмын хяналтын ажлыг эрсдэлд суурилсан загвараар удирдана;
+      хоёр дахь нь байцаагчийн бэлтгэл, давтан сургалтад зориулагдсан.</p>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="hyanalt/">
+      <div class="ch"><span class="ico">✈️</span><h2>Хяналтын сан</h2></div>
+      <div class="cb">
+        <p>Байгууллагын эрсдэлийн профайл, үл нийцэл ба залруулах төлөвлөгөө (CAP), шалгалт, гэрчилгээ,
+          эрсдэлд суурилсан жилийн төлөвлөлт.</p>
+        <ul>
+          <li>EASA RBO — 3 хүчин зүйлийн эрсдэлийн загвар</li>
+          <li>Админ нэвтрээд нэмэх, засах, устгах</li>
+          <li>CSV татах, бүртгэл бүрт хайлт</li>
+          <li>RBO-д шилжих 10 арга хэмжээний явц</li>
+        </ul>
+      </div>
+      <div class="cf">Нээх →</div>
+    </a>
+
+    <a class="card" href="garyn-avlaga/">
+      <div class="ch"><span class="ico">📋</span><h2>Байцаагчийн гарын авлага</h2></div>
+      <div class="cb">
+        <p>Чикагогийн конвенцоос эхлээд SMS, гэрчилгээжүүлэлт, ramp check хүртэл — 12 модулийн
+          бүтэцтэй сургалтын материал.</p>
+        <ul>
+          <li>19 хавсралт, 8 Critical Element</li>
+          <li>48 цээжлэх карт, зайтай давталттай</li>
+          <li>Түүхэн ба ажлын кэйсүүд</li>
+          <li>Тайлбар бүхий 20 асуултын тест</li>
+        </ul>
+      </div>
+      <div class="cf">Нээх →</div>
+    </a>
+  </div>
+
+  <section class="meta">
+    <h3>2026 ОНЫ I ХАГАС ЖИЛИЙН ҮЗҮҮЛЭЛТ</h3>
+    <dl>
+      <div><dt>Хяналт шалгалт</dt><dd>517<small>5 хэлтэс</small></dd></div>
+      <div><dt>Гэрчилгээ, үнэмлэх</dt><dd>1 041<small>20 ИНД-ийн хүрээнд</small></dd></div>
+      <div><dt>Үл нийцэл</dt><dd>39<small>327 шаардлагын хамт</small></dd></div>
+      <div><dt>USOAP-CMA</dt><dd>83.06<small>AGA чиглэл, 153 PQ</small></dd></div>
+    </dl>
+    <div class="note">Эх сурвалж: «Нисэхийн аюулгүй ажиллагааны хяналт шалгалтын танилцуулга —
+      2026 оны эхний хагас жил» (2026.01.01–06.30).</div>
+  </section>
+
+  <footer>
+    <p>Хяналтын сан нь <b>нийтэд нээлттэй харагдана</b>; өгөгдөл нэмэх, засах, устгах эрхийг зөвхөн
+      нэвтэрсэн ИНЕГ-ын админ хэрэглэгч эдэлнэ.</p>
+    <p style="margin-top:10px">Гарын авлага нь сургалтын материал бөгөөд эрх зүйн эх сурвалж биш.
+      Акт бичих, шийдвэр гаргахдаа хүчин төгөлдөр МИНД/ИНД-ын эх бичвэрээс шалгана уу.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, KEY="ineg.theme", saved=null;
+  try{ saved=localStorage.getItem(KEY); }catch(e){}
+  if(saved==="dark"||saved==="light") root.setAttribute("data-theme",saved);
+  document.getElementById("theme").addEventListener("click",function(){
+    var cur=root.getAttribute("data-theme");
+    var isDark = cur ? cur==="dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var next = isDark ? "light" : "dark";
+    root.setAttribute("data-theme",next);
+    try{ localStorage.setItem(KEY,next); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

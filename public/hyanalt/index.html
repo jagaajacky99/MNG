@@ -1,0 +1,1711 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ИНЕГ — Иргэний нисэхийн хяналт шалгалтын мэдээллийн сан">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9992;</text></svg>">
+<title>Нисэхийн хяналтын сан</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Roboto+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#eef2f5; --surface:#ffffff; --surface-2:#f6f9fb; --surface-3:#e7edf2;
+  --line:#d3dde5; --line-strong:#b6c5d1;
+  --ink:#0d1720; --ink-2:#43535f; --ink-3:#75858f;
+  --accent:#12799e; --accent-ink:#0d5f7d; --accent-soft:#dbeef6;
+  --good:#1c7247; --good-soft:#dcefe5;
+  --warn:#8d6404; --warn-soft:#f7ecd2;
+  --serious:#b4531b; --serious-soft:#fae2d3;
+  --crit:#a52a26; --crit-soft:#f8dcda;
+  --s1:#12799e; --s2:#e2701f; --s3:#1ba36e;
+  --shadow:0 1px 2px rgba(13,23,32,.06),0 4px 14px rgba(13,23,32,.05);
+  --r:6px;
+  --fd:"Roboto Condensed","Arial Narrow",Arial,sans-serif;
+  --fb:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
+  --fm:"IBM Plex Mono","Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e161c; --surface:#151f27; --surface-2:#1b2831; --surface-3:#22313c;
+    --line:#2a3a46; --line-strong:#3a4d5b;
+    --ink:#e9f0f5; --ink-2:#a8bac6; --ink-3:#7b8f9c;
+    --accent:#3ba5c9; --accent-ink:#6cc3e0; --accent-soft:#15303c;
+    --good:#4fb384; --good-soft:#143024;
+    --warn:#d3a23c; --warn-soft:#332714;
+    --serious:#e08a55; --serious-soft:#38210f;
+    --crit:#e8736d; --crit-soft:#3a1a19;
+    --s1:#3ba5c9; --s2:#e8853f; --s3:#38b986;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e161c; --surface:#151f27; --surface-2:#1b2831; --surface-3:#22313c;
+  --line:#2a3a46; --line-strong:#3a4d5b;
+  --ink:#e9f0f5; --ink-2:#a8bac6; --ink-3:#7b8f9c;
+  --accent:#3ba5c9; --accent-ink:#6cc3e0; --accent-soft:#15303c;
+  --good:#4fb384; --good-soft:#143024;
+  --warn:#d3a23c; --warn-soft:#332714;
+  --serious:#e08a55; --serious-soft:#38210f;
+  --crit:#e8736d; --crit-soft:#3a1a19;
+  --s1:#3ba5c9; --s2:#e8853f; --s3:#38b986;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:14px;line-height:1.5}
+h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance;letter-spacing:.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
+.rail{background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:14px 10px 18px}
+.brand{padding:6px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.brand .mark{font-family:var(--fd);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.brand .nm{font-family:var(--fd);font-weight:700;font-size:19px;line-height:1.15;margin-top:3px}
+.brand .sub{font-size:10.5px;color:var(--ink-3);margin-top:4px;line-height:1.35}
+.nav{display:flex;flex-direction:column;gap:1px}
+.nav button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;padding:8px 9px;border-radius:var(--r);cursor:pointer;color:var(--ink-2);font-size:13.5px}
+.nav button:hover{background:var(--surface-2);color:var(--ink)}
+.nav button[aria-current="true"]{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.nav .ct{margin-left:auto;font-family:var(--fm);font-size:11px;color:var(--ink-3)}
+.nav button[aria-current="true"] .ct{color:var(--accent-ink)}
+.railfoot{margin-top:auto;padding:10px 9px 0;border-top:1px solid var(--line);font-size:11px;color:var(--ink-3);line-height:1.45}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--surface)}
+.topbar h1{font-size:20px;font-weight:700}
+.topbar .spacer{flex:1}
+.wrap{padding:20px 24px 56px;max-width:1280px;width:100%}
+@media (max-width:820px){
+  .shell{grid-template-columns:1fr}
+  .rail{border-right:0;border-bottom:1px solid var(--line)}
+  .nav{flex-direction:row;flex-wrap:wrap}
+  .nav button{width:auto}
+  .nav .ct{margin-left:6px}
+  .railfoot{display:none}
+  .wrap,.topbar{padding-left:16px;padding-right:16px}
+}
+
+/* ---------- primitives ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.panel>header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.panel>header h2{font-size:14.5px;font-weight:700;letter-spacing:.02em}
+.panel>header .hint{font-size:11.5px;color:var(--ink-3)}
+.panel .body{padding:16px}
+.grid{display:grid;gap:14px}
+.eyebrow{font-family:var(--fd);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.mono{font-family:var(--fm);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-3)}
+.small{font-size:12px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line-strong);color:var(--ink);padding:6px 11px;border-radius:var(--r);cursor:pointer;font-size:13px}
+.btn:hover{background:var(--surface-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.sm{padding:3px 8px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+.chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:20px;font-size:11.5px;font-weight:600;line-height:1.6;white-space:nowrap}
+.chip.good{background:var(--good-soft);color:var(--good)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.serious{background:var(--serious-soft);color:var(--serious)}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.neutral{background:var(--surface-3);color:var(--ink-2)}
+.chip.accent{background:var(--accent-soft);color:var(--accent-ink)}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.code{font-family:var(--fm);font-size:11.5px;background:var(--surface-3);color:var(--ink-2);padding:1px 6px;border-radius:3px;white-space:nowrap}
+
+/* ---------- tiles ---------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.tile{background:var(--surface);padding:13px 15px;display:flex;flex-direction:column;gap:3px}
+.tile .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--fd);font-weight:700;color:var(--ink-3)}
+.tile .v{font-family:var(--fd);font-size:27px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile .n{font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.tile.alert .v{color:var(--crit)}
+.tile.warnv .v{color:var(--warn)}
+.tile.goodv .v{color:var(--good)}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font-family:var(--fd);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-strong);white-space:nowrap;font-weight:700}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:hover{background:var(--surface-2)}
+td.num,th.num{text-align:right;font-family:var(--fm);font-variant-numeric:tabular-nums}
+tfoot td{font-weight:700;border-top:1px solid var(--line-strong);border-bottom:0;background:var(--surface-2)}
+
+/* ---------- flight strip (CAP) ---------- */
+.strips{display:flex;flex-direction:column;gap:6px}
+.strip{display:grid;grid-template-columns:4px 1fr auto;gap:0;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.strip .bar{background:var(--ink-3)}
+.strip.crit .bar{background:var(--crit)} .strip.warn .bar{background:var(--warn)}
+.strip.serious .bar{background:var(--serious)} .strip.good .bar{background:var(--good)}
+.strip .mid{padding:9px 12px;min-width:0}
+.strip .r1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.strip .ttl{font-weight:600;font-size:13.5px}
+.strip .r2{color:var(--ink-3);font-size:11.5px;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.strip .right{padding:9px 12px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;justify-content:center;border-left:1px dashed var(--line);white-space:nowrap}
+
+/* ---------- charts ---------- */
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.sbar{display:flex;height:15px;border-radius:3px;overflow:hidden;background:var(--surface-3);gap:2px}
+.sbar span{display:block}
+.brow{display:grid;grid-template-columns:minmax(120px,1.1fr) 1fr 46px;gap:10px;align-items:center;padding:5px 0}
+.brow .lbl{font-size:12.5px;color:var(--ink-2)}
+.brow .tot{text-align:right;font-family:var(--fm);font-weight:600;font-size:12.5px;font-variant-numeric:tabular-nums}
+
+.matrix{border-collapse:separate;border-spacing:2px}
+.matrix td.cellx{background:var(--surface-2);border-radius:4px;height:52px;vertical-align:top;padding:5px;min-width:74px}
+.matrix td.cellx.l1{background:var(--good-soft)} .matrix td.cellx.l2{background:var(--warn-soft)}
+.matrix td.cellx.l3{background:var(--serious-soft)} .matrix td.cellx.l4{background:var(--crit-soft)}
+.matrix .pin{display:inline-block;font-size:10.5px;font-weight:600;background:var(--surface);border:1px solid var(--line-strong);border-radius:3px;padding:1px 5px;margin:1px}
+.matrix th{padding:4px 6px;font-size:10px}
+
+/* ---------- forms ---------- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--fd);font-weight:700;color:var(--ink-3)}
+.field input,.field select,.field textarea{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r);padding:6px 8px;font-size:13px;width:100%}
+.field textarea{min-height:64px;resize:vertical}
+.field.wide{grid-column:1/-1}
+select.inline,input.inline{background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:2px 5px;font-size:12.5px;max-width:120px}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:var(--r);font-size:12.5px;line-height:1.5}
+.banner.info{background:var(--accent-soft);color:var(--accent-ink)}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.notes li{margin-bottom:6px;font-size:12.5px;color:var(--ink-2)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:20px;font-size:13px;z-index:80;box-shadow:var(--shadow)}
+
+/* ---------- засварлах цонх ---------- */
+.mask{position:fixed;inset:0;background:rgba(9,16,22,.55);z-index:60}
+.modal{position:fixed;z-index:61;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(880px,calc(100vw - 28px));max-height:calc(100vh - 48px);display:flex;flex-direction:column;
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;box-shadow:0 18px 50px rgba(9,16,22,.4)}
+.modal>header{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line)}
+.modal>header h2{font-size:15.5px;font-weight:700}
+.modal .mbody{padding:16px 18px;overflow-y:auto}
+.modal>footer{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line);background:var(--surface-2);border-radius:0 0 10px 10px;flex-wrap:wrap}
+.modal .field label{display:block}
+
+/* ---------- бүртгэлийн хэрэгслийн мөр ---------- */
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.srch{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:6px 10px;font-size:13px;min-width:min(300px,100%)}
+.prog-track{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;min-width:70px}
+.prog-track span{display:block;height:100%;background:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <div class="mark">ИНЕГ</div>
+      <div class="nm">Хяналтын сан</div>
+      <div class="sub">Иргэний нисэхийн хяналт шалгалтын мэдээллийн сан</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="railfoot" id="railfoot">Ачаалж байна…</div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h1 id="viewTitle">Хяналтын самбар</h1>
+      <span class="spacer"></span>
+      <span id="modeChip" class="chip neutral"><span class="dot"></span>Холбогдож байна</span>
+      <button class="btn sm" id="refreshBtn" title="Сангаас дахин татах">↻ Шинэчлэх</button>
+      <button class="btn sm" id="authBtn">Нэвтрэх</button>
+      <button class="btn sm" id="exportBtn" hidden>CSV татах</button>
+    </div>
+    <div class="wrap" id="view"></div>
+  </main>
+</div>
+<div id="modalHost"></div>
+<div id="authHost"></div>
+
+<script src="config.js"></script>
+<script src="db.js"></script>
+<script>
+"use strict";
+/* ============================================================ статик эх өгөгдөл
+   Доорх тоонууд бол 2026 оны I хагас жилийн батлагдсан тайлангийн (0616.xlsx)
+   нийтлэгдсэн үзүүлэлт. Эдгээр нь өөрчлөгддөггүй тул хуудсанд шууд байрлана;
+   бүртгэлийн бүх амьд өгөгдөл (байгууллага, үл нийцэл, шалгалт, гэрчилгээ,
+   төлөвлөгөө) db-д хадгалагдана. */
+const REPORT = {
+  period: "2026-H1", label: "2026.01.01 – 2026.06.30",
+  inspections: [
+    {dept:"НХХ",   name:"Нислэгийн хяналтын хэлтэс",                    planned:54, unplanned:45, docs:58},
+    {dept:"ААХХХ", name:"Аэродром, аюулгүйн хамгаалалтын хяналтын хэлтэс", planned:80, unplanned:22, docs:46},
+    {dept:"НТЧХ",  name:"Нислэгт тэнцэх чадварын хэлтэс",               planned:20, unplanned:57, docs:61},
+    {dept:"АНХХ",  name:"Агаарын навигацийн хяналтын хэлтэс",           planned:26, unplanned:17, docs:18},
+    {dept:"МҮХ",   name:"Мэргэжлийн үнэмлэхжүүлэлтийн хэлтэс",          planned:7,  unplanned:4,  docs:2},
+  ],
+  findings: [
+    {dept:"АНХХ",  reports:11, conclusions:37,  nonconf:17, reqs:101, note:null},
+    {dept:"ААХХХ", reports:11, conclusions:132, nonconf:3,  reqs:158, note:"102 хяналт шалгалт хийсэн."},
+    {dept:"НТЧХ",  reports:4,  conclusions:138, nonconf:15, reqs:66,  note:"Тайлбарт төлөвлөгөөт 20 / төлөвлөгөөт бус 118 гэж заасан."},
+    {dept:"НХХ",   reports:14, conclusions:98,  nonconf:4,  reqs:2,   note:"Нэрлэн жагсаасан тоо. Тайлбарт төлөвлөгөөт 16 / төлөвлөгөөт бус 123."},
+  ],
+  certs: [
+    ["ИНД-67","Эрүүл мэндийн стандарт, гэрчилгээ",137,389,null,526],
+    ["ИНД-61","Нисгэгчийн үнэмлэх, зэрэглэл",34,95,null,129],
+    ["ИНД-65","НХҮ ажилтны үнэмлэх",27,88,11,124],
+    ["ИНД-66","Техник үйлчилгээний ажилтны үнэмлэх",3,79,27,109],
+    ["ИНД-119","Агаарын тээвэрлэгчийн гэрчилгээжүүлэлт",2,5,45,52],
+    ["ИНД-21","Бүтээгдэхүүн, эд ангийн гэрчилгээжүүлэлт",20,18,null,38],
+    ["ИНД-129","Гадаадын агаарын тээвэрлэгч",1,4,14,19],
+    ["ИНД-47","Агаарын хөлгийн бүртгэл",12,null,null,11],
+    ["ИНД-145","Агаарын хөлгийн ТҮ байгууллага",3,6,1,10],
+    ["ИНД-141","Нисэхийн сургалтын байгууллага",2,5,null,7],
+    ["ИНД-144","Нисэхийн хангамжийн байгууллага",null,4,null,4],
+    ["ИНД-139","Аэродромын үйл ажиллагаа",null,3,null,3],
+    ["ИНД-140","Нисэхийн аюулгүйн хамгаалалт",null,2,null,2],
+    ["ИНД-175","Нисэхийн мэдээллийн үйлчилгээ",null,1,1,2],
+    ["ИНД-102","Хүнгүй агаарын хөлөг",null,1,null,1],
+    ["ИНД-147","Нисэхийн ТҮ сургалтын байгууллага",1,null,null,1],
+    ["ИНД-172","Нислэгийн хөдөлгөөний үйлчилгээ",null,null,1,1],
+    ["ИНД-173","Хэрэглэлийн нислэгийн журам",null,1,null,1],
+    ["ИНД-174","Нисэхийн цаг уурын үйлчилгээ",null,1,null,1],
+    ["ИНД-171","Агаарын навигацийн ТҮ байгууллага",null,null,null,0],
+  ],
+  usoap: {area:"Аэродром, газрын туслах хэрэгсэл (AGA)", pq:153, score:83.06,
+          dates:"2026.04.22 – 05.04", note:"2010 оны гүйцэтгэлийн түвшнээ тогтвортой хадгалсан.",
+          icvm:{year:2017, ei:89.55, weak:[["CE-2","Тодорхой үйл ажиллагааны дүрэм (ИНД)",78.35],
+                                           ["CE-7","Хяналт шалгалтын үүрэг",81.08]],
+                capDays:45}},
+  ce: [
+    ["CE-1","Иргэний нисэхийн үндсэн хууль тогтоомж"],
+    ["CE-2","Тодорхой үйл ажиллагааны дүрэм (ИНД)"],
+    ["CE-3","Улсын тогтолцоо, чиг үүрэг"],
+    ["CE-4","Мэргэшсэн техникийн боловсон хүчин"],
+    ["CE-5","Техникийн заавар, хэрэгсэл, чухал мэдээлэл"],
+    ["CE-6","Үнэмлэхжүүлэлт, гэрчилгээжүүлэлт, зөвшөөрөл"],
+    ["CE-7","Хяналт шалгалтын үүрэг"],
+    ["CE-8","Аюулгүй байдлын асуудлыг шийдвэрлэх"],
+  ],
+  notes: [
+    "НТЧХ, НХХ: 1-р хуудасны тоо (20/57/61 ба 54/45/58) тайлбар хэсгийн тоотой (төлөвлөгөөт 20 / төлөвлөгөөт бус 118, төлөвлөгөөт 16 / төлөвлөгөөт бус 123) нийцэхгүй.",
+    "ИНД-47: шинээр олгосон 12 гэж бичигдсэн боловч нийт дүн 11.",
+    "2026 II хагас жилийн НХХ-ийн задаргааны нийлбэр 56, харин нийт дүнг 54 гэж заасан (нийт төлөвлөгөө 151 vs 153).",
+    "ИНД-61-ийн шинээр олгосон 34 = гадаадаас хөрвүүлсэн 31 + дотоодоос шинээр 3.",
+  ],
+};
+const GASP = [
+  "Нислэгийн үйл ажиллагааны аюулгүй байдлын эрсдэлийг тасралтгүй бууруулах.",
+  "Улсын аюулгүй байдлын хяналтын чадавхыг бэхжүүлэх.",
+  "Улсын аюулгүй байдлын хөтөлбөр (SSP)-ийг нэвтрүүлж, удирдах.",
+  "Бүс нутаг, үндэсний хэмжээнд хамтын ажиллагааг өргөжүүлэх.",
+  "Аюулгүй байдлын төлөвлөлтийг сайжруулах.",
+  "Салбарын үнэлгээ, өгөгдөл солилцооны хөтөлбөрийн хэрэглээг өргөжүүлэх (2026 I улирал – 2028 IV улирал).",
+];
+const DEPTS = [
+  ["НТЧХ","Нислэгт тэнцэх чадварын хэлтэс"],
+  ["НХХ","Нислэгийн хяналтын хэлтэс"],
+  ["МҮХ","Мэргэжлийн үнэмлэхжүүлэлтийн хэлтэс"],
+  ["АНХХ","Агаарын навигацийн хяналтын хэлтэс"],
+  ["ААХХХ","Аэродром, аюулгүйн хамгаалалтын хяналтын хэлтэс"],
+];
+const INDS = ["ИНД-21","ИНД-47","ИНД-61","ИНД-65","ИНД-66","ИНД-67","ИНД-102","ИНД-119",
+  "ИНД-121","ИНД-129","ИНД-135","ИНД-138","ИНД-139","ИНД-140","ИНД-141","ИНД-144",
+  "ИНД-145","ИНД-147","ИНД-149","ИНД-171","ИНД-172","ИНД-173","ИНД-174","ИНД-175"];
+const INSP_TYPES = ["Төлөвлөгөөт","Төлөвлөгөөт бус","Баримт бичгийн хяналт","Гэрчилгээжүүлэлт",
+  "Гүйцэтгэлийн хяналт","Follow-up audit","Ramp inspection","Бүхээгийн аюулгүй байдлын хяналт",
+  "Нисгэгчийн ур чадварын шалгалт"];
+const ORG_TYPES = ["Агаарын тээвэрлэгч","Аэродром","Агаарын навигацийн үйлчилгээ",
+  "Техник үйлчилгээний байгууллага","Сургалтын байгууллага","Цаг уурын үйлчилгээ",
+  "Нисэхийн мэдээллийн үйлчилгээ","Аюулгүйн хамгаалалт","Хангамжийн байгууллага",
+  "Нисэх клуб","Хүнгүй агаарын хөлөг"];
+const KINDS = ["Үл нийцэл","Шаардлага"];
+const SEVS = ["Ноцтой","Дунд","Бага"];
+const STATUSES = ["Нээлттэй","Залруулж байгаа","Хаагдсан"];
+const CERT_ACTIONS = ["Шинээр олгосон","Сунгасан","Өөрчлөлт оруулсан","Түдгэлзүүлсэн","Хүчингүй болгосон"];
+
+const DEFAULTS = {
+  weights:{complexity:.30, compliance:.40, maturity:.30},
+  penalty:{overdue:12, nonconformity:8, requirement:3},
+  lookbackMonths:24,
+  levels:[{name:"Бага",min:0,perYear:.5},{name:"Дунд",min:30,perYear:1},
+          {name:"Дунд-өндөр",min:50,perYear:2},{name:"Өндөр",min:70,perYear:3}],
+  dueDays:{"Ноцтой":30,"Дунд":60,"Бага":90},
+};
+
+/* ============================================================ төлөв */
+const state = {db:null, ready:false, canWrite:false,
+  orgs:[], findings:[], inspections:[], certs:[], plan:[], regs:[], actions:[], settings:null,
+  view:"dash", exportRows:null, modal:null, filter:{}, authOpen:false};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+const days = (a,b) => Math.round((new Date(a)-new Date(b))/86400000);
+const num = n => (n==null||n==="") ? "—" : new Intl.NumberFormat("mn-MN").format(n);
+
+function toast(msg){
+  const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2600);
+}
+function settings(){ return state.settings || DEFAULTS; }
+
+/* ---------- эрсдэлийн тооцоо ---------- */
+function findingsOf(orgId){
+  const cut=new Date(); cut.setMonth(cut.getMonth()-settings().lookbackMonths);
+  return state.findings.filter(f=>f.orgId===orgId &&
+    (!f.raisedDate || new Date(f.raisedDate)>=cut));
+}
+function effStatus(f){
+  if(f.status==="Хаагдсан"||f.closedDate) return "Хаагдсан";
+  if(f.dueDate && f.dueDate < today()) return "Хугацаа хэтэрсэн";
+  return f.status||"Нээлттэй";
+}
+function riskOf(o){
+  const s=settings(), fs=findingsOf(o.id);
+  let overdue=0,nc=0,rq=0;
+  fs.forEach(f=>{ const st=effStatus(f);
+    if(st==="Хугацаа хэтэрсэн") overdue++;
+    if(f.kind==="Үл нийцэл") nc++; else rq++; });
+  const compliance=Math.min(100, overdue*s.penalty.overdue + nc*s.penalty.nonconformity + rq*s.penalty.requirement);
+  const hasC=o.complexity>0, hasM=o.msMaturity>0;
+  const cx = hasC ? (o.complexity-1)/4*100 : null;
+  const ms = hasM ? (5-o.msMaturity)/4*100 : null;
+  const complete = hasC && hasM;
+  const total = complete ? (s.weights.complexity*cx + s.weights.compliance*compliance + s.weights.maturity*ms) : null;
+  let level=null, perYear=null;
+  if(complete){
+    const sorted=[...s.levels].sort((a,b)=>a.min-b.min);
+    for(const l of sorted) if(total>=l.min){ level=l.name; perYear=l.perYear; }
+  }
+  let nextDue=null;
+  if(o.lastInspection && perYear){
+    const d=new Date(o.lastInspection); d.setMonth(d.getMonth()+Math.round(12/perYear));
+    nextDue=d.toISOString().slice(0,10);
+  }
+  return {compliance, cx, ms, total, level, perYear, overdue, nc, rq, complete, nextDue, count:fs.length};
+}
+const LEVEL_CLASS={"Өндөр":"crit","Дунд-өндөр":"serious","Дунд":"warn","Бага":"good"};
+const LEVEL_IDX={"Бага":1,"Дунд":2,"Дунд-өндөр":3,"Өндөр":4};
+
+/* ============================================================ db */
+function drawMode(){
+  const chip=$("#modeChip"), btn=$("#authBtn");
+  if(!state.db){
+    chip.className="chip warn";
+    chip.innerHTML='<span class="dot"></span>'+(INEG_DB.configured?"Сангийн холбоо алга":"Сан тохируулаагүй");
+    btn.hidden=true; $("#refreshBtn").hidden=true; return;
+  }
+  btn.hidden=false; $("#refreshBtn").hidden=false;
+  const u=state.db.user();
+  state.canWrite=!!u;
+  chip.className = u ? "chip accent" : "chip neutral";
+  chip.innerHTML = '<span class="dot"></span>' + (u ? esc(u.email||"Админ") : "Зөвхөн харах");
+  btn.textContent = u ? "Гарах" : "Нэвтрэх";
+}
+
+async function boot(){
+  const db = await INEG_DB.connect();
+  state.db = db;
+  if(!db){
+    state.ready=true; drawMode(); render(); return;
+  }
+  db.onAuth(()=>{ drawMode(); render(); });
+  drawMode();
+
+  const bind=(path,key)=>db.collection(path).onSnapshot(snap=>{
+    state[key]=snap.docs.map(d=>({id:d.id, ...d.data()}));
+    state.ready=true; render();
+  }, e=>{ console.warn(path,e.code); state.ready=true; render(); });
+  bind("orgs","orgs"); bind("findings","findings"); bind("inspections","inspections");
+  bind("certs","certs"); bind("plan","plan"); bind("regs","regs"); bind("actions","actions");
+  db.doc("meta/settings").onSnapshot(d=>{
+    state.settings = d.exists ? {...DEFAULTS, ...d.data()} : DEFAULTS;
+    render();
+  }, ()=>{});
+  state.ready=true; render();
+}
+
+/* ---------- нэвтрэх цонх ---------- */
+function drawAuth(){
+  const host=$("#authHost");
+  if(!state.authOpen){ host.innerHTML=""; return; }
+  host.innerHTML=`<div class="mask" data-a="closeAuth"></div>
+    <div class="modal" style="width:min(420px,calc(100vw - 28px))" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <header><h2 id="authTitle">Админаар нэвтрэх</h2>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn sm" data-a="closeAuth" aria-label="Хаах">✕</button></header>
+      <div class="mbody">
+        <div class="form">
+          <div class="field wide"><label for="au_mail">И-мэйл</label>
+            <input id="au_mail" type="email" autocomplete="username" inputmode="email"></div>
+          <div class="field wide"><label for="au_pass">Нууц үг</label>
+            <input id="au_pass" type="password" autocomplete="current-password"></div>
+        </div>
+        <p class="small muted" style="margin:12px 0 0">Нэвтрээгүй үед бүх хүн өгөгдлийг <b>харах</b> боломжтой.
+          Нэмэх, засах, устгах эрхийг зөвхөн ИНЕГ-ын админ хэрэглэгч авна.</p>
+        <p class="small" id="au_err" style="margin:10px 0 0;color:var(--crit)" hidden></p>
+      </div>
+      <footer>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn" data-a="closeAuth">Болих</button>
+        <button class="btn primary" data-a="doSignIn">Нэвтрэх</button>
+      </footer>
+    </div>`;
+  host.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>authAct(b.dataset.a));
+  host.querySelector("#au_pass").addEventListener("keydown", e=>{ if(e.key==="Enter") authAct("doSignIn"); });
+  host.querySelector("#au_mail").focus();
+}
+async function authAct(a){
+  if(a==="closeAuth"){ state.authOpen=false; drawAuth(); return; }
+  if(a==="doSignIn"){
+    const mail=$("#au_mail").value.trim(), pass=$("#au_pass").value;
+    const err=$("#au_err");
+    if(!mail||!pass){ err.hidden=false; err.textContent="И-мэйл, нууц үгээ бөглөнө үү."; return; }
+    const btn=document.querySelector('[data-a="doSignIn"]');
+    btn.disabled=true; btn.textContent="Нэвтэрч байна…"; err.hidden=true;
+    try{
+      await state.db.signIn(mail, pass);
+      state.authOpen=false; drawAuth(); toast("Нэвтэрлээ"); render();
+    }catch(e){
+      err.hidden=false;
+      err.textContent = /invalid/i.test(e.message) ? "И-мэйл эсвэл нууц үг буруу байна." : e.message;
+      btn.disabled=false; btn.textContent="Нэвтрэх";
+    }
+  }
+}
+function wErr(e){
+  if(e && e.code==="permission-denied") return "Эрх хүрэхгүй байна — админаар нэвтэрнэ үү";
+  return (e && e.message) ? e.message : "алдаа";
+}
+async function save(path, id, data){
+  if(!state.db){ toast("Сан холбогдоогүй байна"); return false; }
+  if(!state.canWrite){ toast("Засварлахын тулд нэвтэрнэ үү"); return false; }
+  try{ await state.db.doc(path+"/"+id).set(data); return true; }
+  catch(e){ toast("Хадгалж чадсангүй: "+wErr(e)); return false; }
+}
+async function patch(path, id, data){
+  if(!state.canWrite){ toast("Засварлахын тулд нэвтэрнэ үү"); return false; }
+  try{ await state.db.doc(path+"/"+id).update(data); return true; }
+  catch(e){ toast("Хадгалж чадсангүй: "+wErr(e)); return false; }
+}
+async function remove(path,id){
+  if(!state.canWrite){ toast("Засварлахын тулд нэвтэрнэ үү"); return; }
+  try{ await state.db.doc(path+"/"+id).delete(); toast("Устгалаа"); }
+  catch(e){ toast("Устгаж чадсангүй: "+wErr(e)); }
+}
+
+/* ============================================================ нэвигаци */
+const VIEWS=[
+  {id:"dash",  t:"Хяналтын самбар",  n:()=>""},
+  {id:"orgs",  t:"Байгууллага, эрсдэл", n:()=>state.orgs.length},
+  {id:"cap",   t:"Үл нийцэл, CAP",   n:()=>state.findings.filter(f=>effStatus(f)!=="Хаагдсан").length},
+  {id:"insp",  t:"Хяналт шалгалт",   n:()=>state.inspections.length},
+  {id:"certs", t:"Гэрчилгээ",        n:()=>state.certs.length},
+  {id:"plan",  t:"Эрсдэлд суурилсан төлөвлөлт", n:()=>state.plan.length},
+  {id:"regs",  t:"Дүрэм, журмын шинэчлэлт", n:()=>state.regs.length},
+  {id:"actions",t:"Хэрэгжүүлэх арга хэмжээ", n:()=>state.actions.filter(a=>a.status!=="Хэрэгжсэн").length},
+  {id:"report",t:"Тайлан 2026-H1",   n:()=>""},
+  {id:"cfg",   t:"Тохиргоо",         n:()=>""},
+];
+function drawNav(){
+  $("#nav").innerHTML = VIEWS.map(v=>
+    `<button data-v="${v.id}" aria-current="${state.view===v.id}">${esc(v.t)}
+      <span class="ct">${v.n()===""?"":v.n()}</span></button>`).join("");
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    state.view=b.dataset.v; state.exportRows=null; render();
+    document.querySelector(".main").scrollIntoView({block:"start"});
+  });
+  const open=state.findings.filter(f=>effStatus(f)!=="Хаагдсан").length;
+  $("#railfoot").innerHTML = state.ready
+    ? `Эрсдэлийн загвар: <b>EASA RBO</b><br>3 хүчин зүйл · ${Math.round(settings().weights.complexity*100)}/${Math.round(settings().weights.compliance*100)}/${Math.round(settings().weights.maturity*100)}<br>
+       Нээлттэй CAP: <b>${open}</b>`
+    : "Ачаалж байна…";
+}
+
+/* ============================================================ render */
+function render(){
+  drawNav();
+  const v=VIEWS.find(x=>x.id===state.view);
+  $("#viewTitle").textContent = v ? v.t : "";
+  const el=$("#view");
+  if(!state.ready){ el.innerHTML=`<div class="panel"><div class="body muted">Мэдээллийн санг ачаалж байна…</div></div>`; return; }
+  const offline = !state.db && state.view!=="report" ? `<div class="banner warn" style="margin-bottom:14px">
+    <div><b>${INEG_DB.configured
+      ? "Мэдээллийн санд холбогдож чадсангүй."
+      : "Мэдээллийн сан хараахан тохируулагдаагүй байна."}</b>
+    Бүртгэлийн өгөгдөл (байгууллага, үл нийцэл, шалгалт, гэрчилгээ, төлөвлөгөө, дүрэм, арга хэмжээ) уншигдахгүй.
+    ${INEG_DB.configured
+      ? "Хуудсыг дахин ачаална уу."
+      : "<code>hyanalt/config.js</code> файлд Supabase төслийн URL ба anon түлхүүрийг оруулаад дахин нийтэлнэ үү."}
+    “Тайлан 2026-H1” хэсэг нь сангаас хамааралгүй тул тэндээс тайлангийн үзүүлэлтийг харна.</div></div>` : "";
+  el.innerHTML = offline + ({dash:viewDash, orgs:viewOrgs, cap:viewCap, insp:viewInsp,
+                   certs:viewCerts, plan:viewPlan, regs:viewRegs, actions:viewActions,
+                   report:viewReport, cfg:viewCfg}[state.view])();
+  wire();
+  drawModal();
+  $("#exportBtn").hidden = !state.exportRows;
+}
+
+/* ---------- туслах бүрэлдэхүүн ---------- */
+function stackedRow(label, parts, total){
+  const max = Math.max(...parts.map(p=>p.max||0), 1);
+  const w = (v)=> (v/max*100)+"%";
+  return `<div class="brow">
+    <div class="lbl">${esc(label)}</div>
+    <div class="sbar" style="width:${(total/max*100).toFixed(1)}%">
+      ${parts.map(p=>`<span style="width:${(p.v/total*100).toFixed(2)}%;background:${p.c}" title="${esc(p.n)}: ${p.v}"></span>`).join("")}
+    </div>
+    <div class="tot">${num(total)}</div></div>`;
+}
+function bars(rows, color){
+  const max=Math.max(...rows.map(r=>r[1]),1);
+  return rows.map(r=>`<div class="brow"><div class="lbl">${esc(r[0])}</div>
+    <div class="sbar" style="width:${(r[1]/max*100).toFixed(1)}%"><span style="width:100%;background:${color}"></span></div>
+    <div class="tot">${num(r[1])}</div></div>`).join("");
+}
+function orgName(id){ const o=state.orgs.find(x=>x.id===id); return o? (o.short||o.name) : (id||"—"); }
+function selOpts(arr, cur, blank){
+  return (blank?`<option value="">${esc(blank)}</option>`:"") +
+    arr.map(a=>{const v=Array.isArray(a)?a[0]:a, t=Array.isArray(a)?(a[1]??a[0]):a;
+      return `<option value="${esc(v)}"${String(v)===String(cur)?" selected":""}>${esc(t)}</option>`;}).join("");
+}
+const orgOpts = () => state.orgs.map(o=>[o.id, (o.short||o.name)+" · "+(o.dept||"")]);
+
+/* ============================================================ бичлэгийн бүтэц
+   Бүртгэл бүрийн талбарыг нэг дор тодорхойлно. Нэмэх, засах, устгах үйлдэл
+   бүгд эндээс автоматаар үүснэ — админ бүх бүртгэлийг ижил маягтаар удирдана. */
+const SCHEMA = {
+  orgs:{ label:"Байгууллага", pfx:"org", manualId:true,
+    name:o=>o.short||o.name,
+    fields:[
+      {k:"name",l:"Албан ёсны нэр",t:"text",req:true,wide:true,ph:"Хүннү Эйр ХХК"},
+      {k:"short",l:"Товч нэр",t:"text"},
+      {k:"type",l:"Төрөл",t:"select",opts:()=>ORG_TYPES},
+      {k:"dept",l:"Хариуцах хэлтэс",t:"select",opts:()=>DEPTS},
+      {k:"certNo",l:"Гэрчилгээний дугаар",t:"text"},
+      {k:"inds",l:"ИНД (таслалаар)",t:"list",ph:"ИНД-119, ИНД-121"},
+      {k:"complexity",l:"Нарийн төвөгтэй байдал",t:"n5",hint:"1 = энгийн · 5 = маш нарийн төвөгтэй"},
+      {k:"msMaturity",l:"УТ-ны төлөвшилт",t:"n5",hint:"1 = төлөвшөөгүй · 5 = бүрэн төлөвшсөн"},
+      {k:"lastInspection",l:"Сүүлд шалгасан",t:"date"},
+      {k:"note",l:"Тэмдэглэл",t:"area",wide:true},
+    ]},
+  findings:{ label:"Үл нийцэл / шаардлага", pfx:"f",
+    name:f=>f.title,
+    fields:[
+      {k:"title",l:"Гарчиг",t:"text",req:true,wide:true},
+      {k:"orgId",l:"Байгууллага",t:"select",opts:orgOpts},
+      {k:"dept",l:"Хэлтэс",t:"select",opts:()=>DEPTS},
+      {k:"ind",l:"ИНД",t:"select",opts:()=>INDS},
+      {k:"clause",l:"Заалт",t:"text",ph:"ИНД121.81(a)(1)"},
+      {k:"kind",l:"Төрөл",t:"select",opts:()=>KINDS,def:"Үл нийцэл"},
+      {k:"severity",l:"Ноцтой байдал",t:"select",opts:()=>SEVS,def:"Дунд"},
+      {k:"reportNo",l:"Тайлангийн дугаар",t:"text",ph:"НТ-12/26"},
+      {k:"raisedDate",l:"Илэрсэн огноо",t:"date",def:today},
+      {k:"dueDate",l:"Хаах хугацаа",t:"date"},
+      {k:"status",l:"Статус",t:"select",opts:()=>STATUSES,def:"Нээлттэй"},
+      {k:"closedDate",l:"Хаасан огноо",t:"date"},
+      {k:"capRef",l:"CAP дугаар / ASOS холбоос",t:"text"},
+      {k:"desc",l:"Дэлгэрэнгүй",t:"area",wide:true},
+      {k:"srcNote",l:"Эх сурвалжийн тэмдэглэл",t:"area",wide:true},
+    ]},
+  inspections:{ label:"Хяналт шалгалт", pfx:"i",
+    name:i=>(i.date||"")+" · "+(i.type||""),
+    fields:[
+      {k:"date",l:"Огноо",t:"date",req:true,def:today},
+      {k:"dept",l:"Хэлтэс",t:"select",opts:()=>DEPTS,req:true},
+      {k:"type",l:"Төрөл",t:"select",opts:()=>INSP_TYPES,def:"Төлөвлөгөөт"},
+      {k:"ind",l:"ИНД",t:"select",opts:()=>INDS},
+      {k:"orgId",l:"Байгууллага",t:"select",opts:orgOpts},
+      {k:"inspector",l:"Байцаагч",t:"text"},
+      {k:"reportNo",l:"Нэгдсэн тайлангийн дугаар",t:"text",ph:"НТ-12/26"},
+      {k:"conclusions",l:"Дүгнэлтийн тоо",t:"num"},
+      {k:"period",l:"Тайлант хугацаа",t:"text",ph:"2026-H2"},
+      {k:"scope",l:"Хамрах хүрээ / тэмдэглэл",t:"area",wide:true},
+    ]},
+  certs:{ label:"Гэрчилгээ / үнэмлэх", pfx:"c",
+    name:c=>c.certNo,
+    fields:[
+      {k:"certNo",l:"Гэрчилгээний дугаар",t:"text",req:true,ph:"172-02"},
+      {k:"category",l:"Ангилал",t:"select",opts:()=>["Байгууллага","Ажилтан"],def:"Байгууллага"},
+      {k:"ind",l:"ИНД",t:"select",opts:()=>INDS},
+      {k:"orgId",l:"Байгууллага",t:"select",opts:orgOpts},
+      {k:"holder",l:"Эзэмшигч (ажилтан бол)",t:"text"},
+      {k:"action",l:"Үйлдэл",t:"select",opts:()=>CERT_ACTIONS,def:"Сунгасан"},
+      {k:"issueDate",l:"Олгосон огноо",t:"date"},
+      {k:"expiryDate",l:"Дуусах огноо",t:"date"},
+      {k:"dept",l:"Хэлтэс",t:"select",opts:()=>DEPTS},
+      {k:"note",l:"Тэмдэглэл",t:"area",wide:true},
+    ]},
+  plan:{ label:"Төлөвлөгөөний мөр", pfx:"p",
+    name:p=>(p.dept||"")+" · "+(p.type||""),
+    fields:[
+      {k:"period",l:"Тайлант хугацаа",t:"text",def:()=>"2026-H2",req:true},
+      {k:"dept",l:"Хэлтэс",t:"select",opts:()=>DEPTS,req:true},
+      {k:"ind",l:"ИНД",t:"select",opts:()=>INDS},
+      {k:"type",l:"Төрөл",t:"select",opts:()=>INSP_TYPES,def:"Төлөвлөгөөт"},
+      {k:"count",l:"Тоо",t:"num",def:()=>1},
+      {k:"orgId",l:"Онилсон байгууллага",t:"select",opts:orgOpts},
+      {k:"done",l:"Гүйцэтгэсэн",t:"num"},
+    ]},
+  regs:{ label:"Дүрэм, журмын шинэчлэлт", pfx:"r",
+    name:r=>r.title,
+    fields:[
+      {k:"title",l:"Нэр",t:"text",req:true,wide:true},
+      {k:"kind",l:"Төрөл",t:"select",opts:()=>REG_KINDS,def:"ИНД"},
+      {k:"ind",l:"Холбогдох ИНД",t:"select",opts:()=>INDS},
+      {k:"orderNo",l:"Тушаалын дугаар",t:"text",ph:"А/65"},
+      {k:"issuer",l:"Батласан",t:"select",opts:()=>REG_ISSUERS},
+      {k:"date",l:"Батлагдсан огноо",t:"date"},
+      {k:"dept",l:"Хариуцах хэлтэс",t:"select",opts:()=>DEPTS},
+      {k:"impact",l:"Хяналтад үзүүлэх нөлөө",t:"area",wide:true},
+    ]},
+  actions:{ label:"Хэрэгжүүлэх арга хэмжээ", pfx:"a",
+    name:a=>a.title,
+    fields:[
+      {k:"no",l:"Дугаар",t:"num"},
+      {k:"title",l:"Арга хэмжээ",t:"text",req:true,wide:true},
+      {k:"benchmark",l:"Олон улсын жишиг",t:"select",opts:()=>BENCHMARKS},
+      {k:"owner",l:"Хариуцах нэгж",t:"text"},
+      {k:"due",l:"Хугацаа",t:"text",ph:"2027 I улирал"},
+      {k:"status",l:"Төлөв",t:"select",opts:()=>ACTION_STATUS,def:"Эхлээгүй"},
+      {k:"progress",l:"Явц (%)",t:"num"},
+      {k:"steps",l:"Хэрэгжүүлэх алхам",t:"area",wide:true},
+    ]},
+};
+const REG_KINDS=["ИНД","Техникийн баримт бичиг","Үйл ажиллагааны заавар","Зөвлөмж (АС)","Журам"];
+const REG_ISSUERS=["Зам, тээврийн сайд","ИНЕГ-ын дарга","ИНЕГ-ын Удирдах зөвлөл"];
+const ACTION_STATUS=["Эхлээгүй","Хэрэгжиж байна","Хэрэгжсэн","Хойшлуулсан"];
+const BENCHMARKS=["ICAO USOAP-CMA","ICAO Annex 19","ICAO GASP","EASA RBO","FAA SAS","FAA SAS (CHAT)","FAA SAS External Portal"];
+
+/* ---------- ерөнхий засварлах цонх ---------- */
+function openForm(coll, id){
+  if(!state.canWrite) return toast("Танд засварлах эрх алга");
+  state.modal={coll, id:id||null};
+  drawModal();
+}
+function closeForm(){ state.modal=null; drawModal(); }
+function recordOf(coll,id){ return (state[coll]||[]).find(r=>r.id===id); }
+
+function fieldHtml(f, val){
+  const v = val==null?"":val;
+  const id = "fld_"+f.k;
+  let input;
+  if(f.t==="select")      input=`<select id="${id}">${selOpts(f.opts(), v, "— сонгох —")}</select>`;
+  else if(f.t==="area")   input=`<textarea id="${id}">${esc(v)}</textarea>`;
+  else if(f.t==="date")   input=`<input type="date" id="${id}" value="${esc(v)}">`;
+  else if(f.t==="num")    input=`<input type="number" id="${id}" value="${esc(v)}">`;
+  else if(f.t==="n5")     input=`<select id="${id}"><option value="">—</option>${
+                                  [1,2,3,4,5].map(n=>`<option value="${n}"${String(v)===String(n)?" selected":""}>${n}</option>`).join("")}</select>`;
+  else if(f.t==="list")   input=`<input id="${id}" value="${esc(Array.isArray(v)?v.join(", "):v)}" placeholder="${esc(f.ph||"")}">`;
+  else                    input=`<input id="${id}" value="${esc(v)}" placeholder="${esc(f.ph||"")}">`;
+  return `<div class="field${f.wide?" wide":""}">
+    <label for="${id}">${esc(f.l)}${f.req?' <span style="color:var(--crit)">*</span>':""}</label>
+    ${input}${f.hint?`<span class="small muted">${esc(f.hint)}</span>`:""}</div>`;
+}
+function drawModal(){
+  const host=$("#modalHost");
+  if(!state.modal){ host.innerHTML=""; document.body.style.overflow=""; return; }
+  const {coll,id}=state.modal, sc=SCHEMA[coll], rec=id?recordOf(coll,id):null;
+  const dv=f=>{ if(rec) return rec[f.k]; return typeof f.def==="function"?f.def():(f.def??""); };
+  host.innerHTML=`<div class="mask" data-act="closeForm"></div>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mdlTitle">
+      <header><h2 id="mdlTitle">${rec?"Засах":"Шинэ"} — ${esc(sc.label)}</h2>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn sm" data-act="closeForm" aria-label="Хаах">✕</button></header>
+      <div class="mbody">
+        ${(!rec&&sc.manualId)?`<div class="form"><div class="field wide">
+            <label for="fld__id">ID (латинаар) <span style="color:var(--crit)">*</span></label>
+            <input id="fld__id" placeholder="org-hunnu">
+            <span class="small muted">Үүсгэсний дараа ID өөрчлөгдөхгүй.</span></div></div>`:""}
+        ${rec?`<p class="small muted" style="margin:0 0 10px">ID <span class="code">${esc(rec.id)}</span></p>`:""}
+        <div class="form">${sc.fields.map(f=>fieldHtml(f, dv(f))).join("")}</div>
+      </div>
+      <footer>
+        ${rec?`<button class="btn" data-act="deleteRec" style="color:var(--crit);border-color:var(--crit)">Устгах</button>`:""}
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn" data-act="closeForm">Болих</button>
+        <button class="btn primary" data-act="submitForm">${rec?"Хадгалах":"Нэмэх"}</button>
+      </footer>
+    </div>`;
+  document.body.style.overflow="hidden";
+  host.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>act(b.dataset.act));
+  const first=host.querySelector(".mbody input,.mbody select,.mbody textarea"); if(first) first.focus();
+}
+async function submitForm(){
+  const {coll,id}=state.modal, sc=SCHEMA[coll];
+  const raw=k=>{ const e=$("#fld_"+k); return e? e.value : ""; };
+  const data={};
+  for(const f of sc.fields){
+    const s=raw(f.k).trim();
+    if(f.req && !s) return toast(`“${f.l}” талбарыг бөглөнө үү`);
+    if(f.t==="num"||f.t==="n5") data[f.k]= s===""?null:Number(s);
+    else if(f.t==="list")       data[f.k]= s.split(",").map(x=>x.trim()).filter(Boolean);
+    else                        data[f.k]= s===""?null:s;
+  }
+  if(coll==="findings"){
+    if(data.status==="Хаагдсан" && !data.closedDate) data.closedDate=today();
+    if(data.status!=="Хаагдсан") data.closedDate=null;
+  }
+  let rid=id;
+  if(!rid){
+    if(sc.manualId){
+      rid=($("#fld__id")?.value||"").trim().replace(/[^A-Za-z0-9_\-.~:@+]/g,"-");
+      if(!rid) return toast("ID-г бөглөнө үү");
+      if(recordOf(coll,rid)) return toast("Ийм ID-тай бичлэг аль хэдийн байна");
+    } else rid = sc.pfx+"-"+Date.now().toString(36)+Math.floor(Math.random()*900+100);
+  }
+  if(await save(coll, rid, data)){ toast(id?"Хадгаллаа":"Нэмэгдлээ"); closeForm(); }
+}
+async function deleteRec(){
+  const {coll,id}=state.modal; if(!id) return;
+  const sc=SCHEMA[coll];
+  let extra="";
+  if(coll==="orgs"){
+    const n=state.findings.filter(f=>f.orgId===id).length
+          + state.inspections.filter(i=>i.orgId===id).length
+          + state.certs.filter(c=>c.orgId===id).length;
+    if(n) extra=`\n\nЭнэ байгууллагад холбогдсон ${n} бичлэг байна. Тэдгээр нь устахгүй ч “—” болж харагдана.`;
+  }
+  if(!confirm(`“${esc(sc.name(recordOf(coll,id))||id)}” бичлэгийг бүрмөсөн устгах уу?${extra}`)) return;
+  await remove(coll, id);
+  closeForm();
+}
+
+/* ---------- бүртгэлийн хайлт ---------- */
+function filterBar(coll, ph){
+  if(!SCHEMA[coll]) return "";
+  const q=state.filter[coll]||"";
+  return `<div class="toolbar">
+    <input class="srch" data-srch="${coll}" value="${esc(q)}" placeholder="${esc(ph||"Хайх…")}" aria-label="Хайх">
+    ${q?`<button class="btn sm" data-clr="${coll}">Цэвэрлэх</button>`:""}
+    <span class="spacer" style="flex:1"></span>
+    ${state.canWrite?`<button class="btn sm primary" data-new="${coll}">+ ${esc(SCHEMA[coll].label)} нэмэх</button>`:""}
+  </div>`;
+}
+function applyFilter(coll, list, keys){
+  const q=(state.filter[coll]||"").trim().toLowerCase();
+  if(!q) return list;
+  return list.filter(r=>keys.some(k=>{
+    const v = typeof k==="function"? k(r) : r[k];
+    return String(v==null?"":Array.isArray(v)?v.join(" "):v).toLowerCase().includes(q);
+  }));
+}
+const editBtn = (coll,id)=> state.canWrite
+  ? `<td style="white-space:nowrap"><button class="btn sm" data-edit="${coll}/${esc(id)}">Засах</button></td>` : "";
+
+/* ---------- 1. Самбар ---------- */
+function viewDash(){
+  const openF=state.findings.filter(f=>effStatus(f)!=="Хаагдсан");
+  const overdue=state.findings.filter(f=>effStatus(f)==="Хугацаа хэтэрсэн");
+  const risks=state.orgs.map(o=>({o, r:riskOf(o)}));
+  const unrated=risks.filter(x=>!x.r.complete).length;
+  const high=risks.filter(x=>x.r.level==="Өндөр"||x.r.level==="Дунд-өндөр").length;
+  const needYear=risks.reduce((a,x)=>a+(x.r.perYear||0),0);
+  const planned=state.plan.reduce((a,p)=>a+(+p.count||0),0);
+  const expSoon=state.certs.filter(c=>c.expiryDate && days(c.expiryDate,today())>=0 && days(c.expiryDate,today())<=60).length;
+  const expired=state.certs.filter(c=>c.expiryDate && days(c.expiryDate,today())<0).length;
+  const rt=REPORT.inspections.reduce((a,d)=>a+d.planned+d.unplanned+d.docs,0);
+  const adone=state.actions.filter(a=>a.status==="Хэрэгжсэн").length;
+
+  const rank=s=>({"Хугацаа хэтэрсэн":0,"Нээлттэй":1,"Залруулж байгаа":2}[s]??9);
+  const attention = [...openF].sort((a,b)=>{
+    const d=rank(effStatus(a))-rank(effStatus(b));
+    return d || (({"Ноцтой":0,"Дунд":1,"Бага":2}[a.severity]??3)-({"Ноцтой":0,"Дунд":1,"Бага":2}[b.severity]??3));
+  }).slice(0,6);
+
+  return `
+  <div class="grid">
+    <div class="tiles">
+      <div class="tile"><div class="k">Байгууллага</div><div class="v">${state.orgs.length}</div>
+        <div class="n">${unrated?`${unrated}-д үнэлгээ дутуу`:"бүгд үнэлэгдсэн"}</div></div>
+      <div class="tile ${high?"alert":""}"><div class="k">Өндөр эрсдэл</div><div class="v">${high}</div>
+        <div class="n">Өндөр + дунд-өндөр түвшин</div></div>
+      <div class="tile ${overdue.length?"alert":""}"><div class="k">Хугацаа хэтэрсэн</div><div class="v">${overdue.length}</div>
+        <div class="n">залруулах арга хэмжээ</div></div>
+      <div class="tile ${openF.length?"warnv":"goodv"}"><div class="k">Нээлттэй CAP</div><div class="v">${openF.length}</div>
+        <div class="n">нийт ${state.findings.length} бичлэгээс</div></div>
+      <div class="tile"><div class="k">Жилийн хэрэгцээ</div><div class="v">${needYear.toFixed(1)}</div>
+        <div class="n">эрсдэлээр тооцсон шалгалт</div></div>
+      <div class="tile ${expired?"alert":(expSoon?"warnv":"")}"><div class="k">Гэрчилгээ</div><div class="v">${state.certs.length}</div>
+        <div class="n">${expired?`${expired} хугацаа дууссан`:(expSoon?`${expSoon} удахгүй дуусна`:"хүчинтэй")}</div></div>
+    </div>
+
+    <div class="split">
+      <section class="panel">
+        <header><h2>Анхаарал шаардсан залруулалт</h2>
+          <span class="hint">${overdue.length} хугацаа хэтэрсэн · ${openF.length} нээлттэй</span></header>
+        <div class="body">
+          ${attention.length? `<div class="strips">${attention.map(stripHtml).join("")}</div>
+            <p class="small muted" style="margin:12px 0 0">Бүрэн жагсаалтыг “Үл нийцэл, CAP” хэсгээс харна.</p>`
+            : `<p class="muted small" style="margin:0">Нээлттэй үл нийцэл алга.</p>`}
+        </div>
+      </section>
+
+      <section class="panel">
+        <header><h2>Эрсдэлийн матриц</h2>
+          <span class="hint">нарийн төвөгтэй байдал × нийцлийн түүх</span></header>
+        <div class="body">${matrixHtml(risks)}</div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <header><h2>2026 оны I хагас жилийн хяналт шалгалт</h2>
+        <span class="hint">эх тайлангийн үзүүлэлт · нийт ${num(rt)}</span></header>
+      <div class="body">
+        ${REPORT.inspections.map(d=>{
+          const tot=d.planned+d.unplanned+d.docs;
+          const max=Math.max(...REPORT.inspections.map(x=>x.planned+x.unplanned+x.docs));
+          return `<div class="brow"><div class="lbl">${esc(d.dept)}</div>
+            <div class="sbar" style="width:${(tot/max*100).toFixed(1)}%">
+              <span style="width:${(d.planned/tot*100).toFixed(2)}%;background:var(--s1)" title="Төлөвлөгөөт ${d.planned}"></span>
+              <span style="width:${(d.unplanned/tot*100).toFixed(2)}%;background:var(--s2)" title="Төлөвлөгөөт бус ${d.unplanned}"></span>
+              <span style="width:${(d.docs/tot*100).toFixed(2)}%;background:var(--s3)" title="Баримт бичгийн хяналт ${d.docs}"></span>
+            </div><div class="tot">${tot}</div></div>`;
+        }).join("")}
+        <div class="legend">
+          <span><i style="background:var(--s1)"></i>Төлөвлөгөөт 187</span>
+          <span><i style="background:var(--s2)"></i>Төлөвлөгөөт бус 145</span>
+          <span><i style="background:var(--s3)"></i>Баримт бичгийн хяналт 185</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="split">
+      <section class="panel">
+        <header><h2>RBO-д шилжих замын зураг</h2>
+          <span class="hint">${adone}/${state.actions.length} хэрэгжсэн</span></header>
+        <div class="body">
+          ${state.actions.length? [...state.actions].sort((a,b)=>(a.no??99)-(b.no??99)).slice(0,5).map(a=>`
+            <div class="brow"><div class="lbl">${esc(a.title||"").slice(0,58)}${(a.title||"").length>58?"…":""}</div>
+              <div class="prog-track"><span style="width:${Math.max(0,Math.min(100,+a.progress||0))}%"></span></div>
+              <div class="tot">${+a.progress||0}%</div></div>`).join("")
+            : `<p class="muted small" style="margin:0">Арга хэмжээ бүртгэгдээгүй.</p>`}
+          ${state.actions.length>5?`<p class="small muted" style="margin:10px 0 0">Бүгдийг “Хэрэгжүүлэх арга хэмжээ” хэсгээс харна.</p>`:""}
+        </div>
+      </section>
+
+      <section class="panel">
+        <header><h2>Сүүлд шинэчлэгдсэн дүрэм, журам</h2>
+          <span class="hint">${state.regs.length} бичлэг</span></header>
+        <div class="body">
+          ${state.regs.length? `<div class="strips">${[...state.regs]
+            .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).slice(0,4).map(r=>`
+            <div class="strip"><div class="bar" style="background:var(--accent)"></div>
+              <div class="mid"><div class="r1"><span class="ttl">${esc(r.title||"—")}</span>
+                ${r.ind?`<span class="code">${esc(r.ind)}</span>`:""}</div>
+                <div class="r2"><span>${esc(r.issuer||"")}</span>
+                  ${r.orderNo?`<span class="mono">${esc(r.orderNo)}</span>`:""}</div></div>
+              <div class="right"><span class="small muted mono">${esc(r.date||"—")}</span></div></div>`).join("")}</div>`
+            : `<p class="muted small" style="margin:0">Шинэчлэлт бүртгэгдээгүй.</p>`}
+        </div>
+      </section>
+    </div>
+
+    <div class="banner info">
+      <div><b>USOAP-CMA ${esc(REPORT.usoap.dates)}:</b> ${esc(REPORT.usoap.area)} чиглэлээр
+      ${REPORT.usoap.pq} протокол асуулгад хамрагдаж <b>${REPORT.usoap.score}</b> оноо авсан.
+      ${esc(REPORT.usoap.note)} ${REPORT.usoap.icvm.year} оны ICVM-ээр нэгдсэн EI
+      <b>${REPORT.usoap.icvm.ei}%</b> байсан бөгөөд хамгийн сул элементүүд нь
+      ${REPORT.usoap.icvm.weak.map(w=>`${w[0]} (${w[2]}%)`).join(", ")} байв.</div>
+    </div>
+  </div>`;
+}
+function stripHtml(f){
+  const st=effStatus(f);
+  const cls = st==="Хугацаа хэтэрсэн" ? "crit" : (f.severity==="Ноцтой"?"serious":(st==="Хаагдсан"?"good":"warn"));
+  const od = f.dueDate ? days(today(), f.dueDate) : null;
+  return `<div class="strip ${cls}">
+    <div class="bar"></div>
+    <div class="mid">
+      <div class="r1">
+        <span class="ttl">${esc(f.title||"—")}</span>
+        <span class="chip ${f.kind==="Үл нийцэл"?"serious":"neutral"}">${esc(f.kind||"")}</span>
+      </div>
+      <div class="r2">
+        <span>${esc(orgName(f.orgId))}</span>
+        ${f.ind?`<span class="code">${esc(f.ind)}</span>`:""}
+        ${f.clause?`<span class="mono">${esc(f.clause)}</span>`:""}
+        ${f.reportNo?`<span class="mono">${esc(f.reportNo)}</span>`:""}
+      </div>
+    </div>
+    <div class="right">
+      <span class="chip ${st==="Хугацаа хэтэрсэн"?"crit":(st==="Хаагдсан"?"good":"warn")}">${esc(st)}</span>
+      <span class="small muted mono">${f.dueDate? (od>0? od+" хоног хэтэрсэн" : "хугацаа "+f.dueDate) : "хугацаа тавиагүй"}</span>
+    </div></div>`;
+}
+function matrixHtml(risks){
+  const rated=risks.filter(x=>x.r.complete);
+  const bands=[[0,25],[25,50],[50,75],[75,101]];
+  const bandName=["0–25","25–50","50–75","75+"];
+  const cells=[];
+  for(let cy=3;cy>=0;cy--){
+    const row=[];
+    for(let cx=0;cx<4;cx++){
+      const items=rated.filter(x=>{
+        const a=x.r.cx, b=x.r.compliance;
+        return a>=bands[cx][0]&&a<bands[cx][1]&&b>=bands[cy][0]&&b<bands[cy][1];
+      });
+      const lvl=Math.min(4, 1+Math.floor((cx+cy)/2));
+      row.push(`<td class="cellx l${lvl}">${items.map(i=>`<span class="pin">${esc(i.o.short||i.o.name)}</span>`).join("")}</td>`);
+    }
+    cells.push(`<tr><th>${bandName[cy]}</th>${row.join("")}</tr>`);
+  }
+  const unrated=risks.filter(x=>!x.r.complete);
+  return `<div class="tblwrap"><table class="matrix">
+      <tr><th></th>${bandName.map(b=>`<th>${b}</th>`).join("")}</tr>
+      ${cells.join("")}
+    </table></div>
+    <div style="display:flex;justify-content:space-between;gap:12px;margin-top:8px;flex-wrap:wrap">
+      <span class="eyebrow">↑ Нийцлийн түүхийн эрсдэл</span>
+      <span class="eyebrow">Нарийн төвөгтэй байдлын эрсдэл →</span>
+    </div>
+    <p class="small muted" style="margin:8px 0 0">Нийцлийн түүх нь ҮЛ НИЙЦЭЛ бүртгэлээс автоматаар тооцогдоно.</p>
+    ${unrated.length?`<div class="banner warn" style="margin-top:10px">
+      <div><b>${unrated.length} байгууллагад</b> нарийн төвөгтэй байдал эсвэл УТ-ны төлөвшилтийн үнэлгээ дутуу тул матрицад ороогүй:
+      ${unrated.map(x=>esc(x.o.short||x.o.name)).join(", ")}.</div></div>`:""}`;
+}
+
+/* ---------- 2. Байгууллага ---------- */
+function viewOrgs(){
+  const src=applyFilter("orgs", state.orgs, ["name","short","type","dept","certNo","inds","note"]);
+  const rows=src.map(o=>({o,r:riskOf(o)}))
+    .sort((a,b)=>(b.r.total??-1)-(a.r.total??-1));
+  state.exportRows={name:"baiguullaga",
+    head:["ID","Нэр","Төрөл","Хэлтэс","Нарийн төвөгтэй","УТ төлөвшилт","Үл нийцэл","Шаардлага","Хугацаа хэтэрсэн","Нийцлийн эрсдэл","Нийт оноо","Түвшин","Жилд","Сүүлд шалгасан","Дараагийн"],
+    rows:rows.map(({o,r})=>[o.id,o.name,o.type,o.dept,o.complexity,o.msMaturity,r.nc,r.rq,r.overdue,
+      Math.round(r.compliance), r.total==null?"":r.total.toFixed(1), r.level||"", r.perYear||"", o.lastInspection||"", r.nextDue||""])};
+  return `
+  <div class="grid">
+    <div class="banner info"><div>Эрсдэлийн оноо = <b>${Math.round(settings().weights.complexity*100)}%</b> нарийн төвөгтэй байдал +
+      <b>${Math.round(settings().weights.compliance*100)}%</b> нийцлийн түүх + <b>${Math.round(settings().weights.maturity*100)}%</b> УТ-ны төлөвшилт.
+      Нийцлийн түүх нь сүүлийн ${settings().lookbackMonths} сарын үл нийцлээс автоматаар тооцогдоно;
+      нөгөө хоёрыг доорх хүснэгтээс сонгож үнэлнэ.</div></div>
+
+    ${filterBar("orgs","Нэр, төрөл, хэлтэс, ИНД-ээр хайх…")}
+
+    <section class="panel">
+      <header><h2>Байгууллагын бүртгэл ба эрсдэлийн профайл</h2>
+        <span class="hint">${rows.length} / ${state.orgs.length} бичлэг</span>
+      </header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr>
+            <th>Байгууллага</th><th>Төрөл</th><th>Хэлтэс</th>
+            <th>Нарийн төвөгтэй</th><th>УТ төлөвшилт</th>
+            <th class="num">Үл нийцэл</th><th class="num">Шаард.</th><th class="num">Хэтэрсэн</th>
+            <th class="num">Нийцлийн эрсдэл</th><th class="num">Оноо</th><th>Түвшин</th>
+            <th class="num">Жилд</th><th>Сүүлд шалгасан</th><th>Дараагийн</th>${state.canWrite?"<th></th>":""}
+          </tr></thead>
+          <tbody>${rows.map(({o,r})=>`
+            <tr>
+              <td><b>${esc(o.short||o.name)}</b><div class="small muted">${esc(o.name)}</div>
+                ${(o.inds||[]).map(i=>`<span class="code">${esc(i)}</span>`).join(" ")}</td>
+              <td class="small">${esc(o.type||"—")}</td>
+              <td><span class="code">${esc(o.dept||"—")}</span></td>
+              <td>${state.canWrite
+                ? `<select class="inline" data-org="${esc(o.id)}" data-f="complexity">
+                     <option value="">—</option>${[1,2,3,4,5].map(n=>`<option value="${n}"${o.complexity==n?" selected":""}>${n}</option>`).join("")}</select>`
+                : (o.complexity||"—")}</td>
+              <td>${state.canWrite
+                ? `<select class="inline" data-org="${esc(o.id)}" data-f="msMaturity">
+                     <option value="">—</option>${[1,2,3,4,5].map(n=>`<option value="${n}"${o.msMaturity==n?" selected":""}>${n}</option>`).join("")}</select>`
+                : (o.msMaturity||"—")}</td>
+              <td class="num">${r.nc}</td><td class="num">${r.rq}</td>
+              <td class="num">${r.overdue?`<b style="color:var(--crit)">${r.overdue}</b>`:0}</td>
+              <td class="num">${Math.round(r.compliance)}</td>
+              <td class="num"><b>${r.total==null?"—":r.total.toFixed(1)}</b></td>
+              <td>${r.level?`<span class="chip ${LEVEL_CLASS[r.level]}"><span class="dot"></span>${esc(r.level)}</span>`
+                             :`<span class="chip neutral">Үнэлгээ дутуу</span>`}</td>
+              <td class="num">${r.perYear??"—"}</td>
+              <td>${state.canWrite
+                ? `<input class="inline" type="date" data-org="${esc(o.id)}" data-f="lastInspection" value="${esc(o.lastInspection||"")}">`
+                : `<span class="mono">${esc(o.lastInspection||"—")}</span>`}</td>
+              <td><span class="mono" style="${r.nextDue&&r.nextDue<today()?"color:var(--crit);font-weight:600":""}">${esc(r.nextDue||"—")}</span></td>
+              ${editBtn("orgs",o.id)}
+            </tr>`).join("")}
+            ${rows.length?"":`<tr><td colspan="${state.canWrite?15:14}" class="muted small" style="padding:18px">Хайлтад тохирох байгууллага олдсонгүй.</td></tr>`}
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 3. CAP ---------- */
+function viewCap(){
+  const list=applyFilter("findings", state.findings,
+    ["title","desc","clause","ind","dept","reportNo","kind","severity","status","srcNote",f=>orgName(f.orgId)])
+    .sort((a,b)=>{
+    const rank=s=>({"Хугацаа хэтэрсэн":0,"Нээлттэй":1,"Залруулж байгаа":2,"Хаагдсан":3}[s]??9);
+    const d=rank(effStatus(a))-rank(effStatus(b));
+    return d || String(a.dueDate||"9999").localeCompare(String(b.dueDate||"9999"));
+  });
+  const counts={};
+  STATUSES.concat(["Хугацаа хэтэрсэн"]).forEach(s=>counts[s]=0);
+  state.findings.forEach(f=>counts[effStatus(f)]=(counts[effStatus(f)]||0)+1);
+  state.exportRows={name:"ul_niytsel",
+    head:["ID","Байгууллага","Хэлтэс","ИНД","Заалт","Гарчиг","Төрөл","Ноцтой байдал","Тайлан","Илэрсэн","Хаах хугацаа","Хаасан","Статус"],
+    rows:list.map(f=>[f.id,orgName(f.orgId),f.dept,f.ind,f.clause,f.title,f.kind,f.severity,
+      f.reportNo,f.raisedDate,f.dueDate,f.closedDate,effStatus(f)])};
+  return `
+  <div class="grid">
+    <div class="tiles">
+      <div class="tile ${counts["Хугацаа хэтэрсэн"]?"alert":""}"><div class="k">Хугацаа хэтэрсэн</div><div class="v">${counts["Хугацаа хэтэрсэн"]||0}</div><div class="n">яаралтай арга хэмжээ</div></div>
+      <div class="tile warnv"><div class="k">Нээлттэй</div><div class="v">${counts["Нээлттэй"]||0}</div><div class="n">залруулах төлөвлөгөө хүлээгдэж буй</div></div>
+      <div class="tile"><div class="k">Залруулж байгаа</div><div class="v">${counts["Залруулж байгаа"]||0}</div><div class="n">CAP хэрэгжиж байна</div></div>
+      <div class="tile goodv"><div class="k">Хаагдсан</div><div class="v">${counts["Хаагдсан"]||0}</div>
+        <div class="n">${state.findings.length?Math.round((counts["Хаагдсан"]||0)/state.findings.length*100):0}% хэрэгжилт</div></div>
+    </div>
+
+    ${filterBar("findings","Гарчиг, заалт, байгууллага, тайлангийн дугаараар хайх…")}
+
+    <section class="panel">
+      <header><h2>Үл нийцэл, шаардлага ба залруулах төлөвлөгөө</h2>
+        <span class="hint">${list.length} / ${state.findings.length} бичлэг · хугацаа хэтэрсэн нь эхэнд</span>
+      </header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Гарчиг</th><th>Байгууллага</th><th>ИНД / заалт</th><th>Төрөл</th><th>Ноцтой</th>
+            <th>Илэрсэн</th><th>Хаах хугацаа</th><th>Статус</th>${state.canWrite?"<th></th>":""}</tr></thead>
+          <tbody>${list.map(f=>{const st=effStatus(f);return `
+            <tr>
+              <td style="max-width:340px"><b>${esc(f.title||"—")}</b>
+                ${f.desc?`<div class="small muted">${esc(f.desc).slice(0,190)}${(f.desc||"").length>190?"…":""}</div>`:""}
+                ${f.srcNote?`<div class="small muted" style="margin-top:3px;font-style:italic">${esc(f.srcNote)}</div>`:""}</td>
+              <td class="small">${esc(orgName(f.orgId))}<div class="muted"><span class="code">${esc(f.dept||"")}</span></div></td>
+              <td class="small"><span class="code">${esc(f.ind||"—")}</span>${f.clause?`<div class="mono muted small">${esc(f.clause)}</div>`:""}
+                ${f.reportNo?`<div class="mono muted small">${esc(f.reportNo)}</div>`:""}</td>
+              <td><span class="chip ${f.kind==="Үл нийцэл"?"serious":"neutral"}">${esc(f.kind||"")}</span></td>
+              <td><span class="chip ${f.severity==="Ноцтой"?"crit":(f.severity==="Дунд"?"warn":"neutral")}">${esc(f.severity||"—")}</span></td>
+              <td class="mono small">${esc(f.raisedDate||"—")}</td>
+              <td>${state.canWrite
+                ? `<input class="inline" type="date" data-fnd="${esc(f.id)}" data-f="dueDate" value="${esc(f.dueDate||"")}">`
+                : `<span class="mono small">${esc(f.dueDate||"—")}</span>`}</td>
+              <td>${state.canWrite
+                ? `<select class="inline" data-fnd="${esc(f.id)}" data-f="status">${selOpts(STATUSES, f.status||"Нээлттэй")}</select>
+                   ${st==="Хугацаа хэтэрсэн"?`<div class="chip crit" style="margin-top:4px"><span class="dot"></span>${days(today(),f.dueDate)} хоног</div>`:""}`
+                : `<span class="chip ${st==="Хугацаа хэтэрсэн"?"crit":(st==="Хаагдсан"?"good":"warn")}">${esc(st)}</span>`}</td>
+              ${editBtn("findings",f.id)}
+            </tr>`;}).join("")}
+            ${list.length?"":`<tr><td colspan="${state.canWrite?9:8}" class="muted small" style="padding:18px">Хайлтад тохирох бичлэг олдсонгүй.</td></tr>`}
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 4. Хяналт шалгалт ---------- */
+function viewInsp(){
+  const list=applyFilter("inspections", state.inspections,
+    ["date","dept","type","ind","inspector","reportNo","scope",i=>orgName(i.orgId)])
+    .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+  const byType={}; list.forEach(i=>byType[i.type]=(byType[i.type]||0)+1);
+  const byDept={}; list.forEach(i=>byDept[i.dept]=(byDept[i.dept]||0)+1);
+  state.exportRows={name:"hyanalt_shalgalt",
+    head:["ID","Огноо","Хэлтэс","Төрөл","ИНД","Байгууллага","Байцаагч","Тайлан","Дүгнэлт","Хамрах хүрээ"],
+    rows:list.map(i=>[i.id,i.date,i.dept,i.type,i.ind,orgName(i.orgId),i.inspector,i.reportNo,i.conclusions,i.scope])};
+  return `
+  <div class="grid">
+    ${state.inspections.length===0?`<div class="banner info"><div><b>Энэ бүртгэл хоосон байна.</b> Эх тайланд шалгалтууд зөвхөн
+      <b>нэгтгэсэн тоогоор</b> (517) өгөгдсөн тул мөр тутмын бичлэг үүсгээгүй — нэгтгэлийг “Тайлан 2026-H1” хэсгээс харна.
+      Шалгалт бүрийг <b>+ Хяналт шалгалт нэмэх</b> товчоор оруулж эхэлнэ.</div></div>`:""}
+    <div class="split">
+      <section class="panel"><header><h2>Төрлөөр</h2></header><div class="body">
+        ${Object.keys(byType).length? bars(Object.entries(byType).sort((a,b)=>b[1]-a[1]),"var(--s1)")
+          : `<p class="muted small" style="margin:0">Бичлэг алга.</p>`}</div></section>
+      <section class="panel"><header><h2>Хэлтсээр</h2></header><div class="body">
+        ${Object.keys(byDept).length? bars(Object.entries(byDept).sort((a,b)=>b[1]-a[1]),"var(--s3)")
+          : `<p class="muted small" style="margin:0">Бичлэг алга.</p>`}</div></section>
+    </div>
+
+    ${filterBar("inspections","Огноо, байцаагч, тайлан, байгууллагаар хайх…")}
+
+    <section class="panel">
+      <header><h2>Хяналт шалгалтын бүртгэл</h2>
+        <span class="hint">${list.length} / ${state.inspections.length} бичлэг</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Огноо</th><th>Хэлтэс</th><th>Төрөл</th><th>ИНД</th><th>Байгууллага</th>
+            <th>Байцаагч</th><th>Тайлан</th><th class="num">Дүгнэлт</th><th>Хамрах хүрээ</th>${state.canWrite?"<th></th>":""}</tr></thead>
+          <tbody>${list.length?list.map(i=>`
+            <tr><td class="mono small">${esc(i.date||"—")}</td>
+              <td><span class="code">${esc(i.dept||"—")}</span></td>
+              <td class="small">${esc(i.type||"—")}</td>
+              <td><span class="code">${esc(i.ind||"—")}</span></td>
+              <td class="small">${esc(orgName(i.orgId))}</td>
+              <td class="small">${esc(i.inspector||"—")}</td>
+              <td class="mono small">${esc(i.reportNo||"—")}</td>
+              <td class="num">${i.conclusions??"—"}</td>
+              <td class="small muted" style="max-width:260px">${esc(i.scope||"")}</td>
+              ${editBtn("inspections",i.id)}
+            </tr>`).join("")
+            :`<tr><td colspan="${state.canWrite?10:9}" class="muted small" style="padding:18px">Бичлэг алга.</td></tr>`}
+          </tbody></table></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 5. Гэрчилгээ ---------- */
+function viewCerts(){
+  const list=applyFilter("certs", state.certs,
+    ["certNo","category","ind","holder","action","dept","note",c=>orgName(c.orgId)])
+    .sort((a,b)=>String(a.expiryDate||"9999").localeCompare(String(b.expiryDate||"9999")));
+  const st=c=>{ if(!c.expiryDate) return "Хугацаа заагаагүй";
+    const d=days(c.expiryDate,today()); return d<0?"Хугацаа дууссан":(d<=60?"Удахгүй дуусна":"Хүчинтэй"); };
+  state.exportRows={name:"gerchilgee",
+    head:["ID","Ангилал","ИНД","Байгууллага","Гэрчилгээний дугаар","Үйлдэл","Олгосон","Дуусах","Төлөв"],
+    rows:list.map(c=>[c.id,c.category,c.ind,orgName(c.orgId),c.certNo,c.action,c.issueDate,c.expiryDate,st(c)])};
+  const exp=list.filter(c=>st(c)==="Хугацаа дууссан").length;
+  const soon=list.filter(c=>st(c)==="Удахгүй дуусна").length;
+  return `
+  <div class="grid">
+    <div class="banner info"><div>Эх тайлан гэрчилгээ, үнэмлэхийг зөвхөн <b>ИНД тус бүрийн нийт тоогоор</b> (1,041)
+      өгсөн тул энд бүх гэрчилгээний бичлэг байхгүй — нэгтгэлийг “Тайлан 2026-H1” хэсгээс харна.
+      Энэ бүртгэлд зөвхөн эх сурвалжид <b>дугаараар нь нэрлэгдсэн</b> гэрчилгээг оруулсан;
+      үлдсэнийг <b>+ Гэрчилгээ / үнэмлэх нэмэх</b> товчоор үе шаттай бүртгэнэ.</div></div>
+    <div class="tiles">
+      <div class="tile"><div class="k">Бүртгэл</div><div class="v">${state.certs.length}</div><div class="n">гэрчилгээ, үнэмлэх</div></div>
+      <div class="tile ${soon?"warnv":""}"><div class="k">60 хоногт дуусна</div><div class="v">${soon}</div><div class="n">сунгалт төлөвлөх</div></div>
+      <div class="tile ${exp?"alert":""}"><div class="k">Хугацаа дууссан</div><div class="v">${exp}</div><div class="n">нэн даруй шийдвэрлэх</div></div>
+    </div>
+    ${filterBar("certs","Дугаар, ИНД, эзэмшигч, байгууллагаар хайх…")}
+
+    <section class="panel">
+      <header><h2>Гэрчилгээ, үнэмлэхийн бүртгэл</h2>
+        <span class="hint">${list.length} / ${state.certs.length} · хугацаа дуусах дарааллаар</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Гэрчилгээний дугаар</th><th>Ангилал</th><th>ИНД</th><th>Эзэмшигч</th>
+            <th>Үйлдэл</th><th>Олгосон</th><th>Дуусах</th><th class="num">Үлдсэн хоног</th><th>Төлөв</th>${state.canWrite?"<th></th>":""}</tr></thead>
+          <tbody>${list.length?list.map(c=>{const s=st(c); const d=c.expiryDate?days(c.expiryDate,today()):null; return `
+            <tr><td class="mono">${esc(c.certNo||"—")}</td>
+              <td class="small">${esc(c.category||"—")}</td>
+              <td><span class="code">${esc(c.ind||"—")}</span></td>
+              <td class="small">${esc(c.holder||orgName(c.orgId))}</td>
+              <td class="small">${esc(c.action||"—")}</td>
+              <td class="mono small">${esc(c.issueDate||"—")}</td>
+              <td class="mono small">${esc(c.expiryDate||"—")}</td>
+              <td class="num">${d==null?"—":d}</td>
+              <td><span class="chip ${s==="Хугацаа дууссан"?"crit":(s==="Удахгүй дуусна"?"warn":(s==="Хүчинтэй"?"good":"neutral"))}">${esc(s)}</span></td>
+              ${editBtn("certs",c.id)}
+            </tr>`;}).join("")
+            :`<tr><td colspan="${state.canWrite?10:9}" class="muted small" style="padding:18px">Бичлэг алга.</td></tr>`}
+          </tbody></table></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 6. Төлөвлөлт ---------- */
+function viewPlan(){
+  const risks=state.orgs.map(o=>({o,r:riskOf(o)}));
+  const planTotal=state.plan.reduce((a,p)=>a+(+p.count||0),0);
+  const needTotal=risks.reduce((a,x)=>a+(x.r.perYear||0),0);
+  const byDept={}; state.plan.forEach(p=>byDept[p.dept]=(byDept[p.dept]||0)+(+p.count||0));
+  const needByDept={}; risks.forEach(x=>{ if(x.r.perYear) needByDept[x.o.dept]=(needByDept[x.o.dept]||0)+x.r.perYear; });
+  const planByOrg={}; state.plan.forEach(p=>{ if(p.orgId) planByOrg[p.orgId]=(planByOrg[p.orgId]||0)+(+p.count||0); });
+  const planRows=applyFilter("plan", state.plan, ["period","dept","ind","type",p=>orgName(p.orgId)]);
+  state.exportRows={name:"tolovlogoo",
+    head:["ID","Хугацаа","Хэлтэс","ИНД","Төрөл","Тоо","Байгууллага","Гүйцэтгэсэн"],
+    rows:planRows.map(p=>[p.id,p.period,p.dept,p.ind,p.type,p.count,orgName(p.orgId),p.done??""])};
+  return `
+  <div class="grid">
+    <div class="tiles">
+      <div class="tile"><div class="k">Батлагдсан төлөвлөгөө</div><div class="v">${num(planTotal)}</div><div class="n">2026 оны сүүлийн хагас жил</div></div>
+      <div class="tile"><div class="k">Эрсдэлийн хэрэгцээ</div><div class="v">${needTotal.toFixed(1)}</div><div class="n">жилд шаардагдах шалгалт</div></div>
+      <div class="tile ${risks.filter(x=>!x.r.complete).length?"warnv":"goodv"}"><div class="k">Үнэлгээ дутуу</div>
+        <div class="v">${risks.filter(x=>!x.r.complete).length}</div><div class="n">байгууллагад давтамж тооцох боломжгүй</div></div>
+    </div>
+
+    <section class="panel">
+      <header><h2>Эрсдэлээр тооцсон давтамж</h2>
+        <span class="hint">EASA RBO — түвшин тус бүрд жилийн давтамж</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Байгууллага</th><th>Түвшин</th><th class="num">Оноо</th>
+            <th class="num">Жилд шаардлагатай</th><th class="num">Төлөвлөсөн</th><th>Зөрүү</th><th>Дараагийн шалгалт</th></tr></thead>
+          <tbody>${risks.sort((a,b)=>(b.r.total??-1)-(a.r.total??-1)).map(({o,r})=>{
+            const pl=planByOrg[o.id]||0;
+            const gap = r.perYear==null? null : pl - r.perYear;
+            return `<tr>
+              <td><b>${esc(o.short||o.name)}</b> <span class="code">${esc(o.dept||"")}</span></td>
+              <td>${r.level?`<span class="chip ${LEVEL_CLASS[r.level]}"><span class="dot"></span>${esc(r.level)}</span>`:`<span class="chip neutral">Үнэлгээ дутуу</span>`}</td>
+              <td class="num">${r.total==null?"—":r.total.toFixed(1)}</td>
+              <td class="num">${r.perYear??"—"}</td>
+              <td class="num">${pl}</td>
+              <td>${gap==null?`<span class="muted small">тооцох боломжгүй</span>`
+                : gap<0?`<span class="chip crit"><span class="dot"></span>${Math.abs(gap)} дутуу</span>`
+                : gap>0?`<span class="chip accent">${gap} илүү</span>`
+                : `<span class="chip good"><span class="dot"></span>тэнцсэн</span>`}</td>
+              <td class="mono small" style="${r.nextDue&&r.nextDue<today()?"color:var(--crit);font-weight:600":""}">${esc(r.nextDue||"—")}</td>
+            </tr>`;}).join("")}
+          </tbody></table></div>
+      </div>
+    </section>
+
+    <div class="split">
+      <section class="panel"><header><h2>Хэлтсээр төлөвлөсөн</h2></header><div class="body">
+        ${Object.keys(byDept).length?bars(Object.entries(byDept).sort((a,b)=>b[1]-a[1]),"var(--s1)"):`<p class="muted small" style="margin:0">Төлөвлөгөө алга.</p>`}
+      </div></section>
+      <section class="panel"><header><h2>Хэлтсээр эрсдэлийн хэрэгцээ</h2><span class="hint">жилд</span></header><div class="body">
+        ${Object.keys(needByDept).length?bars(Object.entries(needByDept).map(([k,v])=>[k,+v.toFixed(1)]).sort((a,b)=>b[1]-a[1]),"var(--s2)")
+          :`<p class="muted small" style="margin:0">Эрсдэлийн үнэлгээ хийгдээгүй тул хэрэгцээ тооцогдоогүй.</p>`}
+      </div></section>
+    </div>
+
+    ${filterBar("plan","Хугацаа, хэлтэс, ИНД, төрлөөр хайх…")}
+
+    <section class="panel">
+      <header><h2>Төлөвлөгөөний мөрүүд</h2>
+        <span class="hint">${planRows.length} / ${state.plan.length} мөр</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Хугацаа</th><th>Хэлтэс</th><th>ИНД</th><th>Төрөл</th><th class="num">Тоо</th>
+            <th>Онилсон байгууллага</th><th class="num">Гүйцэтгэсэн</th><th class="num">%</th>${state.canWrite?"<th></th>":""}</tr></thead>
+          <tbody>${planRows.map(p=>`
+            <tr><td class="mono small">${esc(p.period||"—")}</td>
+              <td><span class="code">${esc(p.dept||"—")}</span></td>
+              <td><span class="code">${esc(p.ind||"—")}</span></td>
+              <td class="small">${esc(p.type||"—")}</td>
+              <td class="num">${p.count??"—"}</td>
+              <td>${state.canWrite
+                ? `<select class="inline" data-plan="${esc(p.id)}" data-f="orgId">${selOpts(orgOpts(), p.orgId||"", "—")}</select>`
+                : `<span class="small">${esc(p.orgId?orgName(p.orgId):"—")}</span>`}</td>
+              <td class="num">${state.canWrite
+                ? `<input class="inline" type="number" min="0" style="max-width:70px" data-plan="${esc(p.id)}" data-f="done" value="${esc(p.done??"")}">`
+                : (p.done??"—")}</td>
+              <td class="num">${(p.count&&p.done!=null)?Math.round(p.done/p.count*100)+"%":"—"}</td>
+              ${editBtn("plan",p.id)}
+            </tr>`).join("")}
+            ${planRows.length?"":`<tr><td colspan="${state.canWrite?9:8}" class="muted small" style="padding:18px">Хайлтад тохирох мөр олдсонгүй.</td></tr>`}
+          </tbody>
+          <tfoot><tr><td colspan="4">НИЙТ</td><td class="num">${num(planTotal)}</td><td></td>
+            <td class="num">${num(state.plan.reduce((a,p)=>a+(+p.done||0),0))}</td><td></td>${state.canWrite?"<td></td>":""}</tr></tfoot>
+        </table></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 7. Дүрэм, журмын шинэчлэлт ---------- */
+function viewRegs(){
+  const list=applyFilter("regs", state.regs, ["title","kind","ind","orderNo","issuer","dept","impact"])
+    .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+  const byKind={}; state.regs.forEach(r=>byKind[r.kind]=(byKind[r.kind]||0)+1);
+  state.exportRows={name:"durem_zhuram",
+    head:["ID","Огноо","Нэр","Төрөл","ИНД","Тушаал","Батласан","Хэлтэс","Нөлөө"],
+    rows:list.map(r=>[r.id,r.date,r.title,r.kind,r.ind,r.orderNo,r.issuer,r.dept,r.impact])};
+  return `
+  <div class="grid">
+    <div class="banner info"><div>Шинэчлэгдсэн дүрэм, журам бүр нь <b>хяналтын шалгах хуудас, гэрчилгээний нөхцөл,
+      байцаагчийн сургалтад</b> шууд нөлөөлнө. Шинэчлэлт бүрд “хяналтад үзүүлэх нөлөө”-г бичиж үлдээвэл
+      дараагийн шалгалтын бэлтгэл хийхэд хэрэглэгдэнэ.</div></div>
+
+    <div class="tiles">
+      <div class="tile"><div class="k">Бүртгэл</div><div class="v">${state.regs.length}</div><div class="n">шинэчлэгдсэн баримт бичиг</div></div>
+      ${Object.entries(byKind).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>
+        `<div class="tile"><div class="k">${esc(k)}</div><div class="v">${v}</div><div class="n">баримт бичиг</div></div>`).join("")}
+    </div>
+
+    ${filterBar("regs","Нэр, тушаал, ИНД-ээр хайх…")}
+
+    <section class="panel">
+      <header><h2>Шинэчлэгдэн батлагдсан дүрэм, журам, зөвлөмж</h2>
+        <span class="hint">${list.length} / ${state.regs.length} бичлэг · шинэ нь эхэнд</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Огноо</th><th>Нэр</th><th>Төрөл</th><th>ИНД</th><th>Тушаал</th>
+            <th>Батласан</th><th>Хэлтэс</th>${state.canWrite?"<th></th>":""}</tr></thead>
+          <tbody>${list.length?list.map(r=>`
+            <tr><td class="mono small">${esc(r.date||"—")}</td>
+              <td style="max-width:420px"><b>${esc(r.title||"—")}</b>
+                ${r.impact?`<div class="small muted">${esc(r.impact)}</div>`:""}</td>
+              <td class="small">${esc(r.kind||"—")}</td>
+              <td><span class="code">${esc(r.ind||"—")}</span></td>
+              <td class="mono small">${esc(r.orderNo||"—")}</td>
+              <td class="small">${esc(r.issuer||"—")}</td>
+              <td><span class="code">${esc(r.dept||"—")}</span></td>
+              ${editBtn("regs",r.id)}
+            </tr>`).join("")
+            :`<tr><td colspan="${state.canWrite?8:7}" class="muted small" style="padding:18px">Бичлэг алга.</td></tr>`}
+          </tbody></table></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 8. Хэрэгжүүлэх арга хэмжээ ---------- */
+function viewActions(){
+  const list=applyFilter("actions", state.actions, ["title","benchmark","owner","due","status","steps"])
+    .sort((a,b)=>(a.no??99)-(b.no??99));
+  const cnt={}; ACTION_STATUS.forEach(s=>cnt[s]=0);
+  state.actions.forEach(a=>cnt[a.status||"Эхлээгүй"]=(cnt[a.status||"Эхлээгүй"]||0)+1);
+  const done=cnt["Хэрэгжсэн"]||0;
+  const avg=state.actions.length
+    ? Math.round(state.actions.reduce((s,a)=>s+(+a.progress||0),0)/state.actions.length) : 0;
+  const byBench={}; state.actions.forEach(a=>{ if(a.benchmark) byBench[a.benchmark]=(byBench[a.benchmark]||0)+1; });
+  const sc=s=>s==="Хэрэгжсэн"?"good":s==="Хэрэгжиж байна"?"accent":s==="Хойшлуулсан"?"crit":"neutral";
+  state.exportRows={name:"arga_hemzhee",
+    head:["ID","№","Арга хэмжээ","Олон улсын жишиг","Хариуцах","Хугацаа","Төлөв","Явц %","Алхам"],
+    rows:list.map(a=>[a.id,a.no,a.title,a.benchmark,a.owner,a.due,a.status,a.progress,a.steps])};
+  return `
+  <div class="grid">
+    <div class="banner info"><div>Тайлангийн <b>8-р хэсэгт</b> санал болгосон арга хэмжээнүүд.
+      Эдгээр нь нэмэлт томоохон хөрөнгө оруулалтгүйгээр үе шаттай хэрэгжих боломжтой гэж үнэлэгдсэн.
+      Төлөв, явцыг энд шинэчилснээр ИНЕГ-ын RBO-д шилжих замын зураг нэг дор харагдана.</div></div>
+
+    <div class="tiles">
+      <div class="tile"><div class="k">Нийт арга хэмжээ</div><div class="v">${state.actions.length}</div><div class="n">замын зургийн мөр</div></div>
+      <div class="tile ${done===state.actions.length&&done?"goodv":""}"><div class="k">Хэрэгжсэн</div><div class="v">${done}</div>
+        <div class="n">${state.actions.length?Math.round(done/state.actions.length*100):0}% гүйцэтгэл</div></div>
+      <div class="tile"><div class="k">Хэрэгжиж байна</div><div class="v">${cnt["Хэрэгжиж байна"]||0}</div><div class="n">идэвхтэй ажил</div></div>
+      <div class="tile ${cnt["Хойшлуулсан"]?"alert":""}"><div class="k">Хойшлуулсан</div><div class="v">${cnt["Хойшлуулсан"]||0}</div><div class="n">шалтгааныг тодруулах</div></div>
+      <div class="tile"><div class="k">Дундаж явц</div><div class="v">${avg}%</div><div class="n">бүх арга хэмжээгээр</div></div>
+    </div>
+
+    <section class="panel">
+      <header><h2>Олон улсын жишгээр</h2><span class="hint">аль загвараас гаралтай вэ</span></header>
+      <div class="body">${Object.keys(byBench).length
+        ? bars(Object.entries(byBench).sort((a,b)=>b[1]-a[1]),"var(--s2)")
+        : `<p class="muted small" style="margin:0">Бичлэг алга.</p>`}</div>
+    </section>
+
+    ${filterBar("actions","Арга хэмжээ, жишиг, хариуцагчаар хайх…")}
+
+    <section class="panel">
+      <header><h2>Хэрэгжүүлэх арга хэмжээний явц</h2>
+        <span class="hint">${list.length} / ${state.actions.length} мөр</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th class="num">№</th><th>Арга хэмжээ</th><th>Жишиг</th><th>Хариуцах</th>
+            <th>Хугацаа</th><th>Төлөв</th><th style="min-width:110px">Явц</th>${state.canWrite?"<th></th>":""}</tr></thead>
+          <tbody>${list.length?list.map(a=>`
+            <tr><td class="num">${a.no??"—"}</td>
+              <td style="max-width:400px"><b>${esc(a.title||"—")}</b>
+                ${a.steps?`<div class="small muted">${esc(a.steps)}</div>`:""}</td>
+              <td class="small">${esc(a.benchmark||"—")}</td>
+              <td class="small">${esc(a.owner||"—")}</td>
+              <td class="small mono">${esc(a.due||"—")}</td>
+              <td><span class="chip ${sc(a.status||"Эхлээгүй")}"><span class="dot"></span>${esc(a.status||"Эхлээгүй")}</span></td>
+              <td><div class="prog-track"><span style="width:${Math.max(0,Math.min(100,+a.progress||0))}%"></span></div>
+                <div class="small muted mono" style="margin-top:3px">${+a.progress||0}%</div></td>
+              ${editBtn("actions",a.id)}
+            </tr>`).join("")
+            :`<tr><td colspan="${state.canWrite?8:7}" class="muted small" style="padding:18px">Бичлэг алга.</td></tr>`}
+          </tbody></table></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>GASP 2026–2028 зорилтууд</h2>
+        <span class="hint">ICAO · дээрх арга хэмжээний хүрээ</span></header>
+      <div class="body"><ul class="notes" style="margin:0;padding-left:18px">
+        ${GASP.map(g=>`<li>${esc(g)}</li>`).join("")}
+      </ul></div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 9. Тайлан ---------- */
+function viewReport(){
+  const it=REPORT.inspections, tp=it.reduce((a,d)=>a+d.planned,0),
+        tu=it.reduce((a,d)=>a+d.unplanned,0), td=it.reduce((a,d)=>a+d.docs,0);
+  const f=REPORT.findings;
+  const org=REPORT.certs.filter(c=>!["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+c[5],0);
+  const per=REPORT.certs.filter(c=>["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+c[5],0);
+  return `
+  <div class="grid">
+    <div class="banner info"><div>Энэ хэсэг нь <b>2026 оны I хагас жилийн батлагдсан тайлангийн (0616.xlsx)</b>
+      нийтлэгдсэн үзүүлэлт. Өөрчлөгдөхгүй лавлагаа болгон хадгалсан.</div></div>
+
+    <section class="panel">
+      <header><h2>Хяналт шалгалт, хэлтсээр</h2><span class="hint">${esc(REPORT.label)}</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Хэлтэс</th><th class="num">Төлөвлөгөөт</th><th class="num">Төлөвлөгөөт бус</th>
+          <th class="num">Баримт бичгийн хяналт</th><th class="num">Нийт</th></tr></thead>
+        <tbody>${it.map(d=>`<tr><td>${esc(d.name)} <span class="code">${esc(d.dept)}</span></td>
+          <td class="num">${d.planned}</td><td class="num">${d.unplanned}</td><td class="num">${d.docs}</td>
+          <td class="num"><b>${d.planned+d.unplanned+d.docs}</b></td></tr>`).join("")}</tbody>
+        <tfoot><tr><td>НИЙТ</td><td class="num">${tp}</td><td class="num">${tu}</td><td class="num">${td}</td>
+          <td class="num">${tp+tu+td}</td></tr></tfoot>
+      </table></div></div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Дүгнэлт, үл нийцэл, шаардлага</h2></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Хэлтэс</th><th class="num">Нэгдсэн тайлан</th><th class="num">Дүгнэлт</th>
+          <th class="num">Үл нийцэл</th><th class="num">Шаардлага</th><th>Тэмдэглэл</th></tr></thead>
+        <tbody>${f.map(d=>`<tr><td><span class="code">${esc(d.dept)}</span></td>
+          <td class="num">${d.reports}</td><td class="num">${d.conclusions}</td>
+          <td class="num">${d.nonconf}</td><td class="num">${d.reqs}</td>
+          <td class="small muted">${esc(d.note||"")}</td></tr>`).join("")}</tbody>
+        <tfoot><tr><td>НИЙТ</td><td class="num">${f.reduce((a,d)=>a+d.reports,0)}</td>
+          <td class="num">${f.reduce((a,d)=>a+d.conclusions,0)}</td>
+          <td class="num">${f.reduce((a,d)=>a+d.nonconf,0)}</td>
+          <td class="num">${f.reduce((a,d)=>a+d.reqs,0)}</td><td></td></tr></tfoot>
+      </table></div></div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Гэрчилгээ, үнэмлэхжүүлэлт</h2>
+        <span class="hint">байгууллага ${org} · ажилтан ${per} · нийт ${org+per}</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>ИНД</th><th>Агуулга</th><th class="num">Шинээр</th><th class="num">Сунгасан</th>
+          <th class="num">Өөрчлөлт</th><th class="num">Нийт</th></tr></thead>
+        <tbody>${REPORT.certs.map(c=>`<tr><td><span class="code">${esc(c[0])}</span></td>
+          <td class="small">${esc(c[1])}</td><td class="num">${c[2]??"—"}</td><td class="num">${c[3]??"—"}</td>
+          <td class="num">${c[4]??"—"}</td><td class="num"><b>${c[5]}</b></td></tr>`).join("")}</tbody>
+        <tfoot><tr><td colspan="2">НИЙТ</td>
+          <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[2]||0),0)}</td>
+          <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[3]||0),0)}</td>
+          <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[4]||0),0)}</td>
+          <td class="num">${REPORT.certs.reduce((a,c)=>a+c[5],0)}</td></tr></tfoot>
+      </table></div></div>
+    </section>
+
+    <section class="panel">
+      <header><h2>USOAP-CMA ба найман чухал элемент</h2>
+        <span class="hint">ICAO Doc 9734 · тогтолцооны хэмжүүр</span></header>
+      <div class="body">
+        <div class="tiles" style="margin-bottom:14px">
+          <div class="tile"><div class="k">AGA аудит ${esc(REPORT.usoap.dates)}</div>
+            <div class="v">${REPORT.usoap.score}</div><div class="n">${REPORT.usoap.pq} протокол асуулга</div></div>
+          <div class="tile"><div class="k">ICVM ${REPORT.usoap.icvm.year} · нэгдсэн EI</div>
+            <div class="v">${REPORT.usoap.icvm.ei}%</div><div class="n">үр дүнтэй хэрэгжилт</div></div>
+          ${REPORT.usoap.icvm.weak.map(w=>`<div class="tile warnv"><div class="k">${esc(w[0])} · хамгийн сул</div>
+            <div class="v">${w[2]}%</div><div class="n">${esc(w[1])}</div></div>`).join("")}
+        </div>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Элемент</th><th>Агуулга</th><th>${REPORT.usoap.icvm.year} ICVM</th></tr></thead>
+          <tbody>${REPORT.ce.map(c=>{
+            const w=REPORT.usoap.icvm.weak.find(x=>x[0]===c[0]);
+            return `<tr><td><span class="code">${esc(c[0])}</span></td><td class="small">${esc(c[1])}</td>
+              <td>${w?`<span class="chip warn"><span class="dot"></span>${w[2]}%</span>`
+                    :`<span class="muted small">тусад нь заагаагүй</span>`}</td></tr>`;}).join("")}</tbody>
+        </table></div>
+        <div class="banner warn" style="margin-top:12px"><div>Гишүүн улс залруулах төлөвлөгөө (CAP)-өө USOAP CMA
+          Online Framework-д тайлан хүлээн авснаас хойш <b>${REPORT.usoap.icvm.capDays} хоногийн дотор</b> шинэчлэн байршуулах үүрэгтэй.
+          ICAO-гийн зөвлөмжөөр эрсдэлд суурилсан хяналтад шилжихээс өмнө суурь стандартын үр дүнтэй хэрэгжилт
+          <b>60-аас доошгүй хувь</b> байх ёстой.</div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Өгөгдлийн зөрүү — тодруулах шаардлагатай</h2></header>
+      <div class="body"><ul class="notes" style="margin:0;padding-left:18px">
+        ${REPORT.notes.map(n=>`<li>${esc(n)}</li>`).join("")}
+      </ul></div>
+    </section>
+  </div>`;
+}
+
+/* ---------- 8. Тохиргоо ---------- */
+function viewCfg(){
+  const s=settings();
+  return `
+  <div class="grid">
+    <div class="banner ${state.canWrite?"info":"warn"}"><div>${state.canWrite
+      ? "Жин, торгууль, түвшний босгыг өөрчлөхөд эрсдэлийн бүх оноо шууд дахин тооцогдоно."
+      : "Танд засварлах эрх алга — утгыг харах боломжтой."}</div></div>
+
+    <div class="split">
+      <section class="panel">
+        <header><h2>Хүчин зүйлийн жин</h2><span class="hint">нийлбэр 100% байх ёстой</span></header>
+        <div class="body"><div class="form">
+          <div class="field"><label>Нарийн төвөгтэй байдал (%)</label>
+            <input type="number" id="w_cx" min="0" max="100" value="${Math.round(s.weights.complexity*100)}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>Нийцлийн түүх (%)</label>
+            <input type="number" id="w_co" min="0" max="100" value="${Math.round(s.weights.compliance*100)}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>УТ-ны төлөвшилт (%)</label>
+            <input type="number" id="w_ms" min="0" max="100" value="${Math.round(s.weights.maturity*100)}" ${state.canWrite?"":"disabled"}></div>
+        </div></div>
+      </section>
+
+      <section class="panel">
+        <header><h2>Нийцлийн түүхийн торгууль</h2><span class="hint">бичлэг тутамд оноо</span></header>
+        <div class="body"><div class="form">
+          <div class="field"><label>Хугацаа хэтэрсэн</label>
+            <input type="number" id="p_od" min="0" value="${s.penalty.overdue}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>Үл нийцэл</label>
+            <input type="number" id="p_nc" min="0" value="${s.penalty.nonconformity}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>Шаардлага</label>
+            <input type="number" id="p_rq" min="0" value="${s.penalty.requirement}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>Харах хугацаа (сар)</label>
+            <input type="number" id="p_lb" min="1" value="${s.lookbackMonths}" ${state.canWrite?"":"disabled"}></div>
+        </div></div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <header><h2>Залруулах хугацааны дүрэм</h2>
+        <span class="hint">илэрсэн огнооноос хойш хэдэн хоног</span></header>
+      <div class="body">
+        <div class="form">
+          <div class="field"><label>Ноцтой (хоног)</label>
+            <input type="number" id="d_hi" min="1" value="${(s.dueDays||DEFAULTS.dueDays)["Ноцтой"]}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>Дунд (хоног)</label>
+            <input type="number" id="d_md" min="1" value="${(s.dueDays||DEFAULTS.dueDays)["Дунд"]}" ${state.canWrite?"":"disabled"}></div>
+          <div class="field"><label>Бага (хоног)</label>
+            <input type="number" id="d_lo" min="1" value="${(s.dueDays||DEFAULTS.dueDays)["Бага"]}" ${state.canWrite?"":"disabled"}></div>
+        </div>
+        ${state.canWrite?`<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn" data-act="autoDue">Хугацаагүй бичлэгт дүрмээр хугацаа тавих</button>
+          <span class="small muted">${state.findings.filter(f=>!f.dueDate&&f.raisedDate&&effStatus(f)!=="Хаагдсан").length} нээлттэй бичлэгт хугацаа тавиагүй байна</span>
+        </div>`:""}
+        <p class="small muted" style="margin:12px 0 0;max-width:70ch">Эх тайлангаас орсон бичлэгүүдэд залруулах хугацаа заагдаагүй тул
+        “хугацаа хэтэрсэн” сэрэмжлүүлэг ажиллахгүй байна. Дээрх дүрмээр хугацааг нэг дор тавьсны дараа
+        бичлэг тус бүрийн бодит хугацааг <b>Засах</b> цонхноос залруулна.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Эрсдэлийн түвшин ба жилийн давтамж</h2></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Түвшин</th><th class="num">Доод оноо</th><th class="num">Жилд хийх шалгалт</th><th>Мөчлөг</th></tr></thead>
+        <tbody>${[...s.levels].sort((a,b)=>b.min-a.min).map((l,i)=>`
+          <tr><td><span class="chip ${LEVEL_CLASS[l.name]||"neutral"}"><span class="dot"></span>${esc(l.name)}</span></td>
+            <td class="num">${state.canWrite?`<input class="inline" type="number" style="max-width:80px" data-lvl="${esc(l.name)}" data-f="min" value="${l.min}">`:l.min}</td>
+            <td class="num">${state.canWrite?`<input class="inline" type="number" step="0.5" style="max-width:80px" data-lvl="${esc(l.name)}" data-f="perYear" value="${l.perYear}">`:l.perYear}</td>
+            <td class="small muted">${l.perYear>=1? `жилд ${l.perYear} удаа` : `${Math.round(12/l.perYear)} сар тутам`}</td></tr>`).join("")}
+        </tbody></table></div></div>
+      ${state.canWrite?`<div class="body" style="border-top:1px solid var(--line);display:flex;gap:8px">
+        <button class="btn primary" data-act="saveCfg">Тохиргоог хадгалах</button>
+        <button class="btn" data-act="resetCfg">Анхны утга руу буцаах</button></div>`:""}
+    </section>
+
+    <section class="panel">
+      <header><h2>Загварын үндэслэл</h2></header>
+      <div class="body">
+        <p style="margin:0 0 10px;max-width:70ch">Энэ сан нь EASA-гийн <i>“Practices for risk-based oversight”</i>
+        баримт бичигт тодорхойлсон гурван хүчин зүйлийн загварыг хэрэглэж байна: үйл ажиллагааны нарийн төвөгтэй байдал,
+        аюулгүй байдлын гүйцэтгэл ба нийцлийн түүх, удирдлагын тогтолцооны төлөвшилт.</p>
+        <ul class="notes" style="margin:0;padding-left:18px">
+          <li>Эрсдэлийн профайлыг нэг байцаагч биш, мэргэжилтнүүдийн зөвлөл консенсусаар тогтоохыг зөвлөдөг.</li>
+          <li>Гүйцэтгэл мэдэгдэхүйц буурсан бол мөчлөгийг богиносгож, давтамжийг нэмнэ.</li>
+          <li>Шаардлага хангасан удирдлагын тогтолцоо, өгөгдөл солилцооны журам, шударга соёл (just culture) нь урьдчилсан нөхцөл.</li>
+          <li>ICAO-гийн зөвлөмжөөр суурь стандартын үр дүнтэй хэрэгжилтийг 60-аас доошгүй хувьд хүргэсэн байхыг шаарддаг.</li>
+        </ul>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ============================================================ үйлдэл */
+function wire(){
+  const root=$("#view");
+  root.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>act(b.dataset.act));
+  root.querySelectorAll("[data-new]").forEach(b=>b.onclick=()=>openForm(b.dataset.new));
+  root.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{
+    const [c,...rest]=b.dataset.edit.split("/"); openForm(c, rest.join("/"));
+  });
+  root.querySelectorAll("[data-srch]").forEach(el=>{
+    let t=null;
+    el.oninput=()=>{ clearTimeout(t); const c=el.dataset.srch, v=el.value;
+      t=setTimeout(()=>{ state.filter[c]=v; render();
+        const n=document.querySelector(`[data-srch="${c}"]`);
+        if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length); } }, 220); };
+  });
+  root.querySelectorAll("[data-clr]").forEach(b=>b.onclick=()=>{ state.filter[b.dataset.clr]=""; render(); });
+  root.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+    const [c,i]=b.dataset.del.split("/");
+    if(confirm("Энэ бичлэгийг устгах уу?")) remove(c,i);
+  });
+  root.querySelectorAll("[data-org]").forEach(el=>el.onchange=async()=>{
+    const v=el.value===""?null:(el.type==="date"?el.value:+el.value);
+    if(await patch("orgs", el.dataset.org, {[el.dataset.f]:v})) toast("Хадгаллаа");
+  });
+  root.querySelectorAll("[data-fnd]").forEach(el=>el.onchange=async()=>{
+    const f=el.dataset.f; const patchObj={[f]: el.value||null};
+    if(f==="status") patchObj.closedDate = el.value==="Хаагдсан" ? today() : null;
+    if(await patch("findings", el.dataset.fnd, patchObj)) toast("Хадгаллаа");
+  });
+  root.querySelectorAll("[data-plan]").forEach(el=>el.onchange=async()=>{
+    const v = el.dataset.f==="done" ? (el.value===""?null:+el.value) : (el.value||null);
+    if(await patch("plan", el.dataset.plan, {[el.dataset.f]:v})) toast("Хадгаллаа");
+  });
+  root.querySelectorAll("[data-lvl]").forEach(el=>el.onchange=()=>{});
+}
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape" && state.modal) closeForm();
+});
+
+async function act(a){
+  if(a==="closeForm") return closeForm();
+  if(a==="submitForm") return submitForm();
+  if(a==="deleteRec") return deleteRec();
+  if(a==="autoDue"){
+    const rule=settings().dueDays||DEFAULTS.dueDays;
+    const targets=state.findings.filter(f=>!f.dueDate && f.raisedDate && effStatus(f)!=="Хаагдсан");
+    if(!targets.length) return toast("Хугацаа тавих шаардлагатай нээлттэй бичлэг алга");
+    if(!confirm(`${targets.length} нээлттэй бичлэгт ноцтой байдлын дүрмээр хаах хугацаа тавих уу?\n\n`+
+      `Ноцтой ${rule["Ноцтой"]} хоног · Дунд ${rule["Дунд"]} хоног · Бага ${rule["Бага"]} хоног\n`+
+      `(илэрсэн огнооноос тоолно; гараар дарж бичсэн хугацааг хөндөхгүй)`)) return;
+    let n=0;
+    for(const f of targets){
+      const d=new Date(f.raisedDate); d.setDate(d.getDate()+(rule[f.severity]??rule["Дунд"]));
+      if(await patch("findings", f.id, {dueDate:d.toISOString().slice(0,10)})) n++;
+    }
+    toast(`${n} бичлэгт хугацаа тавилаа`);
+    return;
+  }
+  if(a==="saveCfg"){
+    const cx=+($("#w_cx").value||0), co=+($("#w_co").value||0), ms=+($("#w_ms").value||0);
+    if(cx+co+ms!==100) return toast("Жингийн нийлбэр 100% байх ёстой (одоо "+(cx+co+ms)+"%)");
+    const levels=[...settings().levels].map(l=>{
+      const mn=$(`[data-lvl="${CSS.escape(l.name)}"][data-f="min"]`);
+      const py=$(`[data-lvl="${CSS.escape(l.name)}"][data-f="perYear"]`);
+      return {name:l.name, min:mn?+mn.value:l.min, perYear:py?+py.value:l.perYear};
+    });
+    const ok=await save("meta","settings",{weights:{complexity:cx/100,compliance:co/100,maturity:ms/100},
+      penalty:{overdue:+$("#p_od").value, nonconformity:+$("#p_nc").value, requirement:+$("#p_rq").value},
+      lookbackMonths:+$("#p_lb").value, levels,
+      dueDays:{"Ноцтой":+$("#d_hi").value, "Дунд":+$("#d_md").value, "Бага":+$("#d_lo").value}});
+    if(ok) toast("Тохиргоог хадгаллаа");
+    return;
+  }
+  if(a==="resetCfg"){ if(await save("meta","settings",DEFAULTS)) toast("Анхны утга сэргээлээ"); return; }
+}
+
+/* ---------- CSV ---------- */
+$("#exportBtn").onclick=()=>{
+  const x=state.exportRows; if(!x) return;
+  const q=v=>{const s=v==null?"":String(v); return /[",\n;]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  // Excel-д кирилл үсэг зөв гарахын тулд BOM, талбар тусгаарлагчид цэгтэй таслал.
+  const csv="﻿"+[x.head.map(q).join(";"), ...x.rows.map(r=>r.map(q).join(";"))].join("\r\n");
+  try{
+    const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+    const a=document.createElement("a");
+    a.href=url; a.download=`ineg_${x.name}_${today()}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  }catch(e){ toast("Татаж чадсангүй"); }
+};
+
+/* ---------- толгойн товчнууд ---------- */
+$("#authBtn").onclick=async()=>{
+  if(!state.db) return;
+  if(state.db.user()){
+    if(!confirm("Системээс гарах уу? Үүний дараа зөвхөн харах эрхтэй болно.")) return;
+    await state.db.signOut(); toast("Гарлаа"); render();
+  } else { state.authOpen=true; drawAuth(); }
+};
+$("#refreshBtn").onclick=async()=>{
+  if(!state.db) return;
+  const b=$("#refreshBtn"); b.disabled=true;
+  try{ await state.db.refresh(); toast("Шинэчиллээ"); }
+  finally{ b.disabled=false; }
+};
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape" && state.authOpen) authAct("closeAuth");
+});
+
+drawNav(); render(); boot();
+</script>
+
+</body>
+</html>

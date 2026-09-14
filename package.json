@@ -1,0 +1,12 @@
+{
+  "name": "ineg-hyanalt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ИНЕГ — хяналт шалгалтын мэдээллийн сан ба байцаагчийн гарын авлага",
+  "scripts": {
+    "start": "node serve.js",
+    "test": "node test/db.test.js",
+    "mock": "node test/mock-supabase.js"
+  },
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,1897 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ИНЕГ — Нисэхийн байцаагчийн сургалтын гарын авлага: 12 модуль, цээжлэх карт, кэйс, тест">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128203;</text></svg>">
+<title>Нисэхийн Байцаагчийн Гарын Авлага</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#E8ECEF; --surface:#FCFDFD; --surface-2:#F0F3F6; --surface-3:#E2E7EB;
+  --ink:#121A20; --ink-2:#41505C; --ink-3:#6D7D8A;
+  --line:#C7D0D7; --line-soft:#DCE3E8;
+  --accent:#A8005C; --accent-2:#7C0044; --accent-soft:#F7E3EE;
+  --air:#15618F; --air-soft:#E1EDF6;
+  --warn:#BE1220; --warn-soft:#FAE4E5;
+  --caut:#9E5D00; --caut-soft:#FAEFDA;
+  --ok:#0A6B4C; --ok-soft:#DFEFE9;
+  --shadow:0 1px 2px rgba(18,26,32,.06), 0 8px 24px -16px rgba(18,26,32,.24);
+  --f-disp:"Oswald","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono","Cascadia Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A0F13; --surface:#141B21; --surface-2:#1A242B; --surface-3:#212D35;
+    --ink:#E6EDF3; --ink-2:#A7B6C2; --ink-3:#798997;
+    --line:#2A363F; --line-soft:#212B33;
+    --accent:#FF62A9; --accent-2:#FF8FC2; --accent-soft:#390F26;
+    --air:#63B6EF; --air-soft:#0D2837;
+    --warn:#FF6E7A; --warn-soft:#3A1215;
+    --caut:#EFA93A; --caut-soft:#33230A;
+    --ok:#3FCB93; --ok-soft:#06291C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A0F13; --surface:#141B21; --surface-2:#1A242B; --surface-3:#212D35;
+  --ink:#E6EDF3; --ink-2:#A7B6C2; --ink-3:#798997;
+  --line:#2A363F; --line-soft:#212B33;
+  --accent:#FF62A9; --accent-2:#FF8FC2; --accent-soft:#390F26;
+  --air:#63B6EF; --air-soft:#0D2837;
+  --warn:#FF6E7A; --warn-soft:#3A1215;
+  --caut:#EFA93A; --caut-soft:#33230A;
+  --ok:#3FCB93; --ok-soft:#06291C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--f-disp);font-weight:500;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+
+/* ---------- command bar ---------- */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:14px;padding:9px 18px;flex-wrap:wrap}
+.bar .brand{font-family:var(--f-disp);font-size:15px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.bar .brand b{color:var(--accent);font-weight:600}
+.bar .sp{flex:1 1 40px}
+.search{display:flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:4px 9px;min-width:190px}
+.search input{border:0;background:transparent;color:var(--ink);font:500 13px/1.4 var(--f-mono);width:100%;outline:none}
+.search svg{flex:none;opacity:.55}
+.prog{display:flex;align-items:center;gap:8px;font:500 11.5px/1 var(--f-mono);color:var(--ink-2);white-space:nowrap}
+.prog .track{width:96px;height:5px;background:var(--surface-3);border-radius:99px;overflow:hidden}
+.prog .fill{height:100%;width:0;background:var(--accent);transition:width .3s}
+.tbtn{font:500 11.5px/1 var(--f-mono);background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line);border-radius:3px;padding:6px 9px;cursor:pointer}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:1fr;max-width:1420px;margin:0 auto;padding:0 18px 90px}
+@media(min-width:1060px){.shell{grid-template-columns:236px minmax(0,1fr);gap:44px;padding:0 28px 120px}}
+
+/* flight-strip nav */
+nav.rail{display:none}
+@media(min-width:1060px){
+  nav.rail{display:block;position:sticky;top:56px;align-self:start;max-height:calc(100vh - 76px);overflow-y:auto;padding:26px 0 30px}
+}
+.rail .rl{font:500 10px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);padding:0 0 9px 11px}
+.rail ol{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:1px}
+.rail a{display:grid;grid-template-columns:26px 1fr;gap:6px;align-items:baseline;text-decoration:none;color:var(--ink-2);
+  font-size:13.5px;line-height:1.3;padding:7px 9px 7px 0;border-left:3px solid transparent}
+.rail a .n{font:500 10.5px/1.5 var(--f-mono);color:var(--ink-3);text-align:right}
+.rail a:hover{color:var(--ink);background:var(--surface-2)}
+.rail a.on{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+.rail a.on .n{color:var(--accent)}
+
+main{min-width:0;max-width:780px}
+
+/* ---------- hero ---------- */
+.hero{padding:46px 0 30px;border-bottom:1px solid var(--line)}
+.eyebrow{font:500 11px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:16px}
+.hero h1{font-size:clamp(34px,6vw,54px);font-weight:600;letter-spacing:-.01em}
+.hero .lede{margin-top:18px;font-size:17.5px;color:var(--ink-2);max-width:62ch}
+.strip{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));border:1px solid var(--line);
+  background:var(--surface);font-family:var(--f-mono)}
+.strip div{padding:11px 13px;border-right:1px solid var(--line-soft)}
+.strip div:last-child{border-right:0}
+.strip dt{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.strip dd{margin:0;font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* ---------- sections ---------- */
+section{padding:44px 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:62px}
+.mhead{display:flex;align-items:flex-start;gap:14px;margin-bottom:8px}
+.mnum{font:600 12px/1.5 var(--f-mono);color:var(--accent);border:1px solid var(--accent);padding:2px 7px;flex:none;margin-top:5px}
+section h2{font-size:clamp(24px,3.4vw,31px);font-weight:600}
+.sub{color:var(--ink-3);font:400 13.5px/1.5 var(--f-mono);margin-top:4px}
+section > p{margin-top:16px;max-width:66ch}
+h3{font-size:18.5px;font-weight:600;margin-top:34px;letter-spacing:.005em}
+h4{font-size:15px;font-weight:600;margin-top:22px;font-family:var(--f-body)}
+
+/* ---------- primitives ---------- */
+.note{border-left:3px solid var(--air);background:var(--air-soft);padding:13px 16px;margin-top:20px;font-size:14.5px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.flag{border-left:3px solid var(--warn);background:var(--warn-soft);padding:13px 16px;margin-top:20px;font-size:14.5px;color:var(--ink-2)}
+.flag b{color:var(--warn)}
+.tip{border-left:3px solid var(--caut);background:var(--caut-soft);padding:13px 16px;margin-top:20px;font-size:14.5px;color:var(--ink-2)}
+.tip b{color:var(--caut)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--surface-2);border:1px solid var(--line-soft);padding:.08em .34em;border-radius:2px;white-space:nowrap}
+.tw{overflow-x:auto;margin-top:20px;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+th{font:500 10.5px/1.4 var(--f-mono);letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.m{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+ul.lst,ol.lst{margin:16px 0 0;padding-left:22px;max-width:66ch;display:flex;flex-direction:column;gap:8px}
+ul.lst li::marker{color:var(--accent)}
+ol.lst li::marker{color:var(--accent);font-family:var(--f-mono);font-size:.85em}
+.pill{display:inline-block;font:500 10.5px/1.6 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.p-w{color:var(--warn)} .p-c{color:var(--caut)} .p-o{color:var(--ok)} .p-a{color:var(--air)} .p-m{color:var(--accent)}
+
+/* module completion */
+.done{margin-top:30px;display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);color:var(--ink-3);
+  border-top:1px dashed var(--line);padding-top:16px}
+.done button{font:500 11.5px/1 var(--f-mono);background:transparent;color:var(--ink-2);border:1px solid var(--line);padding:7px 11px;border-radius:2px;cursor:pointer}
+.done button:hover{border-color:var(--accent);color:var(--accent)}
+.done button[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:18px;font:500 11.5px/1.5 var(--f-mono);color:var(--ink-2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:2px;display:block}
+
+/* story mnemonic */
+.story{margin-top:22px;border:1px solid var(--line);background:var(--surface);padding:20px 22px;font-size:16px;line-height:1.85;color:var(--ink-2)}
+.story b{color:var(--ink);font-weight:600}
+.story sup{font-family:var(--f-mono);font-size:10px;font-weight:600;color:var(--accent);padding:0 1px}
+
+/* grid of small blocks */
+.gr{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line);margin-top:22px;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.gr > div{background:var(--surface);padding:13px 15px}
+.gr dt{font:500 10px/1.4 var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.gr dd{margin:0;font-size:14px;color:var(--ink-2)}
+.gr dd b{color:var(--ink)}
+
+/* flashcards */
+.fc-top{display:flex;align-items:center;gap:14px;margin-top:22px;flex-wrap:wrap;font:500 12px/1 var(--f-mono);color:var(--ink-3)}
+.fc-top select{font:500 12px/1 var(--f-mono);background:var(--surface);color:var(--ink);border:1px solid var(--line);padding:7px 9px;border-radius:2px}
+.card{margin-top:16px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.card .ch{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line-soft);background:var(--surface-2);
+  font:500 10.5px/1.5 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.card .cq{padding:24px 22px;font-family:var(--f-disp);font-size:22px;font-weight:500;line-height:1.3}
+.card .ca{padding:0 22px 20px;font-size:15px;color:var(--ink-2);border-top:1px solid var(--line-soft);margin-top:0;padding-top:18px}
+.card .ca b{color:var(--ink)}
+.card .ca .hook{display:block;margin-top:12px;font-family:var(--f-mono);font-size:12.5px;color:var(--accent)}
+.card .cf{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line-soft);flex-wrap:wrap}
+.btn{font:500 12px/1 var(--f-mono);padding:9px 13px;border-radius:2px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--ink-3)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.pri{color:#1A0410}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.pri{color:#1A0410}}
+.btn.pri:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn.gd{color:var(--ok);border-color:var(--ok)}
+.btn.bd{color:var(--caut);border-color:var(--caut)}
+
+/* case / occurrence strip */
+.occ{margin-top:22px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.occ > summary{cursor:pointer;list-style:none;padding:0;display:block}
+.occ > summary::-webkit-details-marker{display:none}
+.occ-h{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+.occ[open] .occ-h{background:var(--surface-2)}
+.occ-h .t{font-family:var(--f-disp);font-size:18.5px;font-weight:500}
+.occ-h .meta{font:500 10.5px/1.6 var(--f-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-top:3px}
+.occ-h .chev{font:500 11px/1 var(--f-mono);color:var(--accent);white-space:nowrap}
+.occ[open] .occ-h .chev{color:var(--ink-3)}
+.occ-b{padding:4px 16px 18px}
+.occ-b h5{margin:18px 0 0;font:500 10.5px/1.6 var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.occ-b p{margin-top:6px;font-size:14.8px;color:var(--ink-2)}
+.occ-b p b{color:var(--ink)}
+.delta{margin-top:14px;border-left:3px solid var(--ok);background:var(--ok-soft);padding:12px 15px}
+.delta .dl{font:500 10.5px/1.6 var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ok)}
+.delta ul{margin:8px 0 0;padding-left:19px;font-size:14.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:7px}
+.delta li::marker{color:var(--ok)}
+.figs{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line);margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.figs > div{background:var(--surface-2);padding:10px 13px}
+.figs dt{font:500 9.5px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.figs dd{margin:0;font:600 17px/1.2 var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.figs dd small{display:block;font:400 11px/1.4 var(--f-body);color:var(--ink-3);margin-top:3px}
+
+/* scenario */
+.scn{margin-top:24px;border:1px solid var(--line);border-top:3px solid var(--accent);background:var(--surface);box-shadow:var(--shadow)}
+.scn-h{padding:15px 18px 0}
+.scn-h .id{font:500 10.5px/1.6 var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.scn-h h3{margin:4px 0 0;font-size:20px}
+.scn-b{padding:12px 18px 18px}
+.scn-b .sit{font-size:15.3px;color:var(--ink-2)}
+.scn-b .sit b{color:var(--ink)}
+.qz{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.qz .ql{font:500 10.5px/1.6 var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.qz ol{margin:8px 0 0;padding-left:20px;font-size:14.8px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+.sol{border-top:1px solid var(--line);background:var(--surface-2);padding:4px 18px 20px;margin-top:0}
+.steps{margin-top:16px;display:flex;flex-direction:column;gap:1px;background:var(--line-soft);border:1px solid var(--line)}
+.steps > div{background:var(--surface);padding:12px 15px;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start}
+.steps .k{font:600 18px/1.1 var(--f-disp);color:var(--accent);text-align:center}
+.steps .v{font-size:14.5px;color:var(--ink-2)}
+.steps .v b{color:var(--ink);display:block;font-size:13px;font-family:var(--f-mono);font-weight:600;letter-spacing:.03em;margin-bottom:3px}
+.cite{margin-top:14px;font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);line-height:1.7}
+.cite b{color:var(--air);font-weight:500}
+.trap{margin-top:14px;border-left:3px solid var(--warn);background:var(--warn-soft);padding:11px 14px;font-size:14.3px;color:var(--ink-2)}
+.trap b{color:var(--warn);font:500 10.5px/1.8 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;display:block}
+
+/* quiz */
+.q{margin-top:20px;border:1px solid var(--line);background:var(--surface);padding:16px 18px}
+.q .qn{font:500 10.5px/1.6 var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.q .qt{margin-top:5px;font-size:16px;font-weight:500;color:var(--ink)}
+.q .opts{margin-top:12px;display:flex;flex-direction:column;gap:2px}
+.q label{display:grid;grid-template-columns:20px 1fr;gap:9px;align-items:start;padding:8px 10px;border:1px solid transparent;border-radius:2px;cursor:pointer;font-size:14.6px;color:var(--ink-2)}
+.q label:hover{background:var(--surface-2)}
+.q label.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ink)}
+.q label.wrong{background:var(--warn-soft);border-color:var(--warn);color:var(--ink)}
+.q input{margin-top:5px;accent-color:var(--accent)}
+.q .exp{margin-top:12px;border-left:3px solid var(--air);background:var(--air-soft);padding:11px 14px;font-size:14.3px;color:var(--ink-2)}
+.q .exp b{color:var(--ink)}
+.score{margin-top:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid var(--line);background:var(--surface-2);padding:15px 18px}
+.score .big{font:600 34px/1 var(--f-mono);color:var(--accent);font-variant-numeric:tabular-nums}
+.score .lab{font-size:14px;color:var(--ink-2)}
+
+/* footer */
+footer{max-width:780px;margin:0 auto;padding:34px 18px 60px;font-size:13.5px;color:var(--ink-3);line-height:1.7}
+footer b{color:var(--ink-2)}
+.nores{display:none;margin-top:30px;font:500 13px/1.6 var(--f-mono);color:var(--ink-3)}
+body.filtering .nores.show{display:block}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="brand">ИНЕГ · <b>Байцаагчийн сургалт</b></span>
+  <span class="sp"></span>
+  <label class="search" aria-label="Хайх">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="7"/><path d="M16 16l5 5"/></svg>
+    <input id="q" type="search" placeholder="Хайх: TCAS, CE-6, Level 1…" autocomplete="off">
+  </label>
+  <span class="prog" title="Дуусгасан модуль"><span class="track"><span class="fill" id="pf"></span></span><span id="pt">0/12</span></span>
+  <button class="tbtn" id="theme" type="button">Өнгө</button>
+</header>
+
+<div class="shell">
+<nav class="rail" aria-label="Модулиуд">
+  <div class="rl">Хөтөлбөр</div>
+  <ol id="toc"></ol>
+  </nav>
+
+<main>
+
+<div class="hero">
+  <span class="eyebrow">Иргэний нисэхийн аюулгүй байдлын хяналт · ICAO / МИНД / FAA / EASA</span>
+  <h1>Нисэхийн байцаагчийн гарын авлага</h1>
+  <p class="lede">Төрийн хяналтын байцаагч гэдэг нь “дүрэм цээжилсэн хүн” биш, <b>улсын нисэхийн аюулгүй байдлын тогтолцоо ажиллаж байгааг баталгаажуулдаг хүн</b>. Энэ гарын авлага 12 модуль, 40 цээжлэх карт, 10 ажлын кэйс, 20 асуултын тестээс бүрдэнэ. Бүх зүйл нэг логикт баригдсан: <b>дүрэм бүрийн цаана осол байдаг</b>.</p>
+  <dl class="strip">
+    <div><dt>Хавсралт</dt><dd>19</dd></div>
+    <div><dt>Critical Elements</dt><dd>8</dd></div>
+    <div><dt>SMS багана</dt><dd>4</dd></div>
+    <div><dt>Гэрчилгээний шат</dt><dd>5</dd></div>
+    <div><dt>Шийдвэрийн алхам</dt><dd>6</dd></div>
+  </dl>
+  <div class="legend">
+    <span><i style="background:var(--warn)"></i> Улаан — зогсоох / яаралтай</span>
+    <span><i style="background:var(--caut)"></i> Шар — сэрэмжлүүлэг</span>
+    <span><i style="background:var(--ok)"></i> Ногоон — хэвийн / нийцсэн</span>
+    <span><i style="background:var(--air)"></i> Цэнхэр — эрх зүйн үндэслэл</span>
+  </div>
+  <p class="sub" style="margin-top:14px">Кабины анхааруулгын өнгөний конвенцтой ижил кодлол. Бүх хуудсаар нэг мөр.</p>
+</div>
+
+<!-- ═══════════ 01 ═══════════ -->
+<section id="m1" data-search>
+  <div class="mhead"><span class="mnum">01</span><div>
+    <h2>Та ямар эрхээр шалгаж байна вэ?</h2>
+    <div class="sub">Чикагогийн конвенц · Төрийн үүрэг · Байцаагчийн бүрэн эрх</div>
+  </div></div>
+
+  <p>Хамгийн эхний бөгөөд хамгийн их мартагддаг зүйл: байцаагчийн эрх нь ИНЕГ-аас гардаггүй. Энэ эрх <b>1944 оны Чикагогийн конвенц</b>оос улсын хуулиар дамжин байцаагчийн үнэмлэх хүртэл урсдаг. Нэг ч холбоос тасарвал таны дүгнэлт эрх зүйн хүчгүй болно.</p>
+
+  <div class="story">
+    <b>Түүх:</b> 1944 онд дайн дуусахын дөхөж, 52 улс Чикагод цугларав. Асуудал нь энгийн: <i>“Миний онгоц чиний тэнгэрээр хэрхэн нисэх вэ?”</i> Тэд гурван зүйлийг шийдэв. Нэг — <b>тэнгэр нь улсын өмч</b> (Зүйл 1). Хоёр — <b>дүрэм нь дундын байх</b> (Зүйл 37, SARPs). Гурав — <b>үнэмлэх, гэрчилгээг бие биенийхээ хүлээн зөвшөөрөх</b> (Зүйл 33). Дөрөв дэх нь хамгийн ухаалаг: <b>дагаж мөрдөж чадахгүй бол нуух биш, зөрүүг бүртгүүлэх</b> (Зүйл 38).
+  </div>
+
+  <h3>Цээжлэх 6 зүйл</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Зүйл</th><th>Агуулга</th><th>Байцаагчид яагаад хэрэгтэй</th></tr></thead>
+    <tbody>
+      <tr><td class="m">Art. 1</td><td>Улс бүр өөрийн нутаг дэвсгэр дээрх агаарын зайд бүрэн, онцгой бүрэн эрхтэй</td><td>Монголын тэнгэрт нисэх гадаад тээвэрлэгч <b>Монголын дүрэмд</b> захирагдана. Ramp check хийх эрхийн үндэс.</td></tr>
+      <tr><td class="m">Art. 12</td><td>Агаарын хөдөлгөөний дүрэм. Далайн гадарга дээр ICAO дүрэм шууд хүчинтэй</td><td>Улс бүр өөрийн дүрмээ ICAO-той нийцүүлэх хариуцлага. Зөрчигчийг шийтгэх үүрэг.</td></tr>
+      <tr><td class="m">Art. 16</td><td>Гадаад онгоцыг шалгах эрх (зохисгүй хоцролт үүсгэхгүйгээр)</td><td>Ramp inspection-ийн эрх зүйн үндэс. “Зохисгүй хоцролт” гэдэг хязгаарыг санаарай.</td></tr>
+      <tr><td class="m">Art. 33</td><td>Бусад улсын гэрчилгээ, үнэмлэхийг хүлээн зөвшөөрөх — <b>хэрэв</b> тэр нь ICAO-ийн доод шаардлагад хүрсэн бол</td><td>“Хүлээн зөвшөөрөх” нь нөхцөлтэй. Доод шаардлагад хүрээгүй бол зөвшөөрөхгүй эрхтэй.</td></tr>
+      <tr><td class="m">Art. 37</td><td>ICAO стандарт ба зөвлөмж (SARPs) гаргана</td><td><b>Standard</b> — дагах ёстой. <b>Recommended Practice</b> — дагахыг зөвлөсөн. Хоёрыг хольж хутгаж болохгүй.</td></tr>
+      <tr><td class="m">Art. 38</td><td>Дагаж мөрдөх боломжгүй бол ICAO-д зөрүүг (difference) албан ёсоор мэдэгдэнэ</td><td>Зөрүүг AIP-ийн GEN 1.7 хэсэгт хэвлэнэ. Байцаагч ямар зөрүү байгааг мэдэхгүй бол буруу дүгнэлт гаргана.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Нэг онгоц — дөрвөн төр</h3>
+  <p>Кэйс шийдвэрлэхэд хамгийн их асуудал үүсгэдэг зүйл. Онгоц Монголд буусан ч хариуцлага нь тэр дор бүхэлдээ Монголд байхгүй.</p>
+  <dl class="gr">
+    <div><dt>State of Registry</dt><dd><b>Бүртгэлийн улс.</b> Нисэх чадвар, онгоцны гэрчилгээ, бүртгэлийн дугаар. Сүүл дээрх тэмдэг хэний вэ.</dd></div>
+    <div><dt>State of the Operator</dt><dd><b>Тээвэрлэгчийн улс.</b> AOC, нислэгийн үйл ажиллагаа, багийн сургалт, FDTL.</dd></div>
+    <div><dt>State of Design</dt><dd><b>Зохион бүтээсэн улс.</b> Type Certificate, AD (нисэх чадварын заавал биелүүлэх удирдамж).</dd></div>
+    <div><dt>State of Manufacture</dt><dd><b>Үйлдвэрлэсэн улс.</b> Үйлдвэрлэлийн зөвшөөрөл, тохирлын хяналт.</dd></div>
+    <div><dt>State of Occurrence</dt><dd><b>Осол болсон улс.</b> Annex 13-ын дагуу шинжилгээг үндсэндээ энэ улс удирдана.</dd></div>
+    <div><dt>Art. 83bis</dt><dd><b>Хариуцлага шилжүүлэх.</b> Хуурай лизингийн үед Registry улсаас Operator улсад тодорхой үүргийг гэрээгээр шилжүүлж болно. Гэрээ байхгүй бол шилжээгүй.</dd></div>
+  </dl>
+
+  <div class="note"><b>Цээжлэх дэгээ:</b> “<b>Р-О-Д-М</b>” — <b>Р</b>егистр онгоцыг, <b>О</b>ператор нислэгийг, <b>Д</b>изайн бүтээцийг, <b>М</b>анufacture үйлдвэрлэлийг хариуцна. Ямар зөрчил олсон бэ — тэр бол хэнийг дуудахыг хэлж байна.</div>
+
+  <h3>Монголын гинжин холбоо</h3>
+  <ol class="lst">
+    <li><b>Чикагогийн конвенц</b> — Монгол Улс ICAO-ийн гишүүн, конвенцын хүлээсэн үүрэгтэй.</li>
+    <li><b>Иргэний нисэхийн тухай хууль</b> — конвенцыг дотоодын хуульд хөрвүүлж, ИНЕГ-д хяналтын бүрэн эрх, зөвшөөрөл гэрчилгээ олгох, хүчингүй болгох эрхийг өгнө.</li>
+    <li><b>МИНД (Монголын иргэний нисэхийн дүрэм)</b> — ICAO Annex-уудыг хэрэгжүүлэх техникийн дүрэм. FAR/NZ CAR-тай төстэй дугаарлалт: МИНД-91 (ерөнхий үйл ажиллагаа), МИНД-119/121/135 (тээвэрлэгч), МИНД-139 (аэродром), МИНД-145 (техник үйлчилгээ), МИНД-61 (нисгэгчийн үнэмлэх), МИНД-172/173/175 (АНЖ, мэдээлэл).</li>
+    <li><b>Техникийн заавар, Inspector Handbook, Checklist</b> — CE-5. Дүрэм хэрхэн шалгахыг тодорхойлно.</li>
+    <li><b>Байцаагчийн үнэмлэх, томилгоо</b> — тухайн байцаагчийн хамрах хүрээ (scope). Хамрах хүрээнээсээ гадуур акт бичвэл хүчин төгөлдөр биш.</li>
+  </ol>
+  <div class="tip"><b>Практик:</b> Шалгалтад гарахын өмнө өөрөөсөө нэг л асуулт асуу: <i>“Миний дүгнэлтийг шүүхэд оруулбал ямар зүйл заалт дээр тулгуурлах вэ?”</i> Хэрэв тодорхой МИНД-ын зүйл дугаар хэлж чадахгүй бол шалгалтад бэлэн биш байна.</div>
+
+  <div class="done"><button type="button" data-mod="m1" aria-pressed="false">Дуусгасан</button><span>Модуль 01</span></div>
+</section>
+
+<!-- ═══════════ 02 ═══════════ -->
+<section id="m2" data-search>
+  <div class="mhead"><span class="mnum">02</span><div>
+    <h2>19 хавсралт — нэг нислэгийн түүхээр</h2>
+    <div class="sub">Annex 1–19 · Цээжлэх түүхийн арга</div>
+  </div></div>
+
+  <p>Байцаагчаас “Annex 14 юуны талаар вэ?” гэж асуухад бүдэрдэг хүн олон. Дугаарыг нэг нэгээр цээжлэх нь ажиллахгүй. <b>Нэг зорчигчийн нэг нислэгийг</b> дугаарын дарааллаар дагавал 19 хавсралт гинж шиг холбогдоно.</p>
+
+  <div class="story">
+    <b>Үнэмлэхтэй</b><sup>1</sup> нисгэгч <b>агаарын дүрэм</b><sup>2</sup> сахин, <b>цаг агаарын</b><sup>3</sup> мэдээ, <b>навигацийн зураг</b><sup>4</sup> авч, <b>хэмжих нэгжээ</b><sup>5</sup> фут/метрт хөрвүүлэн, <b>нислэгийн үйл ажиллагааны</b><sup>6</sup> гарын авлагаа барина. Онгоцны сүүлэнд <b>улсын бүртгэлийн тэмдэг</b><sup>7</sup>, гартаа <b>нисэх чадварын гэрчилгээ</b><sup>8</sup>. Зорчигч <b>хилээр хөнгөн шуурхай</b><sup>9</sup> гарч, нисгэгч <b>радио холбоогоор</b><sup>10</sup> <b>хөдөлгөөний удирдагчтай</b><sup>11</sup> ярина. Хэрэв гай тохиовол <b>эрэн хайх, авран</b><sup>12</sup> баг гарч, дараа нь <b>осол шинжлэх</b><sup>13</sup> комисс ажиллана. Онгоц <b>нисэх буудалд</b><sup>14</sup> буухдаа <b>АИS мэдээлэлд</b><sup>15</sup> найдаж, <b>дуу чимээ, хаягдлаа</b><sup>16</sup> хязгаарлаж, <b>аюулгүй байдлын</b><sup>17</sup> шалгалт өнгөрч, <b>аюултай ачааг</b><sup>18</sup> дүрмээр ачиж, бүхнийг <b>аюулгүй ажиллагааны менежментийн систем</b><sup>19</sup>-ээр удирдана.
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>№</th><th>Хавсралт</th><th>Байцаагчийн түлхүүр</th></tr></thead>
+    <tbody>
+      <tr><td class="m">1</td><td>Personnel Licensing — Ажилтны үнэмлэхжүүлэлт</td><td>Үнэмлэх, эрх, медикал, ATO. Хугацаа, rating, англи хэлний түвшин (Level 4 доод).</td></tr>
+      <tr><td class="m">2</td><td>Rules of the Air — Агаарын дүрэм</td><td>VFR/IFR, right-of-way, ACAS/TCAS дагах дэг. Далай дээр зөрүүгүй хэрэглэгдэнэ.</td></tr>
+      <tr><td class="m">3</td><td>Meteorological Service</td><td>METAR, TAF, SIGMET. Aerodrome forecast бэлэн байх эсэх.</td></tr>
+      <tr><td class="m">4</td><td>Aeronautical Charts</td><td>Зураг үйлдвэрлэл, шинэчлэлтийн цикл (AIRAC).</td></tr>
+      <tr><td class="m">5</td><td>Units of Measurement</td><td>Фут, зангилаа, hPa. Нэгж хутгах нь бодит осол болсон түүхтэй.</td></tr>
+      <tr><td class="m">6</td><td>Operation of Aircraft — 3 хэсэг</td><td><b>Байцаагчийн хамгийн их хэрэглэдэг.</b> Part I — арилжааны тээвэр, Part II — ерөнхий нисэх, Part III — вертолёт. FDTL, MEL, EDTO, TAWS/ACAS шаардлага.</td></tr>
+      <tr><td class="m">7</td><td>Nationality & Registration Marks</td><td>Монгол = <code>JU-</code>. Тэмдгийн хэмжээ, байрлал ч дүрэмтэй.</td></tr>
+      <tr><td class="m">8</td><td>Airworthiness of Aircraft</td><td>Type Certificate, CofA, continuing airworthiness, AD хэрэгжилт.</td></tr>
+      <tr><td class="m">9</td><td>Facilitation</td><td>Хил, гааль, зорчигчийн хөдөлгөөн, API/PNR. Хөнгөвчлөх.</td></tr>
+      <tr><td class="m">10</td><td>Aeronautical Telecommunications — 5 хэсэг</td><td>CNS. Радио, навигацийн хэрэгсэл, дуудлагын дэг, хэллэг.</td></tr>
+      <tr><td class="m">11</td><td>Air Traffic Services</td><td>ATS нэгжүүд, separation minima, агаарын зайн класс A–G, ATC гэрчилгээжүүлэлт.</td></tr>
+      <tr><td class="m">12</td><td>Search and Rescue</td><td>SAR бүс, RCC, гэрээ. Дасгал хийж байгаа эсэх.</td></tr>
+      <tr><td class="m">13</td><td>Aircraft Accident and Incident Investigation</td><td><b>Гэм бурууг тогтоох биш, зөвхөн сэргийлэх.</b> Байцаагчаас тусдаа, хараат бус байх ёстой.</td></tr>
+      <tr><td class="m">14</td><td>Aerodromes — 2 хэсэг</td><td>Хөөрөх буух зурвас, RESA, тэмдэглэгээ, гэрэлтүүлэг, бэлэн байдлын төлөвлөгөө, шувууны хяналт.</td></tr>
+      <tr><td class="m">15</td><td>Aeronautical Information Services</td><td>AIP, NOTAM, AIRAC цикл (28 хоног). Мэдээлэл буруу бол нислэг буруу.</td></tr>
+      <tr><td class="m">16</td><td>Environmental Protection — 4 хэсэг</td><td>Дуу чимээний гэрчилгээ, хөдөлгүүрийн хаягдал, CORSIA.</td></tr>
+      <tr><td class="m">17</td><td>Security — Аюулгүй байдал</td><td>Хууль бус халдлагаас хамгаалах. 2001/09/11-ний дараа хамгийн их чангарсан хавсралт.</td></tr>
+      <tr><td class="m">18</td><td>Safe Transport of Dangerous Goods</td><td>Technical Instructions (Doc 9284). Литийн батерей өнөөгийн гол эрсдэл.</td></tr>
+      <tr><td class="m">19</td><td>Safety Management</td><td>Хамгийн шинэ (2013). SSP — төрд, SMS — байгууллагад. Аюулгүй байдлын мэдээллийн хамгаалалт.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><b>Хамгийн олон давтагддаг 4 хавсралт</b> нь өдөр тутмын хяналтад: <span class="pill p-m">Annex 6</span> үйл ажиллагаа, <span class="pill p-m">Annex 8</span> нисэх чадвар, <span class="pill p-m">Annex 1</span> үнэмлэх, <span class="pill p-m">Annex 19</span> SMS. Эхлээд эдгээрийг гүн эзэмш.</div>
+
+  <div class="flag"><b>Нийтлэг алдаа:</b> Annex-ийг шууд бичиг баримт болгож иш татах. Annex нь <b>улсад</b> хаяглагдсан; тээвэрлэгчид хаяглагдсан нь <b>МИНД</b>. Актад “Annex 6 зөрчсөн” гэж бичих нь эрх зүйн хувьд дутуу — “МИНД-121.xxx зөрчсөн (Annex 6 Part I-ийг хэрэгжүүлсэн)” гэж бичнэ.</div>
+
+  <div class="done"><button type="button" data-mod="m2" aria-pressed="false">Дуусгасан</button><span>Модуль 02</span></div>
+</section>
+
+<!-- ═══════════ 03 ═══════════ -->
+<section id="m3" data-search>
+  <div class="mhead"><span class="mnum">03</span><div>
+    <h2>8 Critical Element — тогтолцооны 8 тулгуур</h2>
+    <div class="sub">ICAO Doc 9734 · USOAP CMA-ийн бүтэц</div>
+  </div></div>
+
+  <p>Хэрэв та зөвхөн нэг зүйлийг цээжлэх боломжтой бол <b>энэ нь тэр</b>. ICAO улс бүрийн хяналтын тогтолцоог 8 элементээр хэмждэг. Аудитын бүх асуулт (PQ), таны бүх ажил эдгээрийн аль нэгэнд хамаарна.</p>
+
+  <div class="story">
+    <b>Түүх:</b> Барилга барихыг бод. Эхлээд <b>газрын зөвшөөрөл</b><sup>1</sup> — хууль. Дараа нь <b>барилгын норм</b><sup>2</sup> — дүрэм. Дараа нь <b>барилгын компани</b><sup>3</sup> — байгууллага, хүн, төсөв. <b>Инженерүүдээ сургана</b><sup>4</sup>. <b>Зураг төсөл, багаж</b><sup>5</sup> гаргана. Одоо л ажил эхэлнэ: <b>зөвшөөрөл олгоно</b><sup>6</sup>, <b>гүйцэтгэлийг шалгана</b><sup>7</sup>, <b>гажигийг засуулна</b><sup>8</sup>. Эхний 5 нь <i>бэлтгэх</i>, сүүлийн 3 нь <i>хэрэгжүүлэх</i>.
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>CE</th><th>Нэр</th><th>Юу байх ёстой</th><th>Байцаагч юугаар үнэлэх</th></tr></thead>
+    <tbody>
+      <tr><td class="m">CE-1</td><td>Үндсэн нисэхийн хууль</td><td>Иргэний нисэхийн тухай хууль, хяналтын бүрэн эрх, шийтгэлийн эрх</td><td>Хууль ICAO конвенцыг бүрэн тусгасан уу? Байцаагчийн эрх тодорхой уу?</td></tr>
+      <tr><td class="m">CE-2</td><td>Тусгай ажиллагааны дүрэм</td><td>МИНД бүрэн, Annex-уудтай нийцсэн, шинэчлэгдэж байгаа</td><td>Annex-ийн шинэ нэмэлт МИНД-д орсон уу? Хоцрогдол хэдэн жил вэ?</td></tr>
+      <tr><td class="m">CE-3</td><td>Төрийн систем ба хяналтын функц</td><td>ИНЕГ-ын бүтэц, орон тоо, төсөв, хараат бус байдал</td><td>Байцаагчийн орон тоо ажлын хэмжээнд хүрэлцэх үү? (surveillance workload)</td></tr>
+      <tr><td class="m">CE-4</td><td>Техникийн ажилтны мэргэшил, сургалт</td><td>Байцаагчийн шалгуур, эхний болон дахин сургалт, OJT</td><td>Байцаагчийн сургалтын хавтас (training file) бүрэн уу? Дахин сургалт хугацаандаа уу?</td></tr>
+      <tr><td class="m">CE-5</td><td>Техникийн заавар, багаж, аюулгүй байдлын мэдээлэл</td><td>Inspector handbook, checklist, өгөгдлийн систем, гаргах журам</td><td>Та checklist-гүйгээр шалгаж байна уу? Тэгвэл CE-5 дүн бага.</td></tr>
+      <tr><td class="m">CE-6</td><td>Үнэмлэх, гэрчилгээ, зөвшөөрөл олгох</td><td>5 шаттай гэрчилгээжүүлэлт, баримтжуулсан үнэлгээ</td><td>AOC олгохын өмнө бүх шат баримттай биелсэн уу?</td></tr>
+      <tr><td class="m">CE-7</td><td>Хяналт шалгалтын үүрэг</td><td>Эрсдэлд үндэслэсэн ХШ төлөвлөгөө, түүний биелэлт</td><td>Төлөвлөгөө байгаад биелээгүй бол CE-7 унана. Биелэлтийн хувь хэд вэ?</td></tr>
+      <tr><td class="m">CE-8</td><td>Аюулгүй байдлын асуудлыг шийдвэрлэх</td><td>Зөрчлийг хаах, арга хэмжээ, дахин шалгалт, хууль хэрэгжүүлэх</td><td><b>Хамгийн бага дүнтэй элемент дэлхий дахинд.</b> Олсон зөрчил бүр хаагдсан уу?</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><b>Цээжлэх дэгээ — “ХДБСЗ + ОШХ”:</b> <b>Х</b>ууль, <b>Д</b>үрэм, <b>Б</b>үтэц, <b>С</b>ургалт, <b>З</b>аавар <i>(бэлтгэл)</i> → <b>О</b>лгох, <b>Ш</b>алгах, <b>Х</b>аах <i>(хэрэгжүүлэлт)</i>. Аудитор ирэхэд эхний 5-ыг цаасаар, сүүлийн 3-ыг <b>таны хавтсаар</b> шалгана.</div>
+
+  <h3>USOAP CMA — аудит хэрхэн болдог</h3>
+  <p>USOAP = Universal Safety Oversight Audit Programme, CMA = Continuous Monitoring Approach. 1999 оноос хойш ICAO гишүүн улс бүрийг тогтмол хянадаг. 2013 оноос “хэдэн жилд нэг удаа ирдэг аудит” биш, <b>тасралтгүй хяналт</b> болсон.</p>
+  <dl class="gr">
+    <div><dt>PQ — Protocol Question</dt><dd>Аудитын асуулт. Найман CE-ээр, найман шалгах хүрээгээр (LEG, ORG, PEL, OPS, AIR, AIG, ANS, AGA) хуваагдана.</dd></div>
+    <div><dt>EI — Effective Implementation</dt><dd><b>Хангалттай PQ ÷ Хамаарах PQ × 100.</b> Улсын үндсэн оноо. Дэлхийн дундаж 70% орчим.</dd></div>
+    <div><dt>SSC — Significant Safety Concern</dt><dd>Онцгой анхаарах аюулгүй байдлын асуудал. ICAO-ийн сайтад <b>улаан тугаар</b> нийтлэгдэнэ. Гадаад тээвэрлэгч, лизинг, гэрээ бүхэлдээ эрсдэлд орно.</dd></div>
+    <div><dt>ICVM</dt><dd>ICAO Coordinated Validation Mission — хийсэн залруулгыг баталгаажуулах бага хэмжээний хяналт.</dd></div>
+    <div><dt>CAP</dt><dd>Corrective Action Plan — улс аудитын дараа ICAO-д өгдөг залруулах төлөвлөгөө. Хугацаа, хариуцагчтай.</dd></div>
+    <div><dt>Off-site validation</dt><dd>ICAO ирэхгүйгээр баримт бичгээр хянах. CMA Online Framework дээр байнга ажиллана.</dd></div>
+  </dl>
+
+  <div class="flag"><b>Ойлгох ёстой гол зүйл:</b> EI оноо нь “аюулгүй байдлын түвшин” биш, <b>хяналтын тогтолцооны хүчин чадал</b>. Өндөр EI нь осол болохгүй гэсэн үг биш; бага EI нь “осол болно” гэсэн үг биш. Гэхдээ бага EI бүхий улсын тээвэрлэгч бусад улсад хориг, хязгаарлалт (жишээ нь ЕХ-ны Air Safety List) хүлээх эрсдэл өндөр.</div>
+
+  <div class="tip"><b>Ажил дээрх хэрэглээ:</b> Өөрийн ажлыг CE-7 ба CE-8-аар хэмж. Нэг байцаагчийн үнэ цэнэ нь “хэдэн шалгалт хийсэн” биш, <b>“хэдэн зөрчлийг үндсэн шалтгаанаас нь хаасан”</b>. Хаагдаагүй зөрчил дахин гарна.</div>
+
+  <div class="done"><button type="button" data-mod="m3" aria-pressed="false">Дуусгасан</button><span>Модуль 03</span></div>
+</section>
+
+<!-- ═══════════ 04 ═══════════ -->
+<section id="m4" data-search>
+  <div class="mhead"><span class="mnum">04</span><div>
+    <h2>SSP ба SMS — тогтолцоог хэрхэн шалгах</h2>
+    <div class="sub">Annex 19 · Doc 9859 · Эрсдэлийн матриц · Just Culture</div>
+  </div></div>
+
+  <p>Хуучин хяналт: <i>“Дүрэм зөрчсөн үү, үгүй үү?”</i> Шинэ хяналт: <i>“Энэ байгууллага эрсдэлээ өөрөө олж, өөрөө удирдаж байна уу?”</i> Хоёрдугаарт хариулж чадахгүй байгууллага нь дүрэмд бүрэн нийцсэн ч аюултай.</p>
+
+  <div class="story">
+    <b>Түүх:</b> Хоёр тээвэрлэгч байна. Нэгдүгээрх нь 100 шалгалтад 0 зөрчил. Хоёрдугаарх нь 100 шалгалтад 40 өөрийн дотоод тайлан, 12 эрсдэлийн үнэлгээ, 8 хэрэгжүүлсэн хяналтын арга хэмжээ. <b>Хоёрдугаарх нь илүү аюулгүй.</b> Учир нь нэгдүгээрх нь зөрчил байхгүй биш — <b>хэн ч хэлдэггүй</b>. Аюулгүй байдлын соёлын гол шалгуур нь зөрчил байхгүй байх биш, <b>зөрчил хэлэгддэг эсэх</b>.
+  </div>
+
+  <h3>SSP — төрийн систем (ИНЕГ хариуцна)</h3>
+  <dl class="gr">
+    <div><dt>1 · Төрийн бодлого, зорилт, нөөц</dt><dd>Хууль дүрэм, осол шинжилгээ, хэрэгжүүлэх бодлого (enforcement policy)</dd></div>
+    <div><dt>2 · Төрийн эрсдэлийн менежмент</dt><dd>SMS шаардлага, аюулын мэдээлэл цуглуулах, эрсдэлийг үнэлэх</dd></div>
+    <div><dt>3 · Төрийн баталгаажуулалт</dt><dd>Хяналт шалгалт, өгөгдөлд үндэслэсэн эрсдэлд чиглэсэн хяналт (RBO)</dd></div>
+    <div><dt>4 · Төрийн сурталчилгаа</dt><dd>Дотоод болон гадаад аюулгүй байдлын мэдээлэл, сургалт</dd></div>
+  </dl>
+  <p style="margin-top:14px"><b>ALoSP</b> (Acceptable Level of Safety Performance) — улсын хүрэх ёстой түвшин. <b>SPI</b> (Safety Performance Indicator) — хэмжигдэхүүн, жишээ нь “1000 нислэгт unstable approach”. <b>SPT</b> (Target) — тэр хэмжигдэхүүний зорилт.</p>
+
+  <h3>SMS — байгууллагын систем (4 багана / 12 элемент)</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Багана</th><th>Элементүүд</th><th>Байцаагч ямар баримт харах</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Бодлого ба зорилт</b></td><td>Удирдлагын тууштай байдал · Хариуцлагын хуваарь · Аюулгүй байдлын албан тушаалтан · ERP (онцгой байдлын төлөвлөгөө) · SMS баримтжуулалт</td><td>Гүйцэтгэх захирлын гарын үсэгтэй бодлого, байгууллагын схем, ERP-ийн дасгалын протокол</td></tr>
+      <tr><td><b>2. Эрсдэлийн менежмент</b></td><td>Аюулыг тодорхойлох · Эрсдэлийг үнэлж, хянах</td><td>Hazard log, risk register, 5×5 матрицаар үнэлсэн бодит бичлэг, хяналтын арга хэмжээний хэрэгжилт</td></tr>
+      <tr><td><b>3. Баталгаажуулалт</b></td><td>Гүйцэтгэлийн хяналт, хэмжилт · Өөрчлөлтийн менежмент · Тасралтгүй сайжруулалт</td><td>SPI график, дотоод аудитын тайлан, өөрчлөлтийн үнэлгээ (шинэ маршрут, шинэ онгоц)</td></tr>
+      <tr><td><b>4. Сурталчилгаа</b></td><td>Сургалт, боловсрол · Харилцаа холбоо</td><td>Сургалтын бүртгэл, safety bulletin, ажилтнууд SMS-ээ мэдэж байгаа эсэх (ярилцлагаар)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><b>Цээжлэх дэгээ — “БЭБС”:</b> <b>Б</b>одлого → <b>Э</b>рсдэл → <b>Б</b>аталгаа → <b>С</b>урталчилгаа. Англиар <b>P-R-A-P</b>: Policy, Risk, Assurance, Promotion. 4 багана, 12 элемент. SSP-д 4 багана, 11 элемент.</div>
+
+  <h3>Эрсдэлийн матриц — 5×5</h3>
+  <p>Байцаагч матрицыг өөрөө зурж чаддаг байх ёстой. Босоо тэнхлэг — <b>магадлал</b> (1–5), хэвтээ — <b>хүндрэл</b> (A–E).</p>
+  <div class="tw"><table>
+    <thead><tr><th>Магадлал</th><th>A · Сүйрлийн</th><th>B · Хүнд</th><th>C · Дунд</th><th>D · Бага</th><th>E · Мэдэгдэхүйц бус</th></tr></thead>
+    <tbody>
+      <tr><td class="m">5 Байнга</td><td style="background:var(--warn-soft);color:var(--warn)"><b>5A</b></td><td style="background:var(--warn-soft);color:var(--warn)"><b>5B</b></td><td style="background:var(--warn-soft);color:var(--warn)"><b>5C</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>5D</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>5E</b></td></tr>
+      <tr><td class="m">4 Боломжтой</td><td style="background:var(--warn-soft);color:var(--warn)"><b>4A</b></td><td style="background:var(--warn-soft);color:var(--warn)"><b>4B</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>4C</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>4D</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>4E</b></td></tr>
+      <tr><td class="m">3 Хааяа</td><td style="background:var(--warn-soft);color:var(--warn)"><b>3A</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>3B</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>3C</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>3D</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>3E</b></td></tr>
+      <tr><td class="m">2 Ховор</td><td style="background:var(--caut-soft);color:var(--caut)"><b>2A</b></td><td style="background:var(--caut-soft);color:var(--caut)"><b>2B</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>2C</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>2D</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>2E</b></td></tr>
+      <tr><td class="m">1 Бараг үгүй</td><td style="background:var(--caut-soft);color:var(--caut)"><b>1A</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>1B</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>1C</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>1D</b></td><td style="background:var(--ok-soft);color:var(--ok)"><b>1E</b></td></tr>
+    </tbody>
+  </table></div>
+  <ul class="lst">
+    <li><span class="pill p-w">Улаан</span> Хүлээн зөвшөөрөхгүй. Үйл ажиллагааг зогсоох эсвэл шууд арга хэмжээ.</li>
+    <li><span class="pill p-c">Шар</span> Хяналтын арга хэмжээ, бууруулах шаардлагатай. Удирдлагын шийдвэр хэрэгтэй.</li>
+    <li><span class="pill p-o">Ногоон</span> Хүлээн зөвшөөрөгдөх. Хяналтаа үргэлжлүүлнэ.</li>
+  </ul>
+  <div class="flag"><b>Хамгийн нарийн зүйл:</b> <b>Аюул (hazard)</b> нь нөхцөл байдал — “зурвас дээр мөс”. <b>Эрсдэл (risk)</b> нь тэр нөхцөлийн үр дагаврын магадлал ба хүндрэл — “мөсөн зурвас дээр гулгаж зурвасаас гарах”. Аюулыг эрсдэл гэж бичсэн hazard log нь SMS ажиллаагүйн шинж. Аюул нь нэр үг, эрсдэл нь өгүүлбэр байх ёстой.</div>
+
+  <h3>Just Culture — шударга соёлын хил</h3>
+  <p>Байцаагчийн хамгийн хүнд шийдвэр: хэзээ сургах, хэзээ шийтгэх. ICAO болон EASA-ийн ойлголтоор гурван зан байдал.</p>
+  <dl class="gr">
+    <div><dt>Хүний алдаа · Human error</dt><dd>Хийхийг хүссэнээ хийж чадаагүй. <b>Шийтгэхгүй.</b> Системийг засна: журам, тоног төхөөрөмж, сургалт.</dd></div>
+    <div><dt>Эрсдэлтэй зан · At-risk</dt><dd>Эрсдэлийг үнэлж дүгнэсэн боловч зөвтгөсөн (“үргэлж ингэж хийдэг”). <b>Сургах, шалтгааныг засах.</b> Урам хугалсан хэм хэмжээг олж эмчилнэ.</dd></div>
+    <div><dt>Хайхрамжгүй · Reckless</dt><dd>Эрсдэлийг мэдсээр байж зориудаар тоосонгүй. <b>Хариуцлага хүлээлгэнэ.</b> Just Culture нь дархлаа биш.</dd></div>
+  </dl>
+  <div class="tip"><b>“Орлуулах тест” (substitution test):</b> Ижил сургалт, туршлагатай өөр гурван мэргэжилтнийг тэр нөхцөлд тавихад тэд ч бас ингэх байсан уу? Тийм бол энэ нь хувь хүний бус <b>системийн</b> асуудал. Энэ тестийг хийхгүйгээр хүнийг шийтгэвэл аюулгүй байдлыг сайжруулахын оронд дараагийн тайланг хөрөөдөнө.</div>
+
+  <h3>Мэдээлэл цуглуулах гурван ажиллагаа</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Төрөл</th><th>Асуулт</th><th>Арга</th></tr></thead>
+    <tbody>
+      <tr><td><b>Реактив</b></td><td>Юу болсон бэ?</td><td>Осол, зөрчлийн шинжилгээ, албан журмын тайлан</td></tr>
+      <tr><td><b>Проактив</b></td><td>Юу болж болох вэ?</td><td>Сайн дурын тайлан, аудит, ажлын ажиглалт (LOSA), даалгаврын шинжилгээ</td></tr>
+      <tr><td><b>Предиктив</b></td><td>Өгөгдөл юу хэлж байна?</td><td>FDM/FOQA нислэгийн өгөгдөл, чиг хандлагын шинжилгээ, өгөгдлийн нэгтгэл</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><b>Байцаагчийн шалгах хамгийн ирмэгтэй асуулт:</b> “Танай сүүлийн 12 сарын сайн дурын тайлангийн тоо хэд вэ?” Тоо <b>0</b> бол SMS цаасан дээр. Тоо <b>их</b> бол соёл ажиллаж байна. Тайлангийн тоо буурах нь сайн зүйл биш.</div>
+
+  <div class="done"><button type="button" data-mod="m4" aria-pressed="false">Дуусгасан</button><span>Модуль 04</span></div>
+</section>
+
+<!-- ═══════════ 05 ═══════════ -->
+<section id="m5" data-search>
+  <div class="mhead"><span class="mnum">05</span><div>
+    <h2>Гэрчилгээжүүлэлт — 5 шатны үйл явц</h2>
+    <div class="sub">ICAO Doc 8335 · AOC · AMO · ATO · Аэродром · ANSP</div>
+  </div></div>
+
+  <p>Гэрчилгээ олгох нь байцаагчийн хамгийн эрсдэлтэй ажил. Буруу олгосон гэрчилгээ таны ажлын хугацаанд биш, <b>5 жилийн дараа</b> ослоор илэрдэг. Тиймээс дэлхий даяар нэг л бүтэц хэрэглэдэг.</p>
+
+  <div class="steps">
+    <div><span class="k">1</span><span class="v"><b>УРЬДЧИЛСАН ХАНДАЛТ · Pre-application</b>Хүсэлт гаргагчтай албан бус уулзалт. Тэд юу хийхийг хүсэж байна, ямар дүрэм хамаарах вэ, ямар нөөц шаардлагатай вэ. <i>Байцаагч энд “багш” биш “хаалгач”. Зөвлөгөө өгч болно, зураг төслийг нь бичиж өгч болохгүй — хараат бус байдал алдагдана.</i></span></div>
+    <div><span class="k">2</span><span class="v"><b>АЛБАН ХҮСЭЛТ · Formal application</b>Албан бичиг, товч танилцуулга, төлөвлөгөөт хуваарь (schedule of events), төлбөр. Энд <b>гэрчилгээжүүлэлтийн баг</b> томилогдоно: нислэгийн үйл ажиллагаа, нисэх чадвар, кабин, аюулгүй байдал, АНЖ.</span></div>
+    <div><span class="k">3</span><span class="v"><b>БАРИМТ БИЧГИЙН ҮНЭЛГЭЭ · Document evaluation</b>Гарын авлагууд: OM (Operations Manual), MCM/CAME, MEL, Training Manual, SMS Manual, Security Programme. <b>Цаас нь дүрэмд нийцэж байна уу?</b> Энэ шат хамгийн урт бөгөөд хамгийн их дахин илгээлт болдог.</span></div>
+    <div><span class="k">4</span><span class="v"><b>ҮЗҮҮЛЭХ, ШАЛГАХ · Demonstration &amp; inspection</b>Цаасан дээрх зүйл бодит амьдралд ажиллаж байгааг нүдээр батлах. Proving flight, онцгой байдлын дасгал, ангар, тоног төхөөрөмж, бүртгэлийн систем, ажилтны ярилцлага. <b>Энд л ихэнх дутагдал илэрнэ.</b></span></div>
+    <div><span class="k">5</span><span class="v"><b>ГЭРЧИЛГЭЭ ОЛГОХ · Certification</b>AOC + Operations Specifications (OpSpecs). Гэрчилгээ нь “юу хийж болох”-ыг заана: онгоцны төрөл, бүс нутаг, EDTO, CAT II/III, аюултай ачаа гэх мэт. <b>OpSpecs-д байхгүй зүйлийг хийх эрхгүй.</b></span></div>
+  </div>
+
+  <div class="tip"><b>Цээжлэх дэгээ — “У-А-Б-Ү-Г”:</b> <b>У</b>улзалт → <b>А</b>лбан хүсэлт → <b>Б</b>аримт → <b>Ү</b>зүүлэх → <b>Г</b>эрчилгээ. Ямар ч төрлийн гэрчилгээ (AOC, МИНД-145 техник үйлчилгээ, МИНД-141 сургалтын байгууллага, МИНД-139 аэродром, АНЖ) энэ 5 шаттай.</div>
+
+  <h3>AOC-ийн хамт олгогддог зүйлс</h3>
+  <dl class="gr">
+    <div><dt>OpSpecs</dt><dd>Ажиллагааны тодорхойлолт. Онгоцны бүртгэл, бүс, доод хэм хэмжээ, тусгай зөвшөөрөл.</dd></div>
+    <div><dt>MEL</dt><dd>Minimum Equipment List. MMEL-ээс гаргаж, ИНЕГ батална. Ажиллахгүй байж болох тоног төхөөрөмж, хугацаа (A/B/C/D ангилал).</dd></div>
+    <div><dt>EDTO / ETOPS</dt><dd>Нэг хөдөлгүүрээр ойрын аэродром хүрэх хугацаа (120/180 мин). Онцгой зөвшөөрөл, тусгай техник үйлчилгээ.</dd></div>
+    <div><dt>LVO</dt><dd>Бага харагдацын үйл ажиллагаа. CAT I/II/III, RVR доод хэм. Онгоц, аэродром, баг гурвуулаа зөвшөөрөгдсөн байх.</dd></div>
+    <div><dt>Аюултай ачаа</dt><dd>Тээвэрлэх зөвшөөрөл, сургалт, тайлагналын журам (Doc 9284).</dd></div>
+    <div><dt>Nominated persons</dt><dd>Хариуцлагатай албан тушаалтнууд: нислэг, техник, сургалт, газрын үйлчилгээ. ИНЕГ хүлээн зөвшөөрнө.</dd></div>
+  </dl>
+
+  <div class="flag"><b>Хамгийн түгээмэл гэрчилгээжүүлэлтийн алдаа:</b> Хүсэлт гаргагчийн гарын авлагыг байцаагч өөрөө засаж өгөх. Үүнийг хийвэл та дараа нь өөрийнхөө бичсэн баримтыг шалгаж байна. Хараат бус байдал алдагдаж, USOAP аудитад CE-6 дүн буурна. Зөв арга: <b>дутагдлыг бичгээр жагсааж, хугацаа өгч, буцаах</b>.</div>
+
+  <div class="done"><button type="button" data-mod="m5" aria-pressed="false">Дуусгасан</button><span>Модуль 05</span></div>
+</section>
+
+<!-- ═══════════ 06 ═══════════ -->
+<section id="m6" data-search>
+  <div class="mhead"><span class="mnum">06</span><div>
+    <h2>Хяналт шалгалт — өдөр тутмын ажил</h2>
+    <div class="sub">Surveillance · Ramp check · Эрсдэлд суурилсан хяналт</div>
+  </div></div>
+
+  <p>CE-7. Энэ бол байцаагчийн цагийн дийлэнх нь зарцуулагддаг хэсэг. Шалгалтын чанар нь “хэр их олсон” биш, <b>“хэр зөв зүйлийг харсан”</b>-оор тодорхойлогдоно.</p>
+
+  <h3>Шалгалтын төрлүүд</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Төрөл</th><th>Юу шалгах</th><th>Хэмжээ</th></tr></thead>
+    <tbody>
+      <tr><td><b>Audit</b> · Аудит</td><td>Системийг бүхэлд нь. Байгууллага өөрийн зарласан журмаараа ажиллаж байна уу.</td><td>Хэдэн өдөр, багаар, төлөвлөгөөт</td></tr>
+      <tr><td><b>Inspection</b> · Шалгалт</td><td>Тодорхой нэг зүйл. Нэг онгоц, нэг бүртгэл, нэг нислэг.</td><td>Хэдэн цаг, ганцаараа</td></tr>
+      <tr><td><b>Ramp / SAFA</b></td><td>Зогсоол дээр богино хугацаанд онгоц, баг, баримтыг шалгах.</td><td>Эргэлтийн хугацаанд</td></tr>
+      <tr><td><b>En-route / Cockpit</b></td><td>Байцаагч нэмэлт суудалд сууж бодит нислэгийг ажиглах. SOP, CRM, ачаалал.</td><td>Нэг нислэг</td></tr>
+      <tr><td><b>Base / Station</b></td><td>Үндсэн бааз, ангар, салбар станцын байгууламж, нөөц, бүртгэл.</td><td>1–2 өдөр</td></tr>
+      <tr><td><b>Records</b></td><td>Багийн үнэмлэх, сургалт, нислэгийн цаг, техник үйлчилгээний бүртгэл.</td><td>Ажлын байранд ч хийж болно</td></tr>
+      <tr><td><b>Simulator / Line check</b></td><td>Нисгэгчийн ур чадварын шалгалт, шалгагч нисгэгчийн стандартчлал.</td><td>Симулятор сесс</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Ramp check — цээжилсэн байх ёстой дараалал</h3>
+  <p>SAFA/SACA хөтөлбөрийн логик. Онгоц зогсоход танд 30–45 минут байна. Дараалал нь санамсаргүй биш.</p>
+  <ol class="lst">
+    <li><b>A · Кабин</b> — баримт бичиг: CofA, бүртгэлийн гэрчилгээ, дуу чимээний гэрчилгээ, радио лиценз, AOC хуулбар, даатгал. Багийн үнэмлэх, медикал. Journey log, MEL, техникийн бүртгэлийн ном.</li>
+    <li><b>B · Аюулгүй байдал / Кабин доторх</b> — яаралтай гарц, хөвөх хантааз, гал унтраагуур, хүчилтөрөгч, гарын авлага, зорчигчийн танилцуулга карт.</li>
+    <li><b>C · Онгоцны байдал</b> — гадаад үзлэг: их бие, хөдөлгүүр, дугуй, гоожилт, засварын ул мөр, гэмтлийн бүртгэл (damage chart).</li>
+    <li><b>D · Ачаа</b> — ачааны бэхэлгээ, жин ба төвлөрөл (mass &amp; balance), аюултай ачааны NOTOC.</li>
+    <li><b>E · Ерөнхий</b> — нэгдсэн дүгнэлт, багийн мэдлэг, ажиглалт.</li>
+  </ol>
+  <div class="note"><b>Хамгийн түгээмэл ramp check олдвор:</b> хугацаа хэтэрсэн эсвэл буруу бичигдсэн <b>MEL</b> зүйл, <b>жин ба төвлөрлийн</b> баримтын алдаа, <b>гэмтлийн бүртгэл</b> шинэчлэгдээгүй, багийн <b>гарын авлага</b> хуучин хувилбар. Эдгээрийг эхэлж шалга.</div>
+
+  <h3>Ramp check-ийн ангилал</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Ангилал</th><th>Утга</th><th>Арга хэмжээ</th></tr></thead>
+    <tbody>
+      <tr><td class="m"><span class="pill p-o">Cat 1</span></td><td>Бага. Аюулгүй байдалд бага нөлөө.</td><td>Багт мэдэгдэнэ. Тээвэрлэгчид бичгээр.</td></tr>
+      <tr><td class="m"><span class="pill p-c">Cat 2</span></td><td>Мэдэгдэхүйц. Аюулгүй байдалд нөлөөлөх боломжтой.</td><td>Тээвэрлэгч ба түүний улсын эрх бүхий байгууллагад албан ёсоор мэдэгдэнэ. Залруулга шаардана.</td></tr>
+      <tr><td class="m"><span class="pill p-w">Cat 3</span></td><td>Хүнд. Аюулгүй байдалд шууд нөлөөлнө.</td><td><b>Нислэгийн өмнө засах шаардлагатай.</b> Засахгүй бол: хязгаарлалт тогтоох, зорчигчгүй ferry flight, эсвэл <b>онгоцыг газардуулах</b>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Эрсдэлд суурилсан хяналт · Risk-Based Oversight</h3>
+  <p>Бүх тээвэрлэгчийг ижил давтамжтай шалгах нь нөөцийн үрэлгэн хэрэглээ. Орчин үеийн эрх бүхий байгууллага хяналтын давтамжийг <b>эрсдэлийн профайл</b>-аар тогтооно.</p>
+  <dl class="gr">
+    <div><dt>Өөрчлөлт</dt><dd>Шинэ онгоц, шинэ маршрут, шинэ удирдлага, огцом өсөлт эсвэл хумилт, эзэмшигч солигдох</dd></div>
+    <div><dt>Түүх</dt><dd>Өмнөх зөрчлийн тоо, давтагдал, хаалтын хугацаа, дахин гарсан зөрчил</dd></div>
+    <div><dt>Санхүү</dt><dd>Санхүүгийн хүндрэл нь техник үйлчилгээ, сургалт, багийн ачааллыг шууд доройтуулдаг</dd></div>
+    <div><dt>SMS төлөвшил</dt><dd>Тайлангийн тоо, эрсдэлийн үнэлгээний чанар, удирдлагын оролцоо</dd></div>
+    <div><dt>Нарийн төвөгтэй байдал</dt><dd>Уул, мөстөлт, богино зурвас, шөнийн нислэг, гадаад бүс</dd></div>
+    <div><dt>Гадаад дохио</dt><dd>Гадаадад авсан ramp check дүн, зөрчлийн тайлан, гомдол</dd></div>
+  </dl>
+  <div class="tip"><b>Практик зөвлөгөө:</b> Шалгалтад гарахаасаа өмнө <b>өмнөх 3 шалгалтын тайланг</b> заавал унш. Дахин гарсан зөрчил нь ганц зөрчлөөс хамаагүй ноцтой — тэр нь <b>залруулах системийн эвдрэл</b>-ийг харуулж байна.</div>
+
+  <div class="done"><button type="button" data-mod="m6" aria-pressed="false">Дуусгасан</button><span>Модуль 06</span></div>
+</section>
+
+<!-- ═══════════ 07 ═══════════ -->
+<section id="m7" data-search>
+  <div class="mhead"><span class="mnum">07</span><div>
+    <h2>БАРИМТ — зөрчил шийдвэрлэх 6 алхам</h2>
+    <div class="sub">Findings · Үндсэн шалтгаан · CAP · Хэрэгжүүлэлт</div>
+  </div></div>
+
+  <p>Энэ бол гарын авлагын гол хэсэг. Ямар ч кэйс, ямар ч зөрчил гарлаа гэсэн байцаагч <b>яг ижил дараалал</b>-аар явна. Дараалал нь сэтгэл хөдлөл, дарамт, танил талаас таныг хамгаална.</p>
+
+  <div class="steps">
+    <div><span class="k">Б</span><span class="v"><b>БАРИМТ ЦУГЛУУЛАХ · Objective evidence</b>Юу үзсэн, хаана, хэзээ, хэн байлцсан, ямар баримт бичиг. Зураг, хуулбар, дугаар, огноо. <b>“Санагдсан”, “хэлсэн” гэдэг нь баримт биш.</b> Баримт нь дараа нь дахин шалгаж болохуйц байх ёстой.</span></div>
+    <div><span class="k">А</span><span class="v"><b>АНГИЛАХ · Дүрмийн үндэслэл</b>Яг ямар МИНД, ямар зүйл, хэдэн дэд заалт зөрчигдсөн бэ. Заалтыг олж чадахгүй бол энэ нь зөрчил биш, <b>ажиглалт (observation)</b>. Хоёрыг хольж болохгүй.</span></div>
+    <div><span class="k">Р</span><span class="v"><b>РИСКИЙГ ҮНЭЛЭХ · Яаралтай эсэх</b>Энэ зөрчил <b>яг одоо</b> нислэгийн аюулгүй байдалд заналхийлж байна уу? Тийм бол акт бичихээс өмнө зогсоох арга хэмжээ. Үгүй бол хугацаатай залруулга. 5×5 матрицаар байрлуулна.</span></div>
+    <div><span class="k">И</span><span class="v"><b>ИЛЭРЛИЙГ ТҮВШИНЧЛЭХ · Level 1 / Level 2</b><span class="pill p-w">Level 1</span> Аюулгүй байдлыг шууд бууруулах, гэрчилгээний хүчинтэй байдалд эргэлзээ төрүүлэх зөрчил. Шууд арга хэмжээ. <span class="pill p-c">Level 2</span> Стандартаас хазайсан боловч шууд аюул үүсгээгүй. Хугацаатай залруулга.</span></div>
+    <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ БА АРГА ХЭМЖЭЭ · CAP</b>Бичгээр мэдэгдэнэ. Байгууллагаас <b>залруулах арга хэмжээний төлөвлөгөө</b> шаардана: (1) <b>таслан зогсоох</b> — яг одоо аюулыг зогсоох, (2) <b>үндсэн шалтгаан</b> — яагаад болсон, (3) <b>залруулах</b> — шалтгааныг устгах, (4) <b>сэргийлэх</b> — өөр газар дахин гарахгүй болгох, (5) <b>хугацаа, хариуцагч</b>.</span></div>
+    <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ · Хаалт ба дагаж мөрдөлт</b>Төлөвлөгөөг хүлээж авах эсвэл татгалзах. Хугацаанд нь биелсэн эсэхийг <b>баримтаар</b> шалгах. Биелээгүй бол шатлан нэмэгдүүлнэ. <b>Хаагдаагүй зөрчил бол байцаагчийн хийгээгүй ажил.</b></span></div>
+  </div>
+
+  <h3>Үндсэн шалтгаан олох — 5 Яагаад</h3>
+  <p>Хамгийн энгийн, хамгийн хүчтэй арга. Жишээ: техникч нисэх чадварын удирдамжийг (AD) хугацаандаа хэрэгжүүлээгүй.</p>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Яагаад?</th><th>Хариулт</th></tr></thead>
+    <tbody>
+      <tr><td class="m">1</td><td>AD яагаад хийгдээгүй вэ?</td><td>Техникч AD гарсныг мэдээгүй.</td></tr>
+      <tr><td class="m">2</td><td>Яагаад мэдээгүй вэ?</td><td>AD-ийн мэдэгдлийг хянадаг ажилтан чөлөөнд байсан.</td></tr>
+      <tr><td class="m">3</td><td>Яагаад орлох хүн байгаагүй вэ?</td><td>Ажлын байрны тодорхойлолтод орлох хүн заагаагүй.</td></tr>
+      <tr><td class="m">4</td><td>Яагаад заагаагүй вэ?</td><td>CAME гарын авлагад тасралтгүй байдлын шаардлага байхгүй.</td></tr>
+      <tr><td class="m">5</td><td>Яагаад CAME-д байхгүй вэ?</td><td><b>Гэрчилгээжүүлэлтийн үед энэ зүйлийг шалгаагүй.</b> ← Үндсэн шалтгаан</td></tr>
+    </tbody>
+  </table></div>
+  <div class="flag"><b>Анхаар:</b> Хэрэв таны “үндсэн шалтгаан” нь <b>хүний нэр</b>ээр төгсөж байвал та дуусгаагүй байна. Зөв үндсэн шалтгаан нь үргэлж <b>процесс, журам, нөөц, эсвэл удирдлагын шийдвэр</b>-ээр төгсдөг. “Техникч хайхрамжгүй байсан” бол шалтгаан биш, шинж тэмдэг.</div>
+
+  <h3>Хэрэгжүүлэлтийн шатлал</h3>
+  <p>Байцаагч эхнээсээ хамгийн хатуу арга хэмжээ авдаггүй. Гэхдээ шаардлагатай үед эргэлзэж ч болохгүй. Зарчим нь <b>пропорционал байдал</b>.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Шат</th><th>Арга хэмжээ</th><th>Хэзээ</th></tr></thead>
+    <tbody>
+      <tr><td class="m">1</td><td>Зөвлөмж, аман анхааруулга</td><td>Бага зөрчил, анх удаа, шууд засагдсан</td></tr>
+      <tr><td class="m">2</td><td>Бичгээр анхааруулга, залруулах хугацаа (Level 2)</td><td>Системийн бага дутагдал</td></tr>
+      <tr><td class="m">3</td><td>Нэмэгдсэн хяналт, дахин сургалт шаардах</td><td>Дахин давтагдсан зөрчил</td></tr>
+      <tr><td class="m">4</td><td>Үйл ажиллагааны хязгаарлалт (OpSpecs хумих, маршрут/онгоц хасах)</td><td>Тодорхой хэсэгт итгэл алдагдсан</td></tr>
+      <tr><td class="m">5</td><td>Захиргааны хариуцлага, торгууль</td><td>Санаатай эсвэл давтагдсан хүнд зөрчил</td></tr>
+      <tr><td class="m">6</td><td>Гэрчилгээ/үнэмлэхийг түдгэлзүүлэх</td><td>Level 1, шууд аюул, итгэл алдагдсан</td></tr>
+      <tr><td class="m">7</td><td>Гэрчилгээ/үнэмлэхийг хүчингүй болгох</td><td>Залилан, баримт хуурамчлах, дахин засагдахгүй</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><b>Хоёр зүйлийг хэзээ ч холихгүй:</b> <b>Аюулгүй байдлын арга хэмжээ</b> (онгоцыг зогсоох, нислэг хориглох) нь <b>яаралтай, шууд</b> бөгөөд шийтгэл биш. <b>Хариуцлагын арга хэмжээ</b> (торгууль, хүчингүй болгох) нь <b>журамтай, гомдол гаргах эрхтэй</b>. Эхнийхийг хойшлуулж болохгүй, хоёрдугаарыг яаравчлаж болохгүй.</div>
+
+  <h3>Акт бичих — 5 зүйл заавал байх</h3>
+  <ol class="lst">
+    <li><b>Баримт</b> — юу ажиглагдсан. Төвийг сахисан хэлээр. Огноо, байршил, дугаар.</li>
+    <li><b>Шаардлага</b> — ямар дүрэм юу шаардаж байна. Заалтыг бүтнээр иш татна.</li>
+    <li><b>Зөрүү</b> — баримт ба шаардлагын хооронд юу зөрж байна. Нэг өгүүлбэрээр.</li>
+    <li><b>Түвшин</b> — Level 1 эсвэл Level 2, үндэслэлийн хамт.</li>
+    <li><b>Хугацаа</b> — залруулах төлөвлөгөө өгөх хугацаа, биелүүлэх хугацаа.</li>
+  </ol>
+  <div class="tip"><b>Шалгуур:</b> Таны актыг уншсан <b>гуравдагч этгээд</b> тухайн газарт очилгүйгээр юу болсныг ойлгож чадах ёстой. Чадахгүй бол акт дутуу.</div>
+
+  <div class="done"><button type="button" data-mod="m7" aria-pressed="false">Дуусгасан</button><span>Модуль 07</span></div>
+</section>
+
+<!-- ═══════════ 08 ═══════════ -->
+<section id="m8" data-search>
+  <div class="mhead"><span class="mnum">08</span><div>
+    <h2>Хүний хүчин зүйл — яагаад сайн хүн буруу хийдэг вэ</h2>
+    <div class="sub">Швейцарь бяслаг · SHELL · Бохир 12 · TEM · Ядаргаа</div>
+  </div></div>
+
+  <p>Арилжааны нисэхийн ослын дийлэнхэд хүний хүчин зүйл голлон нөлөөлдөг. Гэхдээ үүнийг буруу уншиж болохгүй: “хүмүүс муу ажилладаг” гэсэн үг биш, <b>“систем нь хүний хязгаарыг тооцоогүй”</b> гэсэн үг.</p>
+
+  <div class="story">
+    <b>Түүх — Швейцарь бяслаг.</b> Их Британийн сэтгэл судлаач <b>Жеймс Ризон</b> 1990 онд хэлэв: байгууллагын хамгаалалт нь хэдэн давхар бяслагны зүсэм шиг. Зүсэм бүр дээр нүх бий — төгс хамгаалалт гэж үгүй. Ихэнхдээ нүхнүүд зэрэгцдэггүй тул аюул зогсоогддог. Гэвч ховор нэг өдөр <b>бүх нүх нэг шулуун дээр</b> тохиох үед осол болно. Тиймээс байцаагчийн ажил нь “хэн нүх гаргасныг олох” биш — <b>нүхийг тоолж, жижигрүүлэх</b>.
+  </div>
+
+  <dl class="gr">
+    <div><dt>Идэвхтэй эвдрэл · Active failure</dt><dd>Ослын өмнөхөн хийгдсэн үйлдэл. Нисгэгчийн алдаа, техникчийн орхигдуулга. <b>Харагдахад амархан.</b></dd></div>
+    <div><dt>Далд нөхцөл · Latent condition</dt><dd>Олон жилийн өмнө шийдэгдсэн зүйл: муу зохиомжтой журам, хэт бага орон тоо, төсвийн хэмнэлт. <b>Осол болтол үл харагдана.</b></dd></div>
+  </dl>
+  <div class="note"><b>Байцаагчийн үнэ цэнэ яг энд байна.</b> Идэвхтэй эвдрэлийг ослын комисс олно. <b>Далд нөхцөлийг зөвхөн хяналтын байцаагч ослын өмнө олж чадна.</b> Тиймээс “бүх зүйл журмын дагуу байна” гэж дүгнэсэн шалгалт нь хамгийн үнэ цэнэгүй шалгалт.</div>
+
+  <h3>SHELL загвар — хүн юутай зөрчилддөг вэ</h3>
+  <p>Төвд нь <b>L (Liveware) — хүн</b>. Түүний эргэн тойронд дөрвөн зүйл. Зөрчил нь ихэвчлэн <b>зааг дээр</b> үүснэ.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Зааг</th><th>Утга</th><th>Шалгалтын жишээ</th></tr></thead>
+    <tbody>
+      <tr><td class="m">L–S</td><td>Хүн ↔ Software (журам, гарын авлага, хяналтын хуудас)</td><td>SOP хэт урт, ойлгомжгүй, зөрчилтэй. Checklist бодит дараалалд тохирохгүй.</td></tr>
+      <tr><td class="m">L–H</td><td>Хүн ↔ Hardware (кабин, унтраалга, багаж)</td><td>Ижил төстэй хоёр унтраалга зэрэгцээ. Дэлгэцийн уншилт бүдэг.</td></tr>
+      <tr><td class="m">L–E</td><td>Хүн ↔ Environment (дуу чимээ, гэрэл, цаг агаар, цагийн бүс)</td><td>Шөнийн ээлж, циркадиан хямрал, ангарын хүйтэн, чимээтэй перрон.</td></tr>
+      <tr><td class="m">L–L</td><td>Хүн ↔ Хүн (харилцаа, эрх мэдлийн зөрүү, соёл)</td><td>Туслах нисгэгч ахлагчийг эсэргүүцэж чадахгүй. Ээлж хүлээлцэх мэдээлэл дутуу.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Бохир арван хоёр · The Dirty Dozen</h3>
+  <p>Техник үйлчилгээний салбарт үүссэн боловч бүх салбарт хэрэглэгддэг. Цээжлэхэд амархан: <b>гурав гурваар</b>.</p>
+  <div class="gr" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+    <div><dt>Мэдлэгийн бүлэг</dt><dd><b>1.</b> Мэдлэг дутуу<br><b>2.</b> Анхаарал сарнилт<br><b>3.</b> Мартамхай байдал</dd></div>
+    <div><dt>Нөөцийн бүлэг</dt><dd><b>4.</b> Нөөц дутагдал<br><b>5.</b> Ядаргаа<br><b>6.</b> Стресс</dd></div>
+    <div><dt>Харилцааны бүлэг</dt><dd><b>7.</b> Харилцаа холбоо тасалдах<br><b>8.</b> Багийн ажиллагаа сул<br><b>9.</b> Бусдын шахалт</dd></div>
+    <div><dt>Хандлагын бүлэг</dt><dd><b>10.</b> Хэт сэтгэл амар байдал<br><b>11.</b> Байр сууриа хэлж чадахгүй<br><b>12.</b> Гажсан хэм хэмжээ</dd></div>
+  </div>
+  <div class="tip"><b>Хамгийн аюултай нь дугаар 12 — гажсан хэм хэмжээ.</b> “Бид үргэлж ингэж хийдэг” гэсэн хариулт сонсогдвол та системийн зөрчил дээр таарсан байна. Энэ нь нэг хүний алдаа биш, <b>байгууллага даяар хэвшсэн</b> хазайлт. Дараагийн асуултаа бэлд: “Хэдэн жил ингэж хийж байна вэ? Хэн зөвшөөрсөн бэ?”</div>
+
+  <h3>TEM — аюул ба алдааны менежмент</h3>
+  <p>Орчин үеийн CRM-ийн суурь. Гурван ойлголт.</p>
+  <ol class="lst">
+    <li><b>Threat · Аюул заналхийлэл</b> — багаас хамааралгүй нөхцөл: цаг агаар, техникийн эвдрэл, ATC-ийн өөрчлөлт, ачаалал.</li>
+    <li><b>Error · Алдаа</b> — багийн үйлдэл шаардлагатайгаас хазайсан: буруу тохиргоо, алдсан checklist, буруу уншилт.</li>
+    <li><b>Хүсээгүй байдал · Undesired Aircraft State</b> — онгоц аюултай байрлалд орсон: тогтворгүй ойртолт, буруу өндөр, буруу хурд. Энэ бол <b>сүүлчийн хаалга</b>.</li>
+  </ol>
+  <div class="note"><b>Шалгалтад хэрэглэх:</b> Симулятор эсвэл нислэгийн шалгалтын үед “баг алдаа хийсэн үү” биш, <b>“баг алдааг илрүүлж, засаж чадсан уу”</b> гэдгийг үнэл. Алдаа хийхгүй баг гэж үгүй. Алдаагаа барьж авдаг баг л аюулгүй.</div>
+
+  <h3>Ядаргаа ба FDTL</h3>
+  <p>Байцаагчийн хамгийн их маргаантай хэсэг. Ядаргаа нь согтууруулах ундаатай харьцуулж болохуйц гүйцэтгэлийн бууралт үүсгэдэг нь судалгаагаар батлагдсан. FDTL нь <b>хөдөлмөрийн гэрээний асуудал биш, аюулгүй байдлын хязгаар</b>.</p>
+  <ul class="lst">
+    <li><b>Циркадиан доод цэг (WOCL)</b> — ойролцоогоор 02:00–06:00. Энэ цагт сонор сэрэмж хамгийн доогуур. Шөнийн нислэгийн хязгаар бага байх шалтгаан.</li>
+    <li><b>Хуримтлагдсан ядаргаа</b> — нэг өдрийн хязгаарт багтсан ч 7/14/28 хоногийн нийлбэр хязгаарыг зөрчиж болно. <b>Гурван хугацааг зэрэг шалга.</b></li>
+    <li><b>Standby ба split duty</b> — хамгийн их зөрчил нуугддаг газар. Дуудлагад хүлээсэн цагийн ямар хэсэг нь үүрэгт цагт орох вэ.</li>
+    <li><b>FRMS</b> — ядаргааны эрсдэлийн менежментийн систем. Тогтмол хязгаараас хазайхыг зөвшөөрөх боловч <b>өгөгдлөөр батлагдсан</b> байх ёстой. Эрх бүхий байгууллага тусад нь батална.</li>
+  </ul>
+  <div class="flag"><b>Шалгалтын нарийн заль:</b> Компанийн ээлжийн програм зөрчил заахгүй байж болно — учир нь програм нь <b>төлөвлөсөн</b> цагийг харуулдаг. Бодит зөрчил <b>саатал, дахин чиглүүлэлт</b>-ийн дараа үүснэ. Тиймээс <b>бодит гүйцэтгэлийн бүртгэл</b> ба journey log-ийг харьцуул, төлөвлөгөөг биш.</div>
+
+  <div class="done"><button type="button" data-mod="m8" aria-pressed="false">Дуусгасан</button><span>Модуль 08</span></div>
+</section>
+
+<!-- ═══════════ 09 ═══════════ -->
+<section id="m9" data-search>
+  <div class="mhead"><span class="mnum">09</span><div>
+    <h2>Осол, зөрчлийн шинжилгээ — Annex 13</h2>
+    <div class="sub">Тодорхойлолт · Хараат бус байдал · Тайлагналын систем</div>
+  </div></div>
+
+  <p>Байцаагч ослын шинжээч <b>биш</b>. Энэ хоёрыг хольж хутгах нь олон улсын аудитад шууд дутагдал болдог. Гэхдээ байцаагч тодорхойлолтыг мэдэхгүй бол тайлагнах ёстой зүйлийг тайлагнахгүй өнгөрөөнө.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Ангилал</th><th>Тодорхойлолт (товчлон)</th><th>Үр дагавар</th></tr></thead>
+    <tbody>
+      <tr><td><b>Осол · Accident</b></td><td>Хүн онгоцонд сууснаас бууж дуустал хугацаанд: (a) хүн <b>нас барсан эсвэл хүнд гэмтсэн</b>, (b) онгоц <b>бүтцийн ноцтой эвдрэлтэй</b>, эсвэл (c) онгоц <b>сураггүй болсон, хүрэх боломжгүй</b>.</td><td>Заавал шинжилгээ. ICAO-д тайлан.</td></tr>
+      <tr><td><b>Ноцтой зөрчил · Serious incident</b></td><td>Осол болох <b>өндөр магадлалтай</b> нөхцөл үүссэн зөрчил. Жишээ: зурвас руу зөвшөөрөлгүй орох, агаарт мөргөлдөхөөс зайлсхийсэн, газарт мөргөхөөс арайхийн мултарсан, түлш бүрэн дуусах.</td><td>Ихэнхдээ шинжилгээ хийхийг зөвлөнө. Тайлагнана.</td></tr>
+      <tr><td><b>Зөрчил · Incident</b></td><td>Ослоос бусад, үйл ажиллагааны аюулгүй байдалд нөлөөлж болох аливаа үйл явдал.</td><td>Тайлагналын системд бүртгэнэ. Чиг хандлагын шинжилгээнд ашиглана.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="flag"><b>Annex 13-ын хамгийн чухал заалт:</b> Шинжилгээний цорын ганц зорилго нь осол, зөрчлөөс урьдчилан сэргийлэх явдал. Гэм буруу, хариуцлагыг хуваарилах нь энэ ажиллагааны зорилго <b>биш</b>. Эндээс <b>шинжилгээний байгууллага нь хяналтын байгууллагаас бүтэц, хараат бус байдлаараа тусдаа</b> байх үүрэг үүсдэг. Байцаагч шинжилгээний материалыг хариуцлага тооцоход ашиглавал дараагийн ослын үнэн мэдээллийг устгана.</div>
+
+  <h3>Хугацаа — цээжлэх 4 тоо</h3>
+  <dl class="gr">
+    <div><dt>Мэдэгдэл</dt><dd><b>Нэн даруй</b> · Осол болсон улс холбогдох улсуудад, ICAO-д хамгийн богино хугацаанд</dd></div>
+    <div><dt>Урьдчилсан тайлан</dt><dd><b>30 хоног</b> · Preliminary Report</dd></div>
+    <div><dt>Эцсийн тайлан</dt><dd><b>12 сар</b> · Боломжгүй бол жил бүр завсрын мэдэгдэл гаргана</dd></div>
+    <div><dt>Зөвлөмжийн хариу</dt><dd><b>90 хоног</b> · Аюулгүй байдлын зөвлөмж хүлээн авсан улс хариу өгнө</dd></div>
+  </dl>
+
+  <h3>Тайлагналын хоёр систем</h3>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Албан журмын · Mandatory</th><th>Сайн дурын · Voluntary</th></tr></thead>
+    <tbody>
+      <tr><td><b>Юуг</b></td><td>Дүрмээр заасан тодорхой үйл явдлууд</td><td>Аюул, сул тал, “бараг болох байсан” нөхцөл</td></tr>
+      <tr><td><b>Хэн</b></td><td>Тээвэрлэгч, АНЖ, аэродром — үүрэгтэй</td><td>Аливаа хувь хүн</td></tr>
+      <tr><td><b>Нэр</b></td><td>Нэртэй</td><td><b>Нэргүй болгосон</b> байх ёстой</td></tr>
+      <tr><td><b>Шийтгэл</b></td><td>Худал мэдээлбэл хариуцлага</td><td><b>Шийтгэлгүй</b> — эс бөгөөс систем үхнэ</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><b>Аюулгүй байдлын мэдээллийн хамгаалалт (Annex 19).</b> Урьдчилан сэргийлэх зорилгоор цуглуулсан мэдээллийг захиргааны, иргэний, эрүүгийн ажиллагаанд ашиглахыг хязгаарлана. Гэхдээ <b>үл хамаарах зүйл бий</b>: санаатай үйлдэл, ноцтой хайхрамжгүй байдал. Байцаагч энэ хилийг тодорхой мэдэх ёстой — нэг удаа буруу ашигласан мэдээлэл тухайн улсын тайлагналын соёлыг олон жилээр ухраана.</div>
+
+  <div class="done"><button type="button" data-mod="m9" aria-pressed="false">Дуусгасан</button><span>Модуль 09</span></div>
+</section>
+
+<!-- ═══════════ 10 ═══════════ -->
+<section id="m10" data-search>
+  <div class="mhead"><span class="mnum">10</span><div>
+    <h2>Дүрэм бүрийн цаана осол байдаг</h2>
+    <div class="sub">13 түүхэн кэйс · Үндсэн шалтгаан · Гарсан өөрчлөлт · Тоо баримт</div>
+  </div></div>
+
+  <p>Нисэхийн дүрмийг хүн ширээн дээр зохиогоогүй. Бараг бүх чухал дүрэм <b>тодорхой ослын дараа</b> бичигдсэн. Дүрмийг ослын түүхтэй нь хамт цээжилвэл хэзээ ч мартагдахгүй, бас аудит, ярилцлагад хамгийн хүчтэй хариулт болно. Толгой дээр нь дарж дэлгэнэ.</p>
+
+  <div class="tip"><b>Хэрхэн ашиглах:</b> Кэйс бүрийн доод хэсэгт <b>“Юу өөрчлөгдсөн”</b> хэсэг байна. Ярилцлагад “Яагаад ийм дүрэмтэй вэ?” гэж асуувал ослын нэр, огноо, өөрчлөлтийг хэлэх нь дүрмийн дугаар цээжилснээс дөрөв дахин илүү үнэлэгддэг.</div>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Тенерифе — түүхэн дэх хамгийн олон хохирогчтой осол</div>
+    <div class="meta">1977.03.27 · Лос Родеос, Испани · B747 + B747</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Бөмбөгдөлтийн улмаас олон онгоц жижиг нисэх буудалд хуримтлагдав. Манан буув. KLM-ийн 747 хөөрөлтийн зөвшөөрөл аваагүй байж хөөрч эхлэхэд Pan Am-ийн 747 зурвас дээр явж байлаа.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Хоёрдмол утгатай радио хэллэг (<b>“We are at take-off”</b>), нэгэн зэрэг дуудлага давхцаж хаагдсан, KLM-ийн ахлагч компанийн хамгийн ахмад шалгагч нисгэгч байсан тул <b>эрх мэдлийн зөрүү</b> нь туслах нисгэгчийг эргэлзээгээ хэлэхэд саад болсон. Багийн үүрэгт цагийн дарамт.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>583<small>Хоёр онгоцонд</small></dd></div>
+        <div><dt>Амьд үлдсэн</dt><dd>61<small>Бүгд Pan Am</small></dd></div>
+        <div><dt>Манангийн харагдац</dt><dd>~300 м<small>Зурвасын дунд</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li><b>“Take-off” гэдэг үг</b> зөвхөн бодит хөөрөлтийн зөвшөөрөл өгөх/хүлээн авах үед хэрэглэгдэх болсон. Бусад тохиолдолд <b>“departure”</b>.</li>
+        <li>Хүлээх зөвшөөрлийг <b>“line up and wait”</b> гэж стандартчилж, “ready for departure”-тай хутгахгүй болгов.</li>
+        <li>Бүх чухал зөвшөөрлийг <b>заавал давтан унших (readback)</b> шаардлага олон улсын хэмжээнд чангарсан.</li>
+        <li>Энэ ослыг <b>CRM (багийн нөөцийн менежмент)</b> үүсэхэд шийдвэрлэх түлхэц болсон гэж үздэг.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Стандарт хэллэгийн зөрчил нь “жижиг зүйл” биш. Ramp check эсвэл нислэгийн ажиглалтын үед стандарт бус хэллэг сонсвол <b>бүртгэ</b>. 583 хүн нэг хоёрдмол утгатай өгүүлбэрээс болж нас барсан.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Юнайтед 173 — CRM төрсөн өдөр</div>
+    <div class="meta">1978.12.28 · Портланд, АНУ · DC-8</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Буултын шасси гаргахад асуудал гарав. Баг нэг цаг гаруй хугацаанд шаслины асуудалд анхаарлаа төвлөрүүлэн нисэх буудлын дээгүүр тойрч байв. Туслах нисгэгч болон нислэгийн инженер түлшний хэмжээг хэд хэдэн удаа сануулсан боловч <b>шууд, тодорхой хэлээгүй</b>. Онгоц түлшгүй болж хотын захад унав.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Ахлагч нисгэгч ачааллаа хуваарилж чадаагүй, багийн гишүүд эрх мэдлийн зөрүүнээс болж эрс байр сууриа илэрхийлээгүй. Техникийн эвдрэл биш — <b>багийн харилцаа</b> ослын шалтгаан болсон анхны тодорхой тохиолдлуудын нэг.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>10<small>189 хүнээс</small></dd></div>
+        <div><dt>Онгоцонд</dt><dd>189</dd></div>
+        <div><dt>Түлш дуусах хүртэл</dt><dd>~60 мин<small>Шийдвэр гаргах хугацаа</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>NTSB-ийн зөвлөмжийн дараа NASA 1979 онд нөөцийн менежментийн семинар зохион байгуулж, <b>United Airlines 1981 онд дэлхийн анхны CRM сургалтыг</b> нэвтрүүлсэн.</li>
+        <li>CRM өнөөдөр <b>ICAO Annex 1 ба Annex 6-ийн шаардлага</b> бөгөөд бүх арилжааны нисгэгчийн эхний болон дахин сургалтад заавал ордог.</li>
+        <li>Сүүлдээ техник үйлчилгээ (MRM), кабины баг, диспетчер, АНЖ-д (TRM) өргөжсөн.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Тээвэрлэгчийн CRM сургалтыг шалгахдаа “цаг гүйцсэн үү” биш, <b>“эрх мэдлийн зөрүүг хэрхэн зааж байна вэ”</b> гэдгийг шалга. Туслах нисгэгч ахлагчаа зогсоох эрхтэй гэдгийг сургалтын материалд тодорхой бичсэн үү?</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Japan Airlines 123 — нэг онгоцны хамгийн олон хохирогч</div>
+    <div class="meta">1985.08.12 · Осутака уул, Япон · B747SR</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Хөөрснөөс хойш 12 минутын дараа арын даралтат хаалт задарч, босоо сүүл бараг бүхэлдээ тасарч, дөрвөн гидравлик системийг бүгдийг нь тасалав. Баг 32 минут хөдөлгүүрийн хүчээр зөвхөн удирдан нисч, эцэст нь уулын хэсэгт осолдсон.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>1978 онд буулт хийхдээ сүүлээ цохиулсны дараа хийсэн <b>засвар үйлдвэрлэгчийн зааврыг зөрчсөн</b>. Хос эгнээ хадаас хэрэглэх ёстой байтал нэг эгнээгээр холбосон нь холболтын бат бөх чанарыг эрс бууруулж, 7 жилийн турш металл ядрах замаар өсөж, эцэст нь задарсан. <b>Засварын дараах хяналт үүнийг олоогүй.</b></p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>520</dd></div>
+        <div><dt>Амьд үлдсэн</dt><dd>4</dd></div>
+        <div><dt>Даралтжуулалтын мөчлөг</dt><dd>~12 000<small>Засвараас ослын хооронд</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>Бүтцийн чухал засварт (<b>major repair</b>) хийгдэх хяналт, баримтжуулалт, бие даасан шалгалтын шаардлага дэлхий даяар чангарсан.</li>
+        <li>Үйлдвэрлэгчийн засварын зааврыг мөрдөх, засварын дараах давтан үзлэгийн хөтөлбөр (repair assessment) хөгжсөн.</li>
+        <li>Гидравлик системийн олдворлолт, удирдлагын нөөцлөлтийн шаардлагыг дахин үнэлэх ажил эхэлсэн.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>МИНД-145 техник үйлчилгээний байгууллагыг шалгахдаа <b>чухал засварын хавтсыг</b> сонгож ав. Үйлдвэрлэгчийн зааврын яг тэр хуудсыг хэрэглэсэн үү? Хэн бие даан шалгасан бэ? Энэ бол 520 хүний үнэтэй асуулт.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Aloha 243 — дээвэргүй нисэв</div>
+    <div class="meta">1988.04.28 · Хавай, АНУ · B737-200</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>24 000 фут өндөрт онгоцны их биеийн дээд хэсэг ойролцоогоор 5.5 метр урт хэсэг тасарч хөвөв. Баг онгоцыг Мауи-д амжилттай буулгасан.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Богино зайн олон нислэг хийсэн тул онгоц насныхаа хувьд бага ч <b>даралтжуулалтын мөчлөг нь хэт олон</b> байсан. Далайн давслаг орчинд зэврэлт, олон цэгт зэрэгцэн үүссэн жижиг ан цав (multiple site damage) нэгдэж, гэнэт тархсан. <b>Хяналтын хөтөлбөр нь “нас”-аар төлөвлөгдсөн байсан бөгөөд мөчлөгийг зөв тооцоогүй.</b></p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>1<small>Нисэхийн үйлчлэгч</small></dd></div>
+        <div><dt>Онгоцонд</dt><dd>95</dd></div>
+        <div><dt>Даралтжуулалтын мөчлөг</dt><dd>~89 680<small>Зохиомжийн хязгаараас хавьгүй их</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>АНУ-д <b>Aging Aircraft Program</b> (хуучирсан онгоцны хөтөлбөр) бий болж, 1988 онд хууль батлагдсан.</li>
+        <li>Тухайн үеийн загваруудад <b>нэмэлт бүтцийн үзлэгийн хөтөлбөр</b> (SSID) заавал болсон.</li>
+        <li>Хожим <b>өргөн тархсан ядаргааны эвдрэл</b> (Widespread Fatigue Damage) — онгоц бүрд <b>Limit of Validity</b> буюу ашиглалтын хязгаарыг тогтоох дүрэм гарсан.</li>
+        <li>Зэврэлтийн урьдчилан сэргийлэх хөтөлбөр (CPCP) стандарт болсон.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Онгоцны “нас” хэдэн жил биш. <b>Цаг, мөчлөг, орчин</b> гурвыг зэрэг харна. Монголын нөхцөлд богино зайн олон эргэлттэй үйл ажиллагаа явуулдаг тээвэрлэгчийн мөчлөгийн тоог тусгайлан шалга.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">ValuJet 592 — гэрээт гүйцэтгэгчийн хяналт</div>
+    <div class="meta">1996.05.11 · Эверглейдс, АНУ · DC-9</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Ачааны тасалгаанд тээвэрлэж байсан <b>хугацаа дууссан химийн хүчилтөрөгч үүсгэгчид</b> асаж, галд автсан онгоц хөөрснөөс хойш 10 минутын дотор намагт унав.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Гэрээт техник үйлчилгээний компани генераторуудыг аюулгүй болгох таг хийлгүй, буруу шошготойгоор ачаалсан. ValuJet өөрийн гэрээт гүйцэтгэгчээ хянаагүй, FAA нь эргээд ValuJet-ийн хурдацтай өсөлтийг хангалттай хянаагүй. <b>Хариуцлагын гинж гурван газарт тасарсан.</b></p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>110<small>Амьд үлдэгч байхгүй</small></dd></div>
+        <div><dt>Гал эхлэхээс уналт хүртэл</dt><dd>~6 мин</dd></div>
+        <div><dt>Хүчилтөрөгч үүсгэгч</dt><dd>144<small>Хайрцагт ачигдсан</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>АНУ-д D ангиллын ачааны тасалгаанд <b>утаа мэдрэгч ба гал унтраах систем</b> заавал болж, бүх флотод тоноглох шаардлага тавигдсан.</li>
+        <li><b>Гэрээт (outsourced) техник үйлчилгээний хяналт</b> нь эрх бүхий байгууллагын онцгой анхаарлын сэдэв болсон — өнөөдөр МИНД-145/CAMO шалгалтын гол хэсэг.</li>
+        <li>1996 онд АНУ-ын хууль тогтоомжоос FAA-гийн <b>“нисэхийг сурталчлах” хоёрдмол үүрэг хасагдаж</b>, зөвхөн аюулгүй байдлын зохицуулагч болсон. Энэ бол зохицуулагчийн хараат бус байдлын тухай сонгодог кэйс.</li>
+        <li>Аюултай ачааны сургалт, шошго, тайлагналын шаардлага дэлхий даяар чангарсан.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Тээвэрлэгч ажлаа гэрээгээр гүйцэтгүүлж болно, <b>гэхдээ хариуцлагаа гэрээгээр шилжүүлж чадахгүй</b>. Гэрээт гүйцэтгэгчийг хэн, хэзээ, ямар аргаар хянаж байгааг баримтаар шалга. “Тэд гэрчилгээтэй” гэсэн хариулт хангалтгүй.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">2001.09.11 — аюулгүй байдлын тогтолцоо дахин бичигдэв</div>
+    <div class="meta">2001.09.11 · АНУ · Дөрвөн онгоц</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Дөрвөн арилжааны онгоцыг хууль бусаар булаан авч зэвсэг болгон ашигласан. Энэ нь техникийн осол биш, <b>хууль бус халдлага</b> байсан боловч иргэний нисэхийн зохицуулалтад хамгийн том нэг өөрчлөлт авчирсан.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>2 977<small>Халдагчдаас бусад</small></dd></div>
+        <div><dt>АНУ-ын агаарын зай хаагдсан</dt><dd>3 хоног</dd></div>
+        <div><dt>Annex 17 нэмэлт</dt><dd>Amdt 10<small>2001 оны 12 сард батлагдсан</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li><b>Annex 17-д яаралтай нэмэлт</b> орж, урьд нь зөвлөмж байсан олон заалт <b>стандарт</b> болсон.</li>
+        <li><b>Бэхжүүлсэн кабины хаалга</b> олон улсын стандарт болж, 2003 оны 11-р сарын 1-нээс хүчин төгөлдөр болсон.</li>
+        <li><b>Ачааны бүрэн шалгалт</b> (100% hold baggage screening) стандарт болсон.</li>
+        <li>ICAO 2002 онд <b>USAP</b> буюу Аюулгүй байдлын бүх нийтийн аудитын хөтөлбөрийг эхлүүлсэн — USOAP-ийн аюулгүй байдлын хувилбар.</li>
+        <li>Зорчигчийн урьдчилсан мэдээлэл (API/PNR) солилцоо Annex 9-д өргөжсөн.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p><b>Safety</b> (аюулгүй ажиллагаа) ба <b>Security</b> (аюулгүй байдал) хоёрыг ялга. Монгол хэлэнд хоёулаа “аюулгүй байдал” гэж орчуулагддаг нь эндүүрэл үүсгэдэг. Annex 19 бол safety, Annex 17 бол security. Аудитад энэ ялгааг мэдэхгүй бол шууд илэрнэ.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Линате — манан дахь зурвасын зөрчил</div>
+    <div class="meta">2001.10.08 · Милан Линате, Итали · MD-87 + Citation</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Өтгөн манан дунд жижиг бизнес онгоц буруу гүйлтийн зам руу эргэж, ашиглалтад байгаа зурвас руу орсон. Хөөрч байсан MD-87 түүнтэй мөргөлдөв.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Газрын хөдөлгөөний радар <b>ажиллахгүй байсан</b>, гүйлтийн замын тэмдэглэгээ, тэмдэг бүдгэрч уншигдахгүй, ATC-ийн хэллэг тодорхойгүй, нисэх буудлын баримт бичигт тухайн гүйлтийн зам буруу тэмдэглэгдсэн. Олон давхар хамгаалалт зэрэг нүхтэй байсан.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>118<small>Онгоцонд 114, газарт 4</small></dd></div>
+        <div><dt>Харагдац</dt><dd>~100 м<small>Ослын үед</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>Европт <b>зурвасын аюулгүй байдлын хөтөлбөр</b> эрчимжиж, орон нутгийн Runway Safety Team (RST) бүх томоохон нисэх буудалд байгуулагдах болсон.</li>
+        <li><b>Газрын хөдөлгөөний удирдлагын систем</b> (A-SMGCS) шаардлага, гүйлтийн замын тэмдэглэгээ, зогсоолын гэрлийн шаардлага чангарсан.</li>
+        <li>ICAO <b>Doc 9870 — Зурвасын зөрчлөөс урьдчилан сэргийлэх гарын авлага</b> гаргасан.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Аэродром шалгахдаа <b>бага харагдацын үед</b> ямар журам ажилладгийг тусад нь асуу. Тэмдэглэгээ өдрийн гэрэлд сайхан харагдаж болно. Зурвасын зөрчлийн тоог тухайн буудал бүртгэж байна уу — тоо тэг бол бүртгэдэггүй гэсэн үг.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Юберлинген — ATC эсвэл TCAS, алиныг нь дагах вэ</div>
+    <div class="meta">2002.07.01 · Юберлинген, Герман · Tu-154 + B757</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Хоёр онгоц ижил өндөрт мөргөлдөх чиглэлд байв. <b>TCAS</b> систем Tu-154-т “өгсөх”, B757-д “буух” гэж зөвлөв. Яг тэр үед хүний хүчин удирдагч Tu-154-т <b>“буу”</b> гэж тушаав. Tu-154-ийн баг удирдагчийг дагаж буув. B757 ч бас буув. Хоёул мөргөлдөв.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Тухайн үед “TCAS-ийн зөвлөмж ба ATC-ийн тушаал зөрчилдвөл алиныг нь дагах вэ” гэдэг нь <b>олон улсад нэг мөр тодорхойгүй</b> байсан. Түүнчлэн удирдлагын төвд нэг хүн хоёр ажлын байрыг хослуулан ажиллаж, техникийн засвар үйлчилгээний улмаас анхааруулах систем ажиллахгүй байсан.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>71<small>Үүнээс 45 хүүхэд</small></dd></div>
+        <div><dt>Ээлжид ажилласан удирдагч</dt><dd>1<small>Хоёр ажлын байранд</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li><b>Дүрэм тодорхой болсон: TCAS-ийн RA зөвлөмжийг ATC-ийн зөрчилдөх тушаалаас давуу гэж үзэж дагана.</b> Энэ нь ICAO-ийн баримт бичигт 2003 онд тусгагдаж, өнөөдөр бүх нисгэгчийн суурь мэдлэг.</li>
+        <li>Нисгэгч RA дагасан тухайгаа ATC-д нэн даруй мэдэгдэх, ATC нь тухайн онгоцонд өндрийн тушаал өгөхөө зогсоох журам стандартчлагдсан.</li>
+        <li>Ганцаарчилсан ээлжийн ажиллагаа, ажлын байр хослуулах практик Европт эрс хязгаарлагдсан.</li>
+        <li>ACAS-ийн сургалт нисгэгч болон удирдагч хоёуланд заавал болсон.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Энэ бол ярилцлагад хамгийн олон асуугддаг кэйс. Хариулт: <b>RA-г дагана.</b> Шалгалтын хувьд — тээвэрлэгчийн гарын авлагад энэ дараалал тодорхой бичигдсэн эсэх, АНЖ-ийн ганцаарчилсан ээлжийн журам ямар байгааг шалга.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Хелиос 522 — сүнсэн онгоц</div>
+    <div class="meta">2005.08.14 · Гриммери, Грек · B737-300</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Шөнийн техник үйлчилгээний дараа даралтжуулалтын сонголт <b>гар удирдлагад</b> үлдсэн. Баг гурван удаа (нислэгийн өмнөх, хөөрөлтийн өмнөх, дараах) хяналтын хуудсаар шалгах ёстой байсныг алдсан. Өндөрт гарахад даралт унаж, баг хүчилтөрөгчийн хомсдолд орж ухаангүй болов. Онгоц автомат нисгэгчээр Афины дээгүүр тойрч, түлш дуустал нисээд уулан дээр унав.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Хяналтын хуудас сахилга алдсан, анхааруулах дуут дохио нь <b>хөөрөлтийн тохиргооны анхааруулгатай ижил</b> байсан тул баг үүнийг өөр асуудал гэж андуурсан. Байгууллагын хувьд сургалт, SOP-ийн хэрэгжилт сул байсан.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>121<small>Амьд үлдэгч байхгүй</small></dd></div>
+        <div><dt>Автоматаар нисэв</dt><dd>~2 ц 40 м</dd></div>
+        <div><dt>Алдсан шалгалт</dt><dd>3<small>Гурван checklist</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>Кабины өндрийн анхааруулгыг <b>хөөрөлтийн тохиргооны анхааруулгаас ялгах</b> зохиомжийн өөрчлөлт хийгдсэн.</li>
+        <li>Даралтжуулалтын гэмтлийн үед хийх багийн сургалт, хүчилтөрөгчийн хэрэглээний сургалт чангарсан.</li>
+        <li>Хяналтын хуудасны сахилга, “stabilised” процедурын аудит нь нислэгийн үйл ажиллагааны шалгалтын байнгын сэдэв болсон.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Хяналтын хуудсыг зөвхөн “байгаа эсэх”-ээр шалгаж болохгүй. <b>Хэрхэн хэрэглэгдэж байгааг нүдээр хар.</b> Симулятор эсвэл нислэгийн ажиглалтын үед “challenge and response” бодитоор хийгдэж байна уу, эсвэл цээжээр уншиж байна уу?</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Колган 3407 — АНУ-ын хамгийн том дүрмийн өөрчлөлт</div>
+    <div class="meta">2009.02.12 · Буффало, АНУ · Dash 8 Q400</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Ойртолтын үед хурд буурч, онгоц эргэлдэх байдалд орохыг сануулах систем ажиллав. Ахлагч нисгэгч <b>эсрэг чиглэлд</b> удирдлагыг өөр рүүгээ татаж, онгоц эргэлдэн унав.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Ахлагчийн сургалтын түүхэнд олон удаагийн амжилтгүй шалгалт байсныг тээвэрлэгч бүрэн мэдээгүй. Хоёр нисгэгч хоёулаа <b>ядарсан</b> — туслах нисгэгч ослын өмнөх шөнө хоёр нислэгийн суудалд өнжиж ирсэн, цалин бага байсан тул орон сууц түрээслэх боломжгүй байжээ. Аймшгийн хариу үйлдэл буруу байсан нь сургалтын дутагдал.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>50<small>Онгоцонд 49, газарт 1</small></dd></div>
+        <div><dt>Шинэ ATP шаардлага</dt><dd>1 500 ц<small>Өмнө нь 250 ц байсан</small></dd></div>
+        <div><dt>Хууль батлагдсан</dt><dd>2010<small>Ослоос 17 сарын дараа</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>АНУ-ын Конгресс 2010 онд хууль батлаж, арилжааны тээврийн <b>туслах нисгэгчид ATP үнэмлэх, 1 500 цагийн нислэгийн туршлага</b> шаардах болсон (2013 оноос хэрэгжсэн).</li>
+        <li><b>Шинэ ядаргааны дүрэм</b> (нислэг, үүрэг, амралтын цаг) 2014 оны 1-р сараас хүчин төгөлдөр болж, амралтын доод хугацаа 10 цаг болж нэмэгдсэн.</li>
+        <li><b>Эргэлдэхээс сэргийлэх ба сэргээх сургалт</b> (stall/upset recovery) заавал болсон.</li>
+        <li><b>Нисгэгчийн бүртгэлийн нэгдсэн сан</b> байгуулагдаж, тээвэрлэгч ажилд авахаас өмнө бүх сургалтын түүхийг харах үүрэгтэй болсон.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Нисгэгчийн <b>сургалтын хавтсыг</b> шалгахдаа зөвхөн “тэнцсэн” бичлэгийг бус, <b>амжилтгүй болсон, давтан хийсэн</b> бичлэгийг ол. Давтан бүтэлгүйтэл нь дараагийн ослын хамгийн хүчтэй урьдчилсан дохионуудын нэг.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Air France 447 — гараар нисэх чадвар</div>
+    <div class="meta">2009.06.01 · Атлантын далай · A330-200</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Далай дээгүүр шөнө нисэж явахад мөстөлтөөс болж <b>хурд хэмжигч хоолой</b> түр хаагдаж, хурдны заалт алдагдав. Автомат нисгэгч салсан. Туслах нисгэгч онгоцыг өгсгөх байдлаар барьж, онгоц эргэлдэх байдалд орсон боловч баг үүнийг <b>3 минут 30 секундын турш таньж чадаагүй</b>, 38 000 футаас далайд унав.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Найдваргүй хурдны заалтын процедурыг хэрэгжүүлээгүй, өндөрт эргэлдэхийг таних сургалт байгаагүй, багийн үүргийн хуваарилалт эмх замбараагүй болсон. Автоматжуулалтад хэт найдсаны улмаас <b>гараар нисэх суурь чадвар</b> алдагдсан нь салбарын хэмжээний сэдэв болсон.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>228<small>Амьд үлдэгч байхгүй</small></dd></div>
+        <div><dt>Унасан хугацаа</dt><dd>3 м 30 с<small>38 000 футаас</small></dd></div>
+        <div><dt>Бичлэг олдсон</dt><dd>2011<small>Ослоос 2 жилийн дараа</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>Асуудалтай хурд хэмжигч хоолойг <b>заавал солих</b> нисэх чадварын удирдамж гарсан.</li>
+        <li><b>UPRT — онгоцыг хүсээгүй байдлаас сэргийлэх, сэргээх сургалт</b> нь нисгэгчийн анхны болон дахин сургалтад олон улсын хэмжээнд заавал болсон. Өндөрт эргэлдэх нь тусгайлан заагдана.</li>
+        <li><b>Гараар нисэх чадварыг хадгалах</b> бодлого тээвэрлэгчдэд шаардагдах болсон.</li>
+        <li>Далайн бүсэд онгоц алдагдахаас сэргийлэх ажил эрчимжиж, хожим <b>15 минут тутмын байршил дамжуулах</b> шаардлага, усан доорх байршуулагчийн ажиллах хугацааг 90 хоног болгох өөрчлөлт хийгдсэн.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Тээвэрлэгчийн сургалтын хөтөлбөрт <b>UPRT</b> ба <b>найдваргүй хурдны заалт</b> байгаа эсэхийг шалга. Мөн “автомат нисгэгчгүй гараар нисэх дасгалыг жилд хэдэн удаа хийдэг вэ?” гэж асуу. Хариулт “хийдэггүй” бол энэ бол бичих ёстой ажиглалт.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">Germanwings 9525 — нисгэгчийн сэтгэцийн эрүүл мэнд</div>
+    <div class="meta">2015.03.24 · Францын Альп · A320</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Ахлагч кабинаас гарсны дараа туслах нисгэгч хаалгыг дотроос түгжиж, онгоцыг зориудаар уулан руу чиглүүлэв.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>Туслах нисгэгч сэтгэл гутралын эмчилгээнд байсан бөгөөд эмч нь нисэхээс түдгэлзэхийг зөвлөсөн боловч <b>эмнэлгийн нууцлалын улмаас</b> энэ мэдээлэл тээвэрлэгч болон эрх бүхий байгууллагад хүрээгүй. Мөн 2001 оны дараа бэхжүүлсэн кабины хаалга нь энэ тохиолдолд <b>эсрэг үр дагавартай</b> болсон — аюулгүй байдлын шийдэл нь аюулгүй ажиллагааны эрсдэл үүсгэсэн.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>150</dd></div>
+        <div><dt>Уруудалт</dt><dd>~8 мин<small>38 000 футаас</small></dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>Европт эхлээд <b>кабинд үргэлж хоёр хүн байх</b> дүрэм зөвлөмж болж, хожим тээвэрлэгч бүрийн эрсдэлийн үнэлгээнд суурилсан шийдвэр болж өөрчлөгдсөн.</li>
+        <li>Нисгэгчийн <b>сэтгэл зүйн үнэлгээ</b> ажилд орохоос өмнө заавал болсон.</li>
+        <li>Тээвэрлэгчид <b>нисгэгчийн дэмжлэгийн хөтөлбөр</b> (peer support programme) байгуулах үүрэгтэй болсон — нисгэгч ажлаа алдахаас айлгүй тусламж хүсэх боломж.</li>
+        <li>Согтууруулах ундаа, мансууруулах бодисын санамсаргүй шалгалт нэвтэрсэн.</li>
+        <li>Нисэхийн эмчийн мэдээлэл солилцох, эмнэлгийн нууцлал ба олон нийтийн аюулгүй байдлын тэнцвэрийн журам сайжирсан.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Аюулгүй байдлын нэг шийдэл өөр нэг эрсдэл үүсгэж болно. <b>Өөрчлөлтийн менежмент</b> (management of change) яг үүний тухай. Тээвэрлэгч шинэ журам нэвтрүүлэхдээ түүний үүсгэх шинэ эрсдэлийг үнэлсэн үү — SMS аудитын гол асуулт.</p>
+    </div>
+  </details>
+
+  <details class="occ"><summary><div class="occ-h"><div>
+    <div class="t">737 MAX — гэрчилгээжүүлэлтийн тогтолцоо шалгагдав</div>
+    <div class="meta">2018.10.29 Индонез · 2019.03.10 Этиоп · B737 MAX 8</div></div><span class="chev">Дэлгэх +</span></div></summary>
+    <div class="occ-b">
+      <h5>Юу болсон</h5>
+      <p>Таван сарын зайтай хоёр шинэ онгоц ижил төстэй нөхцөлд осолдов. <b>MCAS</b> нэртэй автомат систем нэг эвдэрсэн мэдрэгчийн буруу дохиог хүлээн авч, онгоцны хамрыг давтан доошлуулсан. Баг үүнийг сөрөхийг оролдсон боловч чадаагүй.</p>
+      <h5>Үндсэн шалтгаан</h5>
+      <p>MCAS нь <b>нэг мэдрэгчээс</b> хамааралтай зохиомжтой байсан. Систем нисгэгчийн гарын авлагад тайлбарлагдаагүй, сургалтад ороогүй. Гэрчилгээжүүлэлтийн явцад үйлдвэрлэгчид шилжүүлсэн бүрэн эрх, нисгэгчийн хариу үйлдлийн талаарх хэт өөдрөг таамаглал, өрсөлдөөний цагийн дарамт нийлж, <b>зохицуулагчийн хараат бус байдал</b> сулрсан.</p>
+      <dl class="figs">
+        <div><dt>Нас барсан</dt><dd>346<small>189 + 157</small></dd></div>
+        <div><dt>Флот зогссон</dt><dd>~20 сар<small>2019.03 – 2020.11</small></dd></div>
+        <div><dt>Хоёр ослын хооронд</dt><dd>132 хоног</dd></div>
+      </dl>
+      <div class="delta"><span class="dl">Юу өөрчлөгдсөн</span><ul>
+        <li>АНУ 2020 онд <b>онгоцны гэрчилгээжүүлэлт, аюулгүй байдал, хариуцлагын тухай хууль</b> баталж, үйлдвэрлэгчид шилжүүлсэн эрхийн хяналтыг эрс чангатгасан.</li>
+        <li>Системийн аюулгүй байдлын үнэлгээнд <b>нисгэгчийн бодит хариу үйлдлийн хугацаа, хүний хүчин зүйлийг</b> заавал тооцох болсон.</li>
+        <li>Аюулгүй байдалд чухал нөлөөтэй бүх системийг <b>гарын авлагад ил тайлбарлах</b> шаардлага тавигдсан.</li>
+        <li>Үйлдвэрлэгч, зохион бүтээгч байгууллагууд <b>SMS нэвтрүүлэх</b> шаардлагатай болсон — өмнө нь зөвхөн тээвэрлэгчид хамаарч байсан.</li>
+        <li>Зохицуулагчид хоорондын <b>харилцан итгэл</b> дахин үнэлэгдэж, бусад улс өөрсдөө бие даан үнэлгээ хийх хандлага нэмэгдсэн.</li>
+      </ul></div>
+      <h5>Байцаагчид өгөх сургамж</h5>
+      <p>Энэ кэйс нь байцаагчийн ажлын гол утгыг харуулна: <b>зохицуулагч нь салбартаа хэт ойр очвол хяналт болохоо больдог.</b> Гэрчилгээжүүлэлтэд “үйлдвэрлэгч/тээвэрлэгч тэгж хэлсэн” гэдэг нь баримт биш. Өөрийн бие даасан баталгаажуулалт хийгээгүй бол та зөвшөөрөл олгох эрхгүй.</p>
+    </div>
+  </details>
+
+  <h3>Тоо баримт — 60 жилийн зураглал</h3>
+  <p>Кэйс бүрийн үр дүн нэг чиглэлд нийлдэг. Арилжааны нисэх нь <b>хамгийн нягт зохицуулалттай салбаруудын нэг болсноороо</b> дэлхийн хамгийн аюулгүй тээврийн хэрэгсэл болсон.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Үзүүлэлт</th><th>1960-1970-аад</th><th>Өнөөдөр</th><th>Юу нөлөөлсөн</th></tr></thead>
+    <tbody>
+      <tr><td>Реактив онгоцны бүрэн эвдрэлийн түвшин (сая хөөрөлтөд)</td><td class="m">~4–6</td><td class="m">~0.1–0.2</td><td>Хамтын нөлөө: техник, сургалт, зохицуулалт</td></tr>
+      <tr><td>IATA гишүүдийн ослын түвшин (сая нислэгт)</td><td class="m">—</td><td class="m">~1 орчим</td><td>IATA жилийн тайлан. 2023 онд түүхэн доод түвшинд хүрсэн</td></tr>
+      <tr><td>Газарт мөргөх осол (CFIT)</td><td class="m">Тэргүүлэх шалтгаан</td><td class="m">Огцом буурсан</td><td>GPWS (1970-аад), <b>TAWS заавал болсон</b> (ICAO, 2001/2003)</td></tr>
+      <tr><td>Агаарт мөргөлдөх</td><td class="m">Тогтмол тохиолдол</td><td class="m">Маш ховор</td><td>TCAS/ACAS заавал болсон, RA-г дагах дүрэм (2003)</td></tr>
+      <tr><td>Багийн харилцаанаас үүдэлтэй осол</td><td class="m">Өндөр</td><td class="m">Эрс буурсан</td><td>CRM (1981-ээс), TEM, стандарт хэллэг</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><b>Ярилцлагад хэлэх нэг өгүүлбэр:</b> “Нисэхийн аюулгүй байдал сайжирсан нь технологиос илүү <b>тогтолцооноос</b> үүдэлтэй — тайлагнах соёл, бие даасан шинжилгээ, дүрэмд хөрвүүлэх чадвар гурав нийлснээр. Байцаагчийн ажил бол энэ гурав дахь хэсэг.”</div>
+  <div class="flag"><b>Тоо баримтын анхааруулга:</b> Дээрх түвшингүүд нь чиг хандлагыг харуулах зорилготой бөгөөд эх сурвалж, арга зүй бүрд өөр өөр байдаг. Албан ёсны тоог <b>IATA Annual Safety Report</b>, <b>ICAO Safety Report</b> (жил бүр шинэчлэгддэг), <b>Boeing Statistical Summary of Commercial Jet Airplane Accidents</b>-аас авч ашиглана уу.</div>
+
+  <div class="done"><button type="button" data-mod="m10" aria-pressed="false">Дуусгасан</button><span>Модуль 10</span></div>
+</section>
+
+<!-- ═══════════ 11 ═══════════ -->
+<section id="m11" data-search>
+  <div class="mhead"><span class="mnum">11</span><div>
+    <h2>Ажлын кэйс — 10 нөхцөл байдал</h2>
+    <div class="sub">Өөрөө бод → БАРИМТ загвараар шийдэл → Дүрмийн үндэслэл → Нийтлэг алдаа</div>
+  </div></div>
+
+  <p>Кэйс бүрд эхлээд <b>шийдлийг нээхгүйгээр</b> асуултад өөрөө хариул. Дараа нь загвар шийдэлтэй харьцуул. Ялгаа нь таны сул талыг заана. Энэ бол ярилцлага, шалгалтад хамгийн ойрхон дасгал.</p>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 01 · Ramp check</div><h3>MEL-ийн хугацаа хэтэрсэн</h3></div>
+    <div class="scn-b"><p class="sit">Та гадаад тээвэрлэгчийн онгоцонд ramp check хийж байна. Техникийн бүртгэлийн номноос харахад <b>B ангиллын MEL зүйл</b> (3 хоногийн хугацаатай) <b>11 хоногийн өмнө</b> нээгдсэн, хаагдаагүй байна. Онгоц 40 минутын дараа 190 зорчигчтой хөөрөх ёстой. Тээвэрлэгчийн төлөөлөгч “манай улсын байгууллага сунгалт өгсөн” гэж амаар хэлж байна.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Энэ нь ямар түвшний зөрчил вэ?</li>
+        <li>Онгоцыг хөөрүүлэх үү?</li>
+        <li>Хэнд, юуг мэдэгдэх вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Техникийн бүртгэлийн номны хуудсыг зурагт ав: MEL зүйлийн дугаар, нээсэн огноо, цаг, ангилал, гарын үсэг. Journey log-оос хойшхи нислэгүүдийг тоол. Амаар хэлсэн “сунгалт”-ын <b>бичгэн баримтыг нэн даруй шаард</b>.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>MEL нь тухайн тээвэрлэгчийн эрх бүхий байгууллагаас батлагдсан баримт бичиг. Хугацаа хэтэрсэн зүйлтэй нислэг үйлдэх нь <b>нисэх чадварын гэрчилгээний хүчинтэй байдлыг эргэлзээтэй болгоно</b>. Монголд ramp check хийх эрх нь Чикагогийн конвенцын 16-р зүйл ба МИНД-ын холбогдох заалтаас үүдэлтэй.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Тухайн MEL зүйл юу болохоос хамаарна. Гэхдээ <b>эрсдэлийг та биш, MEL-ийг батлах үед аль хэдийн үнэлсэн</b> — хугацаа нь тэр үнэлгээний нэг хэсэг. Хугацаа хэтэрсэн нь үнэлгээ хүчингүй болсныг хэлж байна. 5×5-д наад зах нь шар бүсэд.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-w">Level 1 · Cat 3</span> Онгоцны нисэх чадварын гэрчилгээний хүчинтэй байдалд шууд нөлөөлж байна. Нислэгийн өмнө засах шаардлагатай.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Ахлагч нисгэгчид <b>бичгээр</b> мэдэгдэнэ. Тээвэрлэгчийн улсын эрх бүхий байгууллагад албан ёсоор мэдэгдэнэ. Гурван боломж: (1) зүйлийг засах, (2) тухайн улсын байгууллагаас <b>бичгэн</b> сунгалт ирүүлэх, (3) засагдах хүртэл онгоц хөөрөхгүй.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Тайланг SAFA/ramp мэдээллийн санд оруулна. Тухайн тээвэрлэгчийн дараагийн нислэгүүдийг нэмэгдсэн хяналтад авна. Хариу ирсэн эсэхийг хянана.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Чикагогийн конвенц Art. 16 (шалгах эрх) · Annex 6 Part I (MEL) · МИНД-121/135 MEL заалт · Тухайн онгоцны батлагдсан MEL-ийн Preamble</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>“Зорчигч хүлээж байна”, “40 минут л үлдсэн” гэсэн дарамтад автаж амаар зөвшөөрөл өгөх. Таны шийдвэр <b>амаар байж болохгүй</b>. Мөн урвуу алдаа: онгоцыг шууд газардуулаад тээвэрлэгчийн улсын байгууллагад мэдэгдэхгүй өнгөрөх — тэгвэл асуудал дахин давтагдана.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 02 · FDTL</div><h3>Үүрэгт цаг хэтэрсэн, компани “онцгой нөхцөл” гэж байна</h3></div>
+    <div class="scn-b"><p class="sit">Дотоодын тээвэрлэгчийн бүртгэлээс та нэг багийн <b>үүрэгт цаг 14 цаг 40 минут</b> болсныг олов. Хязгаар нь 13 цаг. Компанийн нислэгийн менежер “цаг агаарын улмаас саатсан, ахлагч нисгэгч өөрөө сунгах бүрэн эрхээ хэрэглэсэн” гэж тайлбарлаж, гарын үсэгтэй маягт үзүүлэв. Гэхдээ та сүүлийн 3 сард <b>ижил төрлийн 9 удаагийн сунгалт</b> байгааг анзаарав.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Ганц тохиолдол нь зөрчил мөн үү?</li>
+        <li>Жинхэнэ асуудал юу вэ?</li>
+        <li>Ямар баримт нэмж авах вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>9 удаагийн сунгалтын жагсаалт: огноо, баг, шалтгаан, хэн зөвшөөрсөн. Хуанлийн 28 хоног, 7 хоногийн нийлбэр цагийг тооц. Бодит гүйцэтгэлийн цагийг journey log-оос ав, төлөвлөгөөнөөс биш. Багийн гишүүдтэй тусад нь ярилц.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Ахлагчийн сунгах бүрэн эрх нь <b>урьдчилан тооцоолж боломгүй</b> нөхцөлд зориулагдсан. Гурван сард 9 удаа гарч байгаа бол энэ нь урьдчилан тооцоолж болохгүй зүйл биш — <b>төлөвлөлтийн систем нь хязгаарын ирмэг дээр ажиллаж байна</b>. Энэ нь ахлагчийн бус, <b>тээвэрлэгчийн</b> зөрчил.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Ядаргаа хуримтлагдаж байгаа эсэхийг шалга: амралтын доод хугацаа хэрэгжиж байна уу? Шөнийн үүрэгт цаг WOCL-д таарч байна уу? Байнгын хязгаарын ирмэг дээрх ажиллагаа нь 5×5-д <b>4B/4C</b> орчим.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-c">Level 2</span> Ганц сунгалт нь ихэвчлэн Level 2. Гэвч <b>системтэй давтагдаж байгаа нь</b> нийлбэр дүнгээрээ Level 1 болох магадлалтай — ялангуяа амралтын доод хугацаа зөрчигдсөн бол.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Зөрчлийг нэг нэгээр биш, <b>чиг хандлага байдлаар</b> бич. Залруулах төлөвлөгөөнд шаардах зүйл: ээлжийн төлөвлөлтийн арга зүйг дахин үнэлэх, сэлгээний нөөц баг, сунгалтыг SMS-ийн аюулын бүртгэлд заавал оруулах журам.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>3 сарын дараа дахин шалгаж, сунгалтын тоо буурсан эсэхийг <b>тоогоор</b> хэмж. Буураагүй бол нислэгийн тоо, маршрутыг хязгаарлах шат руу шилж.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Annex 6 Part I — нислэг, үүрэг, амралтын цагийн хязгаар · МИНД-121/135 FDTL хэсэг · Annex 19 (SMS — аюулыг тодорхойлох) · ICAO Doc 9966 (ядаргааны менежментийн гарын авлага)</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Ганц зөрчил дээр анхаарч, чиг хандлагыг алдах. Сул байцаагч 1 акт бичнэ. Сайн байцаагч <b>9 удаагийн давтамжийг</b> бичиж, төлөвлөлтийн системийг засуулна. Хоёр дахь алдаа — ахлагч нисгэгчийг буруутгах. Тэр хамгийн сүүлийн хаалга л байсан.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 03 · Техник үйлчилгээ</div><h3>Хийгээгүй ажилд гарын үсэг зурсан байна</h3></div>
+    <div class="scn-b"><p class="sit">МИНД-145 байгууллагын аудитын үеэр та ажлын картанд <b>03:15 цагт дуусгасан</b> гэж тэмдэглэсэн хоёр цагийн ажил байгааг олов. Гэвч ээлжийн бүртгэлээр тухайн техникч <b>02:40 цагт ажлаа тараад явсан</b> байна. Онгоц маргааш өглөө нислэгт гарсан. Техникч “ажлыг нь өмнө нь хийсэн, зөвхөн гарын үсгээ хожуу зурсан” гэж тайлбарлав.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Энэ нь баримт хуурамчлах уу, бүртгэлийн алдаа уу?</li>
+        <li>Онгоц одоо нисэж байна. Юу хийх вэ?</li>
+        <li>Хэнд хариуцлага тооцох вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Ажлын карт, ээлжийн бүртгэл, хаалганы/цагийн бүртгэл, эд ангийн олголтын бүртгэл, багажны олголт — бүгдийг <b>тэр дор нь хуулбарлаж ав</b>. Техникч болон ээлжийн ахлагчтай тусад нь ярилцаж, бичгээр тайлбар ав. <b>Баримтыг өөрчлөх боломж олгож болохгүй.</b></span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Хоёр өөр зүйл. (1) Ажил хийгдээгүй байж гарын үсэг зурсан бол — <b>баримт хуурамчлах</b>, нисэх чадварын гэрчилгээ хүчингүй. (2) Ажил хийгдсэн ч буруу цаг бичсэн бол — бүртгэлийн зөрчил. <b>Аль нь болохыг тогтоох хүртэл хамгийн муу хувилбараар ажиллана.</b></span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Онгоц одоо нисэж байна. Ямар ажил вэ? Аюулгүй байдалд чухал системд хамаарах уу? Хамаарах бол <b>яг одоо</b> тээвэрлэгчид мэдэгдэж, дахин үзлэг хийлгэх шаардлага тавина. Эргэлзээ байвал эрсдэл рүү биш, аюулгүй тал руу шийднэ.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-w">Level 1</span> Баримтын үнэн зөв байдалд эргэлзээ төрсөн нь техник үйлчилгээний байгууллагын гэрчилгээний үндсэн нөхцөлд халдаж байна.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Байгууллагын хариуцлагатай менежерт нэн даруй бичгээр. Шаардах зүйл: тухайн ажлыг бие даан дахин шалгах, <b>тухайн техникчийн сүүлийн үеийн бүх ажлын картыг эргэн харах</b> (энэ нь ганц тохиолдол мөн эсэхийг тогтооно), үндсэн шалтгааны шинжилгээ.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Хэрэв хуурамчлал батлагдвал: техникчийн үнэмлэхийн асуудал <b>тусдаа</b> ажиллагаагаар (гомдол гаргах эрхтэй) явна. Байгууллагын хувьд — хяналтын систем яагаад үүнийг олоогүйг засуулна. Дотоод чанарын аудит нь энэ зөрчлийг олох ёстой байсан.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Annex 8 (нисэх чадвар) · Annex 6 Part I — техник үйлчилгээний бүртгэл · МИНД-145 (гэрчилгээ, бүртгэл, чанарын систем) · МИНД-43 (техник үйлчилгээний дүрэм)</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Техникчийг тэр дор нь буруутгаж хэрэг үүсгэх. Эхлээд <b>Just Culture-ийн орлуулах тестийг</b> хийнэ: ижил ээлж, ижил ачаалалтай өөр гурван техникч ингэх байсан уу? Хэрэв байгууллагад “ээлж дуусахаас өмнө гарын үсгээ зур” гэсэн даралт байсан бол энэ нь <b>гажсан хэм хэмжээ</b> — нэг хүнийг шийтгээд асуудал үлдэнэ.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 04 · SMS аудит</div><h3>Цаасан дээрх SMS</h3></div>
+    <div class="scn-b"><p class="sit">Тээвэрлэгчийн SMS гарын авлага төгс бичигдсэн, 4 багана, 12 элемент бүгд байна. Гэвч: аюулын бүртгэлд сүүлийн <b>14 сарын хугацаанд шинэ бичлэг алга</b>. Аюулгүй байдлын хорооны хурал жилд нэг удаа хийгдсэн. Сайн дурын тайлангийн тоо <b>0</b>. Аюулгүй байдлын менежер нь мөн чанарын менежер, мөн сургалтын менежерээр давхар ажиллаж байна. Хэмжигдэхүүн (SPI) гурван график байгаа боловч бүгд 2022 оны өгөгдөлтэй.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Дүрмийн зөрчил гарсан уу? Гарын авлага бүрэн байхад?</li>
+        <li>Аль элемент хамгийн эхэнд унасан бэ?</li>
+        <li>Ямар нэг тоо шаардаж болох уу?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Аюулын бүртгэлийн сүүлийн бичлэгийн огноо. Хорооны протоколын огноо, оролцогчид. Тайлангийн системийн бүртгэлийн дэлгэцийн зураг. SPI графикийн сүүлийн өгөгдлийн огноо. Аюулгүй байдлын менежерийн ажлын байрны тодорхойлолт, бусад үүрэг. <b>Жирийн ажилтан 5 хүнтэй ярилц</b>: “Танай байгууллагад аюул мэдээлэх юу вэ? Хэзээ хамгийн сүүлд мэдээлсэн бэ?”</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Гарын авлага байх нь хангалтгүй — <b>SMS нь хэрэгжиж байх ёстой</b>. Унасан элементүүд: аюулыг тодорхойлох (2-р багана), гүйцэтгэлийн хяналт, хэмжилт (3-р багана), харилцаа холбоо (4-р багана). Мөн аюулгүй байдлын албан тушаалтны <b>хараат бус байдал, цаг зав</b> (1-р багана).</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Энэ бол шууд осол үүсгэх зөрчил биш. Гэхдээ <b>харагдахгүй байгаа зүйл олон</b> гэсэн үг. Тайлангийн тоо 0 гэдэг нь аюул байхгүй гэсэн үг биш, <b>аюул тайлагнагдахгүй байна</b> гэсэн үг. Энэ нь бусад бүх шалгалтын үр дүнг эргэлзээтэй болгоно.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-c">Level 2</span> Хэд хэдэн зүйл дээр. Гэхдээ <b>хамтад нь нэг Level 1</b> болгож бичих үндэслэл бий: SMS бүхэлдээ хэрэгжээгүй нь AOC-ийн үндсэн нөхцөлийг зөрчиж байна.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Залруулах төлөвлөгөөнд <b>хэмжигдэх зорилт</b> шаардана: аюулгүй байдлын хороо улирал тутам хуралдах, SPI-г сар бүр шинэчлэх, тайлагналын системийг дахин танилцуулж сургалт хийх, аюулгүй байдлын менежерийн бусад үүргийг салгах. <b>“Сайжруулна” гэсэн үг бүхий төлөвлөгөөг хүлээж авахгүй.</b></span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>6 сарын дараа дахин шалга. Хэмжих зүйл: аюулын бүртгэлийн шинэ бичлэгийн тоо, тайлангийн тоо, хорооны хурлын тоо. <b>Тайлангийн тоо 0-ээс өссөн эсэх нь соёлын гол шалгуур.</b></span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Annex 19 — SMS-ийн хүрээ (4 багана, 12 элемент) · ICAO Doc 9859 (Аюулгүй ажиллагааны менежментийн гарын авлага) · МИНД-119/121 SMS шаардлага</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Гарын авлага сайн бичигдсэнд сэтгэл хангалуун болж “нийцсэн” гэж дүгнэх. SMS аудитын алтан дүрэм: <b>цаасыг бус, өгөгдлийг шалга.</b> Хоёр дахь алдаа — тайлангийн тоо бага байгааг сайн зүйл гэж ойлгох. Эсрэгээрээ.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 05 · Хувь хүний үнэмлэх</div><h3>Медикал дууссан байж 3 нислэг үйлдсэн</h3></div>
+    <div class="scn-b"><p class="sit">Багийн бүртгэл шалгах явцад та нэг ахлагч нисгэгчийн <b>нисэхийн эмнэлгийн гэрчилгээ 11 хоногийн өмнө дуусч</b>, түүнээс хойш 3 нислэг үйлдсэнийг олов. Нисгэгч “шинэчлэх товлолоо хийсэн, дараа долоо хоногт үзүүлнэ” гэж хэлж байна. Компанийн багийн бүртгэлийн систем анхааруулга өгөх ёстой байсан ч өгөөгүй.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Хэдэн субъект зөрчилд оролцсон бэ?</li>
+        <li>Хийгдсэн 3 нислэгийн эрх зүйн байдал ямар вэ?</li>
+        <li>Хамгийн эхний арга хэмжээ юу вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Медикал гэрчилгээний хуулбар (дуусах огноо тод), 3 нислэгийн journey log, багийн хуваарь, бүртгэлийн системийн тохиргоо, өмнөх хугацаанд ижил тохиолдол байсан эсэх.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b><b>Гурван субъект.</b> (1) <b>Нисгэгч</b> — хүчинтэй эмнэлгийн гэрчилгээгүйгээр эрхээ хэрэгжүүлсэн. (2) <b>Тээвэрлэгч</b> — эрхгүй ажилтныг үүрэгт томилсон, хяналтын систем нь ажиллаагүй. (3) <b>Систем</b> — анхааруулга өгөх процесс нь бүтэлгүйтсэн. Гурвууланг тусад нь бич.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Эмнэлгийн байдал нь бодитоор өөрчлөгдсөн үү гэдэг нь одоогоор мэдэгдэхгүй. Эрсдэл нь эмнэлгийн бус, <b>хяналтын систем нь ажиллахгүй байгаад</b> оршино — өнөөдөр медикал, маргааш чадварын шалгалт байж болно.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-w">Level 1</span> Эрх бүхий бус этгээд арилжааны нислэг үйлдсэн. Нислэгийн эрх зүйн байдал, түүнчлэн даатгалын хамрах хүрээ эргэлзээтэй болно.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Нэн даруй: нисгэгчийг <b>гэрчилгээ сэргээх хүртэл</b> нислэгээс түдгэлзүүлэх. Тээвэрлэгчид бичгээр — хүчинтэй байдлын хяналтын системийг дахин үзэх, бүх багийн гэрчилгээг нэг удаагийн бүрэн шалгалтад хамруулж, үр дүнг 10 хоногийн дотор ирүүлэх.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Нисгэгчийн хувь хүний хариуцлагыг <b>Just Culture</b>-аар үнэл: мартсан уу (хүний алдаа), эсвэл мэдсээр байж нисэсэн үү (хайхрамжгүй)? Бүртгэлийн систем анхааруулга өгөөгүй бол энэ нь голчлон системийн асуудал. Тээвэрлэгчийн шинэчилсэн системийг 3 сарын дараа шалга.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Annex 1 (Ажилтны үнэмлэхжүүлэлт — эмнэлгийн гэрчилгээний хүчинтэй байдал) · Annex 6 Part I (багийн бүрэлдэхүүн, эрх) · МИНД-61, МИНД-67 · МИНД-119/121 (тээвэрлэгчийн хяналтын үүрэг)</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Зөвхөн нисгэгчийг бичээд өнгөрөх. Тээвэрлэгчийн систем ажиллаагүй нь <b>илүү чухал зөрчил</b> — учир нь энэ нь дараагийн 100 нисгэгчид хамаарна. “Хэн буруутай” биш “юу бүтэлгүйтсэн”.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 06 · Аэродром</div><h3>Зурвасын зөрчил бүртгэгдэхгүй байна</h3></div>
+    <div class="scn-b"><p class="sit">Нисэх буудлын жилийн шалгалтын үеэр та зурвасын зөрчлийн бүртгэлийг асуув. Хариулт: “Бидэнд ийм тохиолдол гарч байгаагүй.” Гэвч та АНЖ-ийн ээлжийн бүртгэлээс сүүлийн 8 сарын хугацаанд <b>гурван удаа</b> онгоц эсвэл техник зурвас руу зөвшөөрөлгүй ойртсон тухай тэмдэглэлийг олж харав. Аль нь ч албан ёсны тайлан болоогүй.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Гол зөрчил нь зурвасын зөрчил үү, эсвэл өөр зүйл үү?</li>
+        <li>Хэнийг шалгах вэ — буудлыг уу, АНЖ-ийг үү?</li>
+        <li>Тоо тэг байх нь юуг илтгэх вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>АНЖ-ийн ээлжийн бүртгэлийн гурван тэмдэглэлийн хуулбар. Нисэх буудлын аюулгүй байдлын хорооны протокол. Зурвасын аюулгүй байдлын багийн (RST) бүрэлдэхүүн, хурлын огноо. Тайлагналын журмын баримт бичиг. Эрх бүхий байгууллагад ирсэн тайлангийн бүртгэл.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Гол зөрчил нь <b>зурвасын зөрчил биш, тайлагналын систем бүтэлгүйтсэн</b> явдал. Гурван үйл явдал нь ноцтой зөрчлийн шинжтэй бөгөөд албан журмаар тайлагнагдах ёстой байсан. Мөн SMS-ийн аюулыг тодорхойлох элемент ажиллаагүй.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Зурвасын зөрчил нь Линате маягийн ослын эхлэл. 8 сарын хугацаанд 3 удаа гэдэг нь өндөр давтамж. Хамгийн аюултай нь <b>хэн ч мэдэхгүй байгаа</b> — тиймээс шалтгааныг нь засаагүй байна.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-w">Level 1</span> Ноцтой зөрчлийг тайлагнаагүй нь тайлагналын үүргийн шууд зөрчил бөгөөд эрх бүхий байгууллагын эрсдэлийн зураглалыг гажуудуулна.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Нисэх буудал ба АНЖ хоёуланд нь. Шаардах зүйл: гурван үйл явдлыг <b>эргэн тайлагнах</b>, тус бүрд үндсэн шалтгааны шинжилгээ хийх, RST-г идэвхжүүлэх, зурвасын зөрчлийн тайлагналын журмыг бүх ажилтанд дахин сургах. Ослын шинжилгээний байгууллагад мэдэгдэх эсэхийг журмын дагуу шийднэ.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Дараагийн 6 сард тайлангийн тоо <b>өсөх ёстой</b>. Өсөөгүй бол систем ажиллаагүй хэвээр. Эрх бүхий байгууллагын хувьд — ижил асуудал бусад буудалд байгаа эсэхийг шалгах хөндлөнгийн үзлэг төлөвлө.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Annex 14 (Аэродром — аюулгүй байдлын менежмент) · Annex 11 (АНЖ) · Annex 13 (ноцтой зөрчлийн тодорхойлолт, тайлагнал) · Annex 19 · ICAO Doc 9870 (Зурвасын зөрчлөөс сэргийлэх гарын авлага) · МИНД-139</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>“Тайлан ирээгүй” гэдгийг “асуудал байхгүй” гэж унших. Аудит хийхдээ үргэлж <b>хоёр эх сурвалжийг харьцуул</b>: албан ёсны тайлан ба анхдагч бүртгэл (ээлжийн дэвтэр, техникийн бүртгэл, радиогийн бичлэг). Хоёрын зөрүү нь соёлыг хэмждэг.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 07 · Ёс зүй</div><h3>Шалгаж буй байгууллагын захирал таны найз</h3></div>
+    <div class="scn-b"><p class="sit">Танд шинэ тээвэрлэгчийн AOC гэрчилгээжүүлэлтийн багт ажиллах даалгавар өгөгдөв. Тухайн компанийн нислэгийн үйл ажиллагаа хариуцсан захирал нь таны 15 жилийн танил, хамт сурсан хүн. Тэр танд утасдаж “бүх зүйл журмын дагуу байгаа, хурдан дуусгахад тусал” гэж хэлэв. Мөн тэр таныг оройн хоолонд урив.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Энэ нь ашиг сонирхлын зөрчил мөн үү?</li>
+        <li>Хэнд, хэзээ мэдэгдэх вэ?</li>
+        <li>Багаас гарах ёстой юу?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Утасны яриа, урилгын огноо, агуулгыг өөрийн ажлын тэмдэглэлд <b>тэр өдөртөө</b> бичиж үлдээ. Энэ бол өөрийгөө хамгаалах баримт.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Ашиг сонирхлын зөрчил нь бодит байх шаардлагагүй — <b>ойлгогдох (perceived) зөрчил ч ижил хэмжээний асуудал</b>. USOAP-ийн CE-3 нь хяналтын байгууллагын хараат бус байдлыг шалгадаг. Гуравдагч этгээд таны шийдвэрийн шударга байдалд эргэлзэх боломжтой бол зөрчил байна.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Хоёр талын эрсдэл. Та хэт зөөлөн байвал аюултай гэрчилгээ олгоно. Хэт хатуу байвал бас гажуудал. Аль ч тохиолдолд <b>таны шийдвэр дараа нь маргаантай болно</b>.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b>Энэ нь тээвэрлэгчийн зөрчил биш, <b>таны байгууллагын дотоод удирдлагын асуудал</b>. Гэхдээ шийдэхгүй орхивол аудитын дутагдал болно.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Шууд удирдлагадаа <b>бичгээр</b> мэдэгд. Хувийн харилцааны шинж чанар, утасны дуудлагын агуулгыг тайлагна. Шийдвэрийг та биш, удирдлага гаргана — энэ нь таныг хамгаалж байгаа хэрэг. Оройн хоолны урилгаас <b>эелдэгээр татгалз</b>: “Гэрчилгээжүүлэлт дуусах хүртэл болохгүй.”</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Удирдлагын шийдвэрээс хамаарч: багаас гарах, эсвэл үлдэх боловч бүх шийдвэрийг хоёр дахь байцаагчаар давхар баталгаажуулах. Аль ч тохиолдолд шийдвэрийг бичгээр баримтжуул.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> ICAO Doc 9734 Part A (CE-3 — төрийн систем ба хяналтын функц, хараат бус байдал) · ICAO Doc 8335 (Байцаагчийн ёс зүй) · Байгууллагын ашиг сонирхлын зөрчлийн журам</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>“Би шударга хүн, нөлөөлөхгүй” гэж бодон дуугүй өнгөрөх. Асуудал нь таны шударга байдалд биш, <b>тогтолцооны итгэлд</b> байна. Бичгээр мэдэгдээгүй бол хожим асуудал гарвал таныг хамгаалах юу ч байхгүй.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 08 · Just Culture</div><h3>Ажилтан нууцаар аюул мэдээллээ</h3></div>
+    <div class="scn-b"><p class="sit">Аудитын завсарлагааны үеэр нэг техникч тантай дангаар ярьж: “Бид эд ангийн нөөц дуусахад нөгөө онгоцноос сольж авдаг, бүртгэлийг нь дараа нь засдаг. Ахлах инженер зөвшөөрдөг. Гэхдээ намайг хэлсэн гэдгийг битгий хэлээрэй, би ажлаасаа гарна.”</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Энэ мэдээлэлд үндэслэн акт бичиж болох уу?</li>
+        <li>Хүний нэрийг хэрхэн хамгаалах вэ?</li>
+        <li>Дараагийн алхам юу вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Ярианы агуулгыг <b>нэргүйгээр</b> тэмдэглэ. Дараа нь мэдээллийг <b>бие даан баталгаажуул</b>: эд ангийн бүртгэл ба бодит байдлыг тулга, тодорхой онгоцны эд ангийн серийн дугаар, суурилуулалтын бүртгэл, агуулахын олголтыг хар. <b>Зорилго нь тухайн хүнээс хамааралгүй баримт бүрдүүлэх.</b></span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Хэрэв батлагдвал: эд ангийн мөшгих чадвар (traceability) алдагдсан, бүртгэл үнэн зөв биш, зөвшөөрөгдөөгүй практик байгууллагын түвшинд хэвшсэн. Бохир 12-ын <b>дугаар 12 — гажсан хэм хэмжээ</b>-ний сонгодог жишээ.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Өндөр. Мөшгих чадваргүй эд анги нь нисэх чадварын үндсэн зарчмыг зөрчиж байна. Хэдэн онгоцонд хамаарахыг тогтоох хүртэл хамрах хүрээ тодорхойгүй.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b><span class="pill p-w">Level 1</span> — <b>гэхдээ бие даан баталгаажуулсны дараа</b>. Баталгаажуулаагүй мэдээллээр Level 1 бичиж болохгүй.</span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Актад мэдээллийн эх сурвалжийг <b>хэзээ ч бүү бич</b>. “Аудитын явцад цуглуулсан баримтаар тогтоогдсон” гэж бичнэ. Хэрэв тухайн хүнийг ил болговол та зөвхөн нэг хүнийг биш, <b>тухайн байгууллагын ирээдүйн бүх мэдээллийг</b> устгана.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Ахлах инженер зөвшөөрч байсан бол энэ нь удирдлагын түвшний асуудал — CAP-ыг <b>хариуцлагатай менежерээс</b> шаардана. Дараагийн шалгалтад эд ангийн мөшгих чадварыг тусгайлан түүврээр шалга.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Annex 19 Attachment B (аюулгүй байдлын мэдээллийн хамгаалалт) · Annex 8 · МИНД-145 (эд ангийн хүлээн авалт, мөшгих чадвар) · Just Culture зарчим</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Ахлах инженерээс шууд “Танай техникч ингэж хэлсэн” гэж асуух. Энэ нь хүнийг ил болгож, түүнийг ажлаас нь гаргаж, тухайн байгууллагад “байцаагчид юу ч хэлж болохгүй” гэсэн мессежийг олон жилээр үлдээнэ. <b>Мэдээлэл нь чиглүүлэгч, баримт нь нотолгоо.</b> Хоёрыг хольж болохгүй.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 09 · Дарамт</div><h3>Дээд шатны албан тушаалтан “зөөлрүүл” гэж байна</h3></div>
+    <div class="scn-b"><p class="sit">Та томоохон тээвэрлэгчид Level 1 зөрчил бичиж, нэг онгоцыг ашиглалтаас түр гаргах шаардлага тавьсан. Дараа өдөр нь удирдах албан тушаалтан таныг дуудаж: “Энэ нь улсын эдийн засагт нөлөөлнө, зорчигчид гацна, түвшинг нь Level 2 болгож бууруул” гэж <b>амаар</b> үүрэг өгөв. Танд бичгэн тушаал өгөхөөс татгалзав.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>Түвшинг бууруулах үндэслэл бий юу?</li>
+        <li>Амаар өгсөн үүргийг хэрхэн шийдвэрлэх вэ?</li>
+        <li>Энэ нь олон улсын аудитад хэрхэн харагдах вэ?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>Өөрийн анхны дүгнэлтийн баримтыг бүрэн бүрдүүлж хэвээр үлдээ. Уулзалтын огноо, оролцогчид, өгөгдсөн үүргийг ажлын тэмдэглэлдээ бич.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>Түвшинг <b>зөвхөн техникийн үндэслэлээр</b> өөрчилж болно: шинэ баримт гарсан, эрсдэлийн үнэлгээ өөрчлөгдсөн, дүрмийн тайлбар өөр байсан. <b>Эдийн засгийн үр дагавар нь түвшин тогтоох шалгуур биш.</b> Хэрэв шинэ техникийн баримт байхгүй бол өөрчлөх үндэслэлгүй.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Хоёр төрөл. Шууд — аюултай онгоц нисэх. Тогтолцооны — нэг удаа дарамтад автвал дараагийн удаа дахин дарамтлана, эцэст нь хяналт нь нэрийн төдий болно. Энэ бол MAX кэйсийн зохицуулагчийн сулралын жижиг хувилбар.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b>Анхны дүгнэлт хэвээр. <b>Level 1.</b></span></div>
+        <div><span class="k">М</span><span class="v"><b>МЭДЭГДЭХ</b>Албан бичгээр хариул: “Дүгнэлтийг дараах техникийн үндэслэлээр Level 1 гэж тогтоосон. Түвшинг өөрчлөх шаардлагатай гэж үзвэл <b>бичгээр үндэслэл бүхий шийдвэр</b> гаргаж өгнө үү. Шийдвэрийг би баримтад хавсаргана.” Ихэнх тохиолдолд асуудал энд дуусдаг — учир нь хэн ч гарын үсэг зурахыг хүсдэггүй.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Бичгэн шийдвэр гарвал биелүүлж, <b>гарын үсэг зурсан хүн хариуцлага хүлээнэ</b>. Шийдвэр гарахгүй бол анхны дүгнэлт хүчинтэй. Аль ч тохиолдолд бүх захидал харилцааг хавтсанд хадгална.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> ICAO Doc 9734 CE-1, CE-3 (хяналтын байгууллагын хараат бус байдал, бүрэн эрх) · ICAO Doc 8335 · Annex 19 (төрийн хэрэгжүүлэлтийн бодлого)</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Амаар өгсөн үүргийг амаар биелүүлэх. Амаар өгсөн үүрэг нь <b>хариуцлагыг тан дээр үлдээх</b> арга. Дүрэм нь энгийн: <b>амаар ирсэн зүйлийг бичгээр буцаа.</b> Энэ бол байцаагчийн хамгийн чухал өөрийгөө хамгаалах хэрэгсэл.</div>
+    </div></details>
+  </div>
+
+  <div class="scn"><div class="scn-h"><div class="id">Кэйс 10 · Гадаад тээвэрлэгч</div><h3>Бага EI оноотой улсын тээвэрлэгч зөвшөөрөл хүсэж байна</h3></div>
+    <div class="scn-b"><p class="sit">Гадаад тээвэрлэгч Улаанбаатарт тогтмол нислэг үйлдэх зөвшөөрөл хүсэв. Бичиг баримт бүрэн, AOC хүчинтэй. Гэвч тухайн улс нь USOAP-ийн үнэлгээгээр дэлхийн дунджаас эрс доогуур бөгөөд <b>нээлттэй SSC</b> (онцгой анхаарах асуудал) бүхий улс. Тээвэрлэгч “манай AOC хүчинтэй, Чикагогийн конвенцын 33-р зүйлээр та хүлээн зөвшөөрөх ёстой” гэж байна.</p>
+      <div class="qz"><span class="ql">Өөрөө хариул</span><ol>
+        <li>33-р зүйлийн аргумент зөв үү?</li>
+        <li>Ямар нэмэлт шалгалт хийж болох вэ?</li>
+        <li>Татгалзах эрх бий юу?</li>
+      </ol></div>
+    </div>
+    <details class="occ" style="margin:0;border:0;box-shadow:none"><summary><div class="occ-h" style="border-top:1px solid var(--line)"><div><div class="t" style="font-size:15px">Загвар шийдэл</div></div><span class="chev">Нээх +</span></div></summary>
+    <div class="sol">
+      <div class="steps">
+        <div><span class="k">Б</span><span class="v"><b>БАРИМТ</b>ICAO-ийн USOAP CMA онлайн системээс тухайн улсын үзүүлэлт, SSC-ийн шинж чанарыг ав. Тээвэрлэгчийн гадаадад авсан ramp check-ийн түүх. Онгоцны бүртгэл, лизингийн бүтэц (83bis гэрээ байгаа эсэх), даатгал.</span></div>
+        <div><span class="k">А</span><span class="v"><b>АНГИЛАХ</b>33-р зүйлийн аргумент <b>дутуу</b>. Хүлээн зөвшөөрөх үүрэг нь <b>нөхцөлтэй</b>: тухайн гэрчилгээ ICAO-ийн доод стандартад нийцсэн байх ёстой. Нээлттэй SSC гэдэг нь яг тэр нийцэлд эргэлзээ байгааг ICAO өөрөө зарласан гэсэн үг. Мөн 1-р зүйлээр Монгол Улс өөрийн агаарын зайд бүрэн эрхтэй.</span></div>
+        <div><span class="k">Р</span><span class="v"><b>РИСК</b>Хяналтын тогтолцоо сул улсын тээвэрлэгч нь статистикийн хувьд өндөр эрсдэлтэй. Гэхдээ <b>улсын EI бага нь тухайн тээвэрлэгч аюултай гэсэн автомат дүгнэлт биш</b> — тиймээс бие даан үнэлнэ.</span></div>
+        <div><span class="k">И</span><span class="v"><b>ТҮВШИН</b>Энэ нь зөрчлийн түвшин биш, <b>зөвшөөрлийн шийдвэр</b>. Гурван боломж: бүрэн зөвшөөрөх, нөхцөлтэй зөвшөөрөх, татгалзах.</span></div>
+        <div><span class="k">М</span><span class="v"><b>АРГА ХЭМЖЭЭ</b>Зөвлөмж болох арга: <b>нөхцөлтэй зөвшөөрөл</b>. (1) Гадаад тээвэрлэгчийн зөвшөөрлийн үнэлгээг гүнзгийрүүлэх — гарын авлага, сургалт, техник үйлчилгээний бүтцийг шалгах. (2) Эхний нислэгүүдэд <b>тэргүүлэх ач холбогдолтой ramp check</b> хийх. (3) Хугацааг богиносгож, давтан үнэлгээ хийх. (4) Онгоцыг тодорхой бүртгэлийн дугаараар хязгаарлах.</span></div>
+        <div><span class="k">Т</span><span class="v"><b>ТАСЛАН БАРИХ</b>Ramp check-ийн үр дүнг 6 сар хянана. Cat 2/3 олдвор давтагдвал зөвшөөрлийг хязгаарлах, түдгэлзүүлэх. Бүх шийдвэрийг <b>техникийн үндэслэлтэй, бичгээр</b> — учир нь энэ нь дипломат түвшинд маргаан болох боломжтой.</span></div>
+      </div>
+      <div class="cite"><b>Үндэслэл:</b> Чикагогийн конвенц Art. 1, 16, 33 · Annex 6 Part I (гадаад тээвэрлэгчийн хяналт) · ICAO Doc 8335 Part V · USOAP CMA үр дүн · ЕХ-ны Air Safety List-ийн арга зүй (жишиг болгон)</div>
+      <div class="trap"><b>Нийтлэг алдаа</b>Хоёр туйл. Нэг нь — “баримт бичиг бүрэн, өгчих” гэж механикаар зөвшөөрөх. Нөгөө нь — улсын оноо бага гэдэг шалтгаанаар <b>автоматаар татгалзах</b>. Хоёулаа буруу. Зөв арга бол <b>эрсдэлд тохирсон нөхцөл тавих</b>.</div>
+    </div></details>
+  </div>
+
+  <div class="done"><button type="button" data-mod="m11" aria-pressed="false">Дуусгасан</button><span>Модуль 11</span></div>
+</section>
+
+<!-- ═══════════ 12 ═══════════ -->
+<section id="m12" data-search>
+  <div class="mhead"><span class="mnum">12</span><div>
+    <h2>ICAO · МИНД · FAA · EASA харьцуулалт</h2>
+    <div class="sub">Ижил зүйлийн өөр нэр · Товчлолын толь</div>
+  </div></div>
+
+  <p>Олон улсын түвшинд ажиллахад хамгийн их будлиан үүсгэдэг зүйл нь <b>ижил ойлголт өөр нэртэй</b> байх явдал. Хурал, аудит, захидал харилцаанд энэ хүснэгт цаг хэмнэнэ.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Ойлголт</th><th>ICAO</th><th>Монгол (МИНД)</th><th>FAA (АНУ)</th><th>EASA (Европ)</th></tr></thead>
+    <tbody>
+      <tr><td>Дүрмийн эх сурвалж</td><td class="m">Annex 1–19, PANS</td><td class="m">МИНД</td><td class="m">14 CFR (FAR)</td><td class="m">Regulation (EU) + AMC/GM</td></tr>
+      <tr><td>Тээвэрлэгчийн гэрчилгээ</td><td class="m">AOC</td><td class="m">АТГ / AOC</td><td class="m">Air Carrier Certificate (Part 119/121)</td><td class="m">AOC (Part-ORO)</td></tr>
+      <tr><td>Техник үйлчилгээний байгууллага</td><td class="m">AMO</td><td class="m">МИНД-145</td><td class="m">Repair Station (Part 145)</td><td class="m">Part-145</td></tr>
+      <tr><td>Тасралтгүй нисэх чадвар</td><td class="m">CAMO ойлголт</td><td class="m">МИНД-119/145-д тусгагдсан</td><td class="m">CAMP (Part 121 Subpart L)</td><td class="m">Part-CAMO</td></tr>
+      <tr><td>Сургалтын байгууллага</td><td class="m">ATO</td><td class="m">МИНД-141</td><td class="m">Part 141 / 142</td><td class="m">Part-ORA (ATO)</td></tr>
+      <tr><td>Ерөнхий нислэгийн дүрэм</td><td class="m">Annex 2, 6 Part II</td><td class="m">МИНД-91</td><td class="m">Part 91</td><td class="m">Part-NCC / Part-NCO</td></tr>
+      <tr><td>Аэродромын гэрчилгээ</td><td class="m">Annex 14</td><td class="m">МИНД-139</td><td class="m">Part 139</td><td class="m">Part-ADR</td></tr>
+      <tr><td>Нисгэгчийн үнэмлэх</td><td class="m">Annex 1</td><td class="m">МИНД-61</td><td class="m">Part 61 (PPL/CPL/ATP)</td><td class="m">Part-FCL</td></tr>
+      <tr><td>Ядаргааны хязгаар</td><td class="m">Annex 6 — FDTL</td><td class="m">МИНД-121/135</td><td class="m">Part 117</td><td class="m">Part-ORO.FTL</td></tr>
+      <tr><td>Зөрчлийн түвшин</td><td class="m">—</td><td class="m">Level 1 / Level 2</td><td class="m">Enforcement action шат</td><td class="m">Level 1 / Level 2</td></tr>
+      <tr><td>Ramp check</td><td class="m">Art. 16</td><td class="m">Перрон дээрх шалгалт</td><td class="m">Ramp inspection</td><td class="m">SAFA (гадаад) / SACA (дотоод)</td></tr>
+      <tr><td>Осол шинжлэх</td><td class="m">Annex 13</td><td class="m">Хараат бус шинжилгээний байгууллага</td><td class="m">NTSB</td><td class="m">Улс бүрийн SIA (ж.нь BEA, BFU, AAIB)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><b>Ярилцлагад санаарай:</b> FAA нь <b>дүрмийн текст</b>-ээ өөрөө хуульчилдаг (CFR), харин EASA нь <b>дүрэм + AMC (хүлээн зөвшөөрөгдсөн нийцлийн арга) + GM (зөвлөмж)</b> гэсэн гурван давхаргатай. Энэ нь EASA-д “өөр аргаар нийцэх” (Alternative Means of Compliance) боломж олгодог. Монголын МИНД нь бүтцийн хувьд FAR/NZ CAR загварт ойр — <b>дүрмийн дугаарлалт нь FAR-тай бараг тохирдог</b> тул FAA-гийн зөвлөмжийн материалыг лавлагаа болгож ашиглахад тохиромжтой.</div>
+
+  <h3>Товчлолын толь — заавал мэдэх 40</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Товчлол</th><th>Тайлал</th><th>Монголоор</th></tr></thead>
+    <tbody>
+      <tr><td class="m">ICAO</td><td>International Civil Aviation Organization</td><td>Олон улсын иргэний нисэхийн байгууллага</td></tr>
+      <tr><td class="m">SARPs</td><td>Standards and Recommended Practices</td><td>Стандарт ба зөвлөмж болгосон практик</td></tr>
+      <tr><td class="m">PANS</td><td>Procedures for Air Navigation Services</td><td>Аэронавигацийн үйлчилгээний журам</td></tr>
+      <tr><td class="m">USOAP</td><td>Universal Safety Oversight Audit Programme</td><td>Аюулгүй ажиллагааны хяналтын бүх нийтийн аудит</td></tr>
+      <tr><td class="m">CMA</td><td>Continuous Monitoring Approach</td><td>Тасралтгүй хяналтын арга</td></tr>
+      <tr><td class="m">EI</td><td>Effective Implementation</td><td>Үр дүнтэй хэрэгжилтийн хувь</td></tr>
+      <tr><td class="m">SSC</td><td>Significant Safety Concern</td><td>Онцгой анхаарах аюулгүй байдлын асуудал</td></tr>
+      <tr><td class="m">PQ</td><td>Protocol Question</td><td>Аудитын протокол асуулт</td></tr>
+      <tr><td class="m">CE</td><td>Critical Element</td><td>Хяналтын тогтолцооны чухал элемент</td></tr>
+      <tr><td class="m">ICVM</td><td>ICAO Coordinated Validation Mission</td><td>Баталгаажуулах хяналтын айлчлал</td></tr>
+      <tr><td class="m">SSP</td><td>State Safety Programme</td><td>Төрийн аюулгүй ажиллагааны хөтөлбөр</td></tr>
+      <tr><td class="m">SMS</td><td>Safety Management System</td><td>Аюулгүй ажиллагааны менежментийн систем</td></tr>
+      <tr><td class="m">ALoSP</td><td>Acceptable Level of Safety Performance</td><td>Хүлээн зөвшөөрөх аюулгүй ажиллагааны түвшин</td></tr>
+      <tr><td class="m">SPI / SPT</td><td>Safety Performance Indicator / Target</td><td>Гүйцэтгэлийн үзүүлэлт / зорилт</td></tr>
+      <tr><td class="m">AOC</td><td>Air Operator Certificate</td><td>Агаарын тээвэрлэгчийн гэрчилгээ</td></tr>
+      <tr><td class="m">OpSpecs</td><td>Operations Specifications</td><td>Үйл ажиллагааны тодорхойлолт</td></tr>
+      <tr><td class="m">MEL / MMEL</td><td>(Master) Minimum Equipment List</td><td>Тоног төхөөрөмжийн доод жагсаалт</td></tr>
+      <tr><td class="m">CofA</td><td>Certificate of Airworthiness</td><td>Нисэх чадварын гэрчилгээ</td></tr>
+      <tr><td class="m">AD</td><td>Airworthiness Directive</td><td>Нисэх чадварын заавал биелүүлэх удирдамж</td></tr>
+      <tr><td class="m">SB</td><td>Service Bulletin</td><td>Үйлдвэрлэгчийн үйлчилгээний мэдэгдэл</td></tr>
+      <tr><td class="m">CAMO</td><td>Continuing Airworthiness Management Organisation</td><td>Тасралтгүй нисэх чадварын менежментийн байгууллага</td></tr>
+      <tr><td class="m">AMO</td><td>Approved Maintenance Organisation</td><td>Батлагдсан техник үйлчилгээний байгууллага</td></tr>
+      <tr><td class="m">ATO</td><td>Approved Training Organisation</td><td>Батлагдсан сургалтын байгууллага</td></tr>
+      <tr><td class="m">FDTL</td><td>Flight and Duty Time Limitations</td><td>Нислэг, үүрэгт цагийн хязгаарлалт</td></tr>
+      <tr><td class="m">FRMS</td><td>Fatigue Risk Management System</td><td>Ядаргааны эрсдэлийн менежментийн систем</td></tr>
+      <tr><td class="m">WOCL</td><td>Window of Circadian Low</td><td>Циркадиан хэмнэлийн доод цонх (02:00–06:00)</td></tr>
+      <tr><td class="m">CRM / TEM</td><td>Crew Resource Management / Threat and Error Management</td><td>Багийн нөөцийн менежмент / Аюул, алдааны менежмент</td></tr>
+      <tr><td class="m">UPRT</td><td>Upset Prevention and Recovery Training</td><td>Хүсээгүй байдлаас сэргийлэх, сэргээх сургалт</td></tr>
+      <tr><td class="m">LOSA</td><td>Line Operations Safety Audit</td><td>Бодит нислэгийн аюулгүй ажиллагааны ажиглалт</td></tr>
+      <tr><td class="m">FDM / FOQA</td><td>Flight Data Monitoring / Flight Operational Quality Assurance</td><td>Нислэгийн өгөгдлийн хяналт</td></tr>
+      <tr><td class="m">TCAS / ACAS</td><td>Traffic Collision Avoidance System</td><td>Мөргөлдөхөөс сэргийлэх систем</td></tr>
+      <tr><td class="m">RA / TA</td><td>Resolution Advisory / Traffic Advisory</td><td>Шийдвэрлэх зөвлөмж / Хөдөлгөөний мэдээлэл</td></tr>
+      <tr><td class="m">TAWS / GPWS</td><td>Terrain Awareness and Warning System</td><td>Газарт мөргөхөөс сэргийлэх систем</td></tr>
+      <tr><td class="m">CFIT</td><td>Controlled Flight Into Terrain</td><td>Удирдлагатай байж газарт мөргөх</td></tr>
+      <tr><td class="m">LOC-I</td><td>Loss of Control In-flight</td><td>Нислэгийн үед удирдлага алдах</td></tr>
+      <tr><td class="m">EDTO / ETOPS</td><td>Extended Diversion Time Operations</td><td>Сэлгэн буух хугацаа сунгасан үйл ажиллагаа</td></tr>
+      <tr><td class="m">SAFA / SACA</td><td>Safety Assessment of Foreign / Community Aircraft</td><td>Гадаад / дотоод онгоцны перрон дээрх үнэлгээ</td></tr>
+      <tr><td class="m">AIP / NOTAM</td><td>Aeronautical Information Publication / Notice to Air Missions</td><td>Нисэхийн мэдээллийн эмхэтгэл / Мэдэгдэл</td></tr>
+      <tr><td class="m">AIRAC</td><td>Aeronautical Information Regulation and Control</td><td>28 хоногийн мэдээллийн шинэчлэлтийн мөчлөг</td></tr>
+      <tr><td class="m">CAP</td><td>Corrective Action Plan</td><td>Залруулах арга хэмжээний төлөвлөгөө</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="done"><button type="button" data-mod="m12" aria-pressed="false">Дуусгасан</button><span>Модуль 12</span></div>
+</section>
+
+<!-- ═══════════ МЕТОД ═══════════ -->
+<section id="method" data-search>
+  <div class="mhead"><span class="mnum">▲</span><div>
+    <h2>Хэрхэн цээжлэх — 30 хоногийн хуваарь</h2>
+    <div class="sub">Түүх → Дэгээ → Давталт → Хэрэглээ</div>
+  </div></div>
+
+  <p>Нисэхийн материалыг “дахин дахин уншиж” цээжилж болдоггүй. Хэмжээ хэтэрхий том. Дөрвөн аргыг дарааллаар хэрэглэ.</p>
+
+  <ol class="lst">
+    <li><b>Түүхээр байрлуул.</b> Дүрмийг ослын түүхтэй нь холбоно. Толгойд “дугаар” биш “зураг” хадгалагдана. Annex 17 = 9/11. TCAS = Юберлинген. 1 500 цаг = Колган.</li>
+    <li><b>Дэгээ ав.</b> Эхний үсгийн дэгээ: <b>БАРИМТ</b> (6 алхам), <b>БЭБС</b> (SMS 4 багана), <b>ХДБСЗ+ОШХ</b> (8 CE), <b>У-А-Б-Ү-Г</b> (5 шат), <b>Р-О-Д-М</b> (4 төр).</li>
+    <li><b>Зайтай давт.</b> Нэг удаа уншаад дараа өдөр 70% мартагдана. Давталтын оновчтой хуваарь: <b>1 хоног → 3 хоног → 7 хоног → 21 хоног</b>. Доорх картыг ингэж хэрэглэ.</li>
+    <li><b>Бусдад тайлбарла.</b> Хамгийн хүчтэй шалгуур. Хэрэв та “8 Critical Element”-ийг цаас харахгүйгээр хамт ажиллагчдаа 2 минутад тайлбарлаж чадвал эзэмшсэн. Чадахгүй бол мэдэхгүй байна.</li>
+  </ol>
+
+  <div class="tw"><table>
+    <thead><tr><th>Хоног</th><th>Гол ажил</th><th>Хугацаа</th></tr></thead>
+    <tbody>
+      <tr><td class="m">1–5</td><td>Модуль 01–04 уншиж, тэр өдрийн картыг эргүүл</td><td>Өдөрт 45 мин</td></tr>
+      <tr><td class="m">6–10</td><td>Модуль 05–08. 01–04-ийн картыг давт</td><td>Өдөрт 45 мин</td></tr>
+      <tr><td class="m">11–15</td><td>Модуль 09–12. Харьцуулах хүснэгтийг гараар дахин бич</td><td>Өдөрт 45 мин</td></tr>
+      <tr><td class="m">16–22</td><td>Модуль 10-ын 13 кэйсийг түүхээр цээжил. Хэн, хэзээ, юу өөрчлөгдсөн</td><td>Өдөрт 30 мин</td></tr>
+      <tr><td class="m">23–27</td><td>Модуль 11-ийн 10 кэйсийг <b>шийдэл харахгүйгээр</b> бичгээр шийд</td><td>Кэйс тутам 20 мин</td></tr>
+      <tr><td class="m">28–30</td><td>Тест бүрэн. Бүх картыг дараалуулж эргүүл. Сул талыг дахин унш</td><td>Өдөрт 60 мин</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══════════ КАРТ ═══════════ -->
+<section id="cards" data-search>
+  <div class="mhead"><span class="mnum">◆</span><div>
+    <h2>Цээжлэх карт — 40 асуулт</h2>
+    <div class="sub">Асуултыг хараад дуугаараа хариул, дараа нь нээ</div>
+  </div></div>
+
+  <p>Хариултыг нээхээс өмнө <b>дуугаараа хэл</b>. Санаанд орсон нь хангалтгүй — үг болгож хэлж чадвал л ярилцлагад хэлж чадна.</p>
+
+  <div class="fc-top">
+    <label>Хүрээ
+      <select id="fcCat">
+        <option value="all">Бүгд</option>
+        <option value="Эрх зүй">Эрх зүй</option>
+        <option value="Annex">Хавсралт</option>
+        <option value="CE / USOAP">CE / USOAP</option>
+        <option value="SMS">SMS</option>
+        <option value="Хяналт">Хяналт</option>
+        <option value="Хүний хүчин зүйл">Хүний хүчин зүйл</option>
+        <option value="Кэйс">Түүхэн кэйс</option>
+      </select>
+    </label>
+    <span id="fcStat">—</span>
+    <button class="btn" type="button" id="fcReset">Явцыг тэглэх</button>
+  </div>
+
+  <div class="card" id="fcCard">
+    <div class="ch"><span id="fcTag">—</span><span id="fcPos">—</span></div>
+    <div class="cq" id="fcQ">Ачаалж байна…</div>
+    <div class="ca" id="fcA" hidden></div>
+    <div class="cf">
+      <button class="btn pri" type="button" id="fcShow">Хариу харах</button>
+      <button class="btn gd" type="button" id="fcKnow" hidden>Мэднэ</button>
+      <button class="btn bd" type="button" id="fcAgain" hidden>Дахин давтах</button>
+      <button class="btn" type="button" id="fcNext">Дараах →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ТЕСТ ═══════════ -->
+<section id="quiz" data-search>
+  <div class="mhead"><span class="mnum">■</span><div>
+    <h2>Тест — 20 асуулт</h2>
+    <div class="sub">Мэргэжлийн шалгалтын түвшин · Тайлбартай</div>
+  </div></div>
+
+  <p>Хариулт сонгоод <b>Шалгах</b> дар. Буруу хариулсан асуултын тайлбарыг заавал унш — тайлбар нь хариултаас илүү чухал.</p>
+
+  <div id="quizBox"></div>
+
+  <div class="score" id="scoreBox" hidden>
+    <span class="big" id="scoreVal">0</span>
+    <span class="lab" id="scoreTxt"></span>
+    <button class="btn" type="button" id="quizReset">Дахин</button>
+  </div>
+  <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn pri" type="button" id="quizCheck">Шалгах</button>
+    <button class="btn" type="button" id="quizShowAll">Бүх тайлбарыг нээх</button>
+  </div>
+</section>
+
+<!-- ═══════════ БАРИМТ ШАЛГАХ ═══════════ -->
+<section id="verify" data-search>
+  <div class="mhead"><span class="mnum">!</span><div>
+    <h2>Баримт шалгах — эх сурвалжийн жагсаалт</h2>
+    <div class="sub">Мэргэжлийн хэрэглээнд заавал үндсэн эх сурвалжаас батал</div>
+  </div></div>
+
+  <p>Энэ гарын авлага нь <b>сургалтын материал</b> бөгөөд эрх зүйн эх сурвалж биш. Акт бичих, шийдвэр гаргах, албан бичиг бэлтгэхдээ доорх үндсэн эх сурвалжаас яг тэр хувилбарыг шалгана.</p>
+
+  <h3>Заавал шалгах зүйлс</h3>
+  <ul class="lst">
+    <li><b>МИНД-ын дугаарлалт ба хүчин төгөлдөр хувилбар.</b> Энэ гарын авлагад МИНД-ын дугаарыг нийтлэг конвенцын дагуу (МИНД-91, 119, 121, 135, 139, 141, 145, 61, 172/173/175) дурдсан. Актад иш татахын өмнө <b>ИНЕГ-ын албан сайт дээрх хүчин төгөлдөр консолидацлагдсан</b> текстээс зүйл, дэд зүйлийн дугаарыг шалга.</li>
+    <li><b>Монгол Улсын USOAP EI оноо ба нээлттэй асуудал.</b> ICAO-ийн USOAP CMA онлайн систем болон iSTARS-аас өнөөгийн тоог ав. Тоо жил тутам шинэчлэгддэг тул хуучин тоог хэлэх нь эрсдэлтэй.</li>
+    <li><b>Ослын дэлгэрэнгүй тоо, огноо.</b> Эцсийн тайлангийн албан ёсны эх сурвалж: NTSB (АНУ), BEA (Франц), BFU (Герман), AAIB (Их Британи), JTSB (Япон), ANSV (Итали), KNKT (Индонез), Ethiopian AIB. Хохирогчийн тоо, огноо, дүгнэлтийг тэндээс шалга.</li>
+    <li><b>Ослын түвшин, статистик.</b> IATA Annual Safety Report, ICAO Safety Report, Boeing Statistical Summary — гурвуулаа арга зүй, хамрах хүрээгээрээ өөр тул нэг тайланг эхнээс дуустал ашигла, хольж болохгүй.</li>
+    <li><b>Дүрмийн хүчин төгөлдөр болсон огноо.</b> Энэ гарын авлагад ойролцоо огноо дурдсан хэсэг бий. Албан ёсны огноог ICAO Annex-ийн Amendment бүртгэл, EASA/FAA-ийн эрх зүйн актаас шалга.</li>
+  </ul>
+
+  <h3>Үндсэн эх сурвалжийн жагсаалт</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Баримт</th><th>Агуулга</th></tr></thead>
+    <tbody>
+      <tr><td class="m">Doc 7300</td><td>Чикагогийн конвенц — Иргэний нисэхийн тухай конвенц (1944)</td></tr>
+      <tr><td class="m">Annex 1–19</td><td>Стандарт ба зөвлөмж болгосон практик</td></tr>
+      <tr><td class="m">Doc 9734 Part A</td><td>Аюулгүй байдлын хяналтын тогтолцоо — <b>8 Critical Element</b></td></tr>
+      <tr><td class="m">Doc 9859</td><td>Аюулгүй ажиллагааны менежментийн гарын авлага — SSP, SMS, эрсдэлийн матриц</td></tr>
+      <tr><td class="m">Doc 8335</td><td>Үйл ажиллагааны хяналт, гэрчилгээжүүлэлтийн гарын авлага — <b>байцаагчийн үндсэн ном</b></td></tr>
+      <tr><td class="m">Doc 9756</td><td>Осол, зөрчлийн шинжилгээний гарын авлага (4 хэсэг)</td></tr>
+      <tr><td class="m">Doc 9870</td><td>Зурвасын зөрчлөөс урьдчилан сэргийлэх гарын авлага</td></tr>
+      <tr><td class="m">Doc 9966</td><td>Ядаргааны менежментийн гарын авлага (FRMS)</td></tr>
+      <tr><td class="m">Doc 9284</td><td>Аюултай ачааг агаараар тээвэрлэх техникийн заавар</td></tr>
+      <tr><td class="m">Doc 10084</td><td>Зөрчилдөөнтэй бүсийн эрсдэлийн үнэлгээний гарын авлага</td></tr>
+      <tr><td class="m">Doc 9683</td><td>Хүний хүчин зүйлийн сургалтын гарын авлага</td></tr>
+      <tr><td class="m">Doc 4444</td><td>PANS-ATM — агаарын хөдөлгөөний удирдлагын журам</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tip"><b>Хэрэв нэг л ном унших боломжтой бол:</b> <b>Doc 8335</b>. Энэ нь яг байцаагчийн ажилд зориулж бичигдсэн ICAO-ийн баримт бичиг — гэрчилгээжүүлэлтийн шат, шалгалтын арга зүй, ярилцлагын техник, тайлан бичих хэлбэр бүгд орсон.</div>
+</section>
+
+<div class="nores" id="nores">Хайлтад тохирох хэсэг олдсонгүй. Өөр үг оролдоод үзээрэй.</div>
+
+</main>
+</div>
+
+<footer>
+  <p><b>Нисэхийн байцаагчийн гарын авлага</b> — 12 модуль, 40 цээжлэх карт, 13 түүхэн кэйс, 10 ажлын кэйс, 20 асуултын тест. Сургалт, бэлтгэлийн зорилгоор бэлтгэсэн материал.</p>
+  <p style="margin-top:12px">Явц болон картын байдал зөвхөн таны браузерт хадгалагдана. Өөр төхөөрөмж, өөр браузер дээр шинээр эхэлнэ.</p>
+  <p style="margin-top:12px">Эрх зүйн үндэслэл шаардсан шийдвэр гаргахдаа <b>Баримт шалгах</b> хэсэгт жагсаасан үндсэн эх сурвалжийг ашиглана уу.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var LS = {
+    get: function(k, d){ try{ var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+    set: function(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+    del: function(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  };
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  var saved = LS.get("insp.theme", null);
+  if (saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+  document.getElementById("theme").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    var isDark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var next = isDark ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    LS.set("insp.theme", next);
+  });
+
+  /* ---------- table of contents ---------- */
+  var toc = document.getElementById("toc");
+  var secs = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
+  secs.forEach(function(s){
+    var num = s.querySelector(".mnum");
+    var h = s.querySelector("h2");
+    var li = document.createElement("li");
+    var a = document.createElement("a");
+    a.href = "#" + s.id;
+    a.innerHTML = '<span class="n">' + (num ? num.textContent : "·") + '</span><span>' + (h ? h.textContent : s.id) + '</span>';
+    li.appendChild(a);
+    toc.appendChild(li);
+  });
+  var links = Array.prototype.slice.call(toc.querySelectorAll("a"));
+  if ("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (!en.isIntersecting) return;
+        links.forEach(function(l){ l.classList.toggle("on", l.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-70px 0px -70% 0px" });
+    secs.forEach(function(s){ io.observe(s); });
+  }
+
+  /* ---------- module progress ---------- */
+  var MODS = 12;
+  var doneState = LS.get("insp.done", {});
+  var fill = document.getElementById("pf");
+  var ptxt = document.getElementById("pt");
+  function paintProgress(){
+    var n = 0;
+    for (var k in doneState){ if (doneState[k]) n++; }
+    fill.style.width = Math.round((n / MODS) * 100) + "%";
+    ptxt.textContent = n + "/" + MODS;
+  }
+  Array.prototype.slice.call(document.querySelectorAll("[data-mod]")).forEach(function(b){
+    var id = b.getAttribute("data-mod");
+    if (doneState[id]) b.setAttribute("aria-pressed", "true");
+    b.addEventListener("click", function(){
+      doneState[id] = !doneState[id];
+      b.setAttribute("aria-pressed", doneState[id] ? "true" : "false");
+      LS.set("insp.done", doneState);
+      paintProgress();
+    });
+  });
+  paintProgress();
+
+  /* ---------- search filter ---------- */
+  var q = document.getElementById("q");
+  var nores = document.getElementById("nores");
+  q.addEventListener("input", function(){
+    var t = q.value.trim().toLowerCase();
+    if (!t){
+      secs.forEach(function(s){ s.hidden = false; });
+      document.body.classList.remove("filtering");
+      nores.classList.remove("show");
+      return;
+    }
+    document.body.classList.add("filtering");
+    var hits = 0;
+    secs.forEach(function(s){
+      var match = s.textContent.toLowerCase().indexOf(t) !== -1;
+      s.hidden = !match;
+      if (match) hits++;
+    });
+    nores.classList.toggle("show", hits === 0);
+  });
+
+  /* ---------- flashcards ---------- */
+  var CARDS = [
+    ["Эрх зүй","Чикагогийн конвенцын 1-р зүйл юуг тогтоосон бэ?","Улс бүр өөрийн нутаг дэвсгэр дээрх агаарын зайд <b>бүрэн, онцгой бүрэн эрхтэй</b>. Энэ бол Монголын тэнгэрт нисэх гадаад тээвэрлэгчийг Монголын дүрмээр шалгах эрхийн үндэс.","Тэнгэр нь улсын өмч."],
+    ["Эрх зүй","37 ба 38-р зүйлийн ялгаа юу вэ?","<b>37</b> — ICAO стандарт, зөвлөмж (SARPs) гаргана. <b>38</b> — улс дагаж мөрдөж чадахгүй бол <b>зөрүүг албан ёсоор мэдэгдэнэ</b>, AIP-ийн GEN 1.7-д хэвлэнэ.","37 гаргана, 38 зөрүүг мэдэгдэнэ."],
+    ["Эрх зүй","33-р зүйл “бусад улсын гэрчилгээг заавал хүлээн зөвшөөрнө” гэсэн үг үү?","Үгүй. Хүлээн зөвшөөрөх үүрэг нь <b>нөхцөлтэй</b> — тухайн гэрчилгээ ICAO-ийн доод стандартад нийцсэн байх ёстой. Нийцээгүй бол татгалзах эрхтэй.","Нөхцөлтэй хүлээн зөвшөөрөлт."],
+    ["Эрх зүй","Standard ба Recommended Practice-ийн ялгаа?","<b>Standard</b> — нэг мөр хэрэглэх нь шаардлагатай гэж тогтоогдсон, дагаагүй бол зөрүү мэдэгдэх ёстой. <b>Recommended Practice</b> — дагахыг зөвлөсөн, зөрүү мэдэгдэх шаардлагагүй.","Дагах ёстой vs зөвлөсөн."],
+    ["Эрх зүй","Нэг онгоцны хариуцлагыг хуваадаг дөрвөн төр?","<b>State of Registry</b> (бүртгэл, нисэх чадвар), <b>State of the Operator</b> (AOC, нислэг), <b>State of Design</b> (Type Certificate, AD), <b>State of Manufacture</b> (үйлдвэрлэл).","Р-О-Д-М."],
+    ["Эрх зүй","Art. 83bis юу зөвшөөрдөг вэ?","Хуурай лизингийн үед <b>бүртгэлийн улсаас тээвэрлэгчийн улсад</b> тодорхой хяналтын үүргийг гэрээгээр шилжүүлэх. Гэрээ байхгүй бол шилжээгүй гэж үзнэ.","Гэрээгүй бол шилжээгүй."],
+    ["Annex","Annex 6 юуны талаар вэ, хэдэн хэсэгтэй?","<b>Онгоцны үйл ажиллагаа.</b> Part I — арилжааны тээвэр, Part II — ерөнхий нисэх, Part III — вертолёт. Байцаагчийн хамгийн их хэрэглэдэг хавсралт: FDTL, MEL, EDTO, TAWS, ACAS.","6 = үйл ажиллагаа."],
+    ["Annex","Annex 13 ба Annex 19-ийн ялгаа?","<b>13</b> — осол, зөрчлийн шинжилгээ, ослын дараа. <b>19</b> — аюулгүй ажиллагааны менежмент, ослын өмнө. 13 нь хараат бус байгууллага, 19 нь SSP/SMS.","13 дараа, 19 өмнө."],
+    ["Annex","Annex 17 ба Annex 19 хоёуланг Монголоор “аюулгүй байдал” гэдэг. Ялгаа?","<b>Annex 17 = Security</b> — хууль бус халдлагаас хамгаалах. <b>Annex 19 = Safety</b> — аюулгүй ажиллагааны менежмент. Аудитад энэ ялгааг мэдэхгүй бол шууд илэрнэ.","17 халдлага, 19 менежмент."],
+    ["Annex","AIRAC мөчлөг хэд хоног вэ, аль хавсралтад хамаарах вэ?","<b>28 хоног.</b> Annex 15 — нисэхийн мэдээллийн үйлчилгээ. Бүх улс ижил огноонд мэдээллээ шинэчилдэг систем.","28 хоног, Annex 15."],
+    ["Annex","Монголын онгоцны бүртгэлийн тэмдэг, аль хавсралт?","<b>JU-</b> · Annex 7 — улсын харьяалал ба бүртгэлийн тэмдэг. Тэмдгийн хэмжээ, байрлал ч дүрэмтэй.","JU- , Annex 7."],
+    ["CE / USOAP","8 Critical Element-ийг хоёр бүлэгт хуваа.","<b>Бэлтгэл (CE-1…5):</b> хууль, дүрэм, бүтэц, сургалт, заавар. <b>Хэрэгжүүлэлт (CE-6…8):</b> зөвшөөрөл олгох, хяналт шалгалт, асуудлыг шийдвэрлэх.","ХДБСЗ + ОШХ."],
+    ["CE / USOAP","CE-7 ба CE-8 юу вэ, яагаад хамгийн чухал вэ?","<b>CE-7</b> — хяналт шалгалтын үүрэг. <b>CE-8</b> — аюулгүй байдлын асуудлыг шийдвэрлэх. Дэлхий дахинд хамгийн бага дүнтэй элемент нь CE-8: улсууд зөрчил олдог ч <b>хаадаггүй</b>.","Олох биш, хаах."],
+    ["CE / USOAP","EI оноо хэрхэн тооцогддог вэ?","<b>Хангалттай гэж үнэлэгдсэн PQ ÷ хамаарах PQ × 100.</b> PQ = Protocol Question, аудитын асуулт. Оноо нь аюулгүй байдлын түвшин биш, <b>хяналтын тогтолцооны хүчин чадал</b>.","Хангалттай ÷ хамаарах."],
+    ["CE / USOAP","SSC гэж юу вэ, ямар үр дагавартай вэ?","<b>Significant Safety Concern</b> — онцгой анхаарах аюулгүй байдлын асуудал. ICAO-ийн сайтад ил зарлагдана. Тухайн улсын тээвэрлэгчид бусад улсад хориг, хязгаарлалт, лизингийн хүндрэл хүлээж болно.","Улаан туг."],
+    ["CE / USOAP","USOAP-ийн CMA гэж юу вэ?","<b>Continuous Monitoring Approach</b> — тасралтгүй хяналтын арга. 2013 оноос хойш ICAO хэдэн жилд нэг удаа биш, <b>байнга</b> хянадаг: онлайн платформ, off-site validation, ICVM, шаардлагатай бол бүрэн аудит.","Байнгын хяналт."],
+    ["SMS","SMS-ийн 4 багана?","<b>Бодлого ба зорилт</b> · <b>Эрсдэлийн менежмент</b> · <b>Баталгаажуулалт</b> · <b>Сурталчилгаа</b>. 12 элемент. Англиар Policy, Risk, Assurance, Promotion.","БЭБС."],
+    ["SMS","Аюул (hazard) ба эрсдэл (risk) хоёрын ялгаа?","<b>Аюул</b> нь нөхцөл — “зурвас дээр мөс” (нэр үг). <b>Эрсдэл</b> нь тэр нөхцөлийн үр дагаврын магадлал ба хүндрэл — “мөсөн зурвасаас гулгаж гарах” (өгүүлбэр). Аюулын бүртгэлд эрсдэл бичсэн бол SMS ажиллаагүй байна.","Нэр үг vs өгүүлбэр."],
+    ["SMS","Just Culture-ийн гурван зан байдал?","<b>Хүний алдаа</b> — шийтгэхгүй, системийг засна. <b>Эрсдэлтэй зан</b> — сургана, шалтгааныг засна. <b>Хайхрамжгүй</b> — хариуцлага хүлээлгэнэ. Just Culture нь дархлаа биш.","Алдаа–Эрсдэлтэй–Хайхрамжгүй."],
+    ["SMS","Орлуулах тест (substitution test) гэж юу вэ?","Ижил сургалт, туршлагатай өөр гурван мэргэжилтнийг тэр нөхцөлд тавихад тэд ч ингэх байсан уу? <b>Тийм бол системийн асуудал</b>, хувь хүний бус. Хүнийг шийтгэхээс өмнө заавал хийх тест.","Гурван өөр хүн."],
+    ["SMS","Мэдээлэл цуглуулах гурван ажиллагаа?","<b>Реактив</b> — юу болсон бэ (осол, зөрчил). <b>Проактив</b> — юу болж болох вэ (тайлан, аудит, LOSA). <b>Предиктив</b> — өгөгдөл юу хэлж байна (FDM/FOQA, чиг хандлага).","Болсон–Болох–Хэлж байна."],
+    ["SMS","SMS аудитад асуух хамгийн ирмэгтэй нэг асуулт?","“<b>Сүүлийн 12 сарын сайн дурын тайлангийн тоо хэд вэ?</b>” Тоо 0 бол SMS цаасан дээр. Тайлангийн тоо буурах нь <b>сайн зүйл биш</b>.","Тоо 0 = соёл үхсэн."],
+    ["SMS","SSP гэж юу вэ, хэн хариуцах вэ?","<b>State Safety Programme</b> — төрийн аюулгүй ажиллагааны хөтөлбөр. Эрх бүхий байгууллага (ИНЕГ) хариуцна. 4 багана, 11 элемент. SMS нь байгууллагад, SSP нь төрд.","SSP төрд, SMS байгууллагад."],
+    ["Хяналт","Гэрчилгээжүүлэлтийн 5 шат?","<b>Урьдчилсан хандалт → Албан хүсэлт → Баримт бичгийн үнэлгээ → Үзүүлэх, шалгах → Гэрчилгээ олгох.</b> Бүх төрлийн гэрчилгээ (AOC, 145, 141, 139, АНЖ) ижил бүтэцтэй.","У-А-Б-Ү-Г."],
+    ["Хяналт","Ramp check-ийн 5 хэсэг?","<b>A</b> Кабин, баримт бичиг · <b>B</b> Аюулгүй байдал, кабин дотор · <b>C</b> Онгоцны байдал, гадаад үзлэг · <b>D</b> Ачаа, жин ба төвлөрөл · <b>E</b> Ерөнхий дүгнэлт.","A-B-C-D-E."],
+    ["Хяналт","Cat 3 ramp олдвор гарвал юу болох вэ?","Аюулгүй байдалд шууд нөлөөлөх хүнд олдвор. <b>Нислэгийн өмнө засах ёстой.</b> Засагдахгүй бол: хязгаарлалт, зорчигчгүй ferry flight, эсвэл <b>онгоцыг газардуулах</b>.","Нисэхээс өмнө засна."],
+    ["Хяналт","Level 1 ба Level 2 зөрчлийн ялгаа?","<b>Level 1</b> — аюулгүй байдлыг шууд бууруулах, гэрчилгээний хүчинтэй байдалд эргэлзээ. Шууд арга хэмжээ. <b>Level 2</b> — стандартаас хазайсан боловч шууд аюул үүсгээгүй. Хугацаатай залруулга.","Шууд vs хугацаатай."],
+    ["Хяналт","Зөрчил шийдвэрлэх 6 алхам?","<b>Б</b>аримт → <b>А</b>нгилах → <b>Р</b>иск → <b>И</b>лэрлийг түвшинчлэх → <b>М</b>эдэгдэх, арга хэмжээ → <b>Т</b>аслан барих.","БАРИМТ."],
+    ["Хяналт","Заалтыг олж чадахгүй зөрчлийг юу гэж бичих вэ?","<b>Ажиглалт (observation)</b>, зөрчил биш. Дүрмийн тодорхой заалтгүйгээр акт бичвэл эрх зүйн хүчгүй болно. Ажиглалт нь ирээдүйн дүрмийн өөрчлөлтийн эх сурвалж болдог.","Заалтгүй = ажиглалт."],
+    ["Хяналт","Үндсэн шалтгаан нь хүний нэрээр төгсвөл?","Та <b>дуусгаагүй байна</b>. Зөв үндсэн шалтгаан үргэлж процесс, журам, нөөц, эсвэл удирдлагын шийдвэрээр төгсдөг. “Техникч хайхрамжгүй байсан” бол шинж тэмдэг, шалтгаан биш.","Хүн биш, систем."],
+    ["Хяналт","Дахин гарсан зөрчил (repeat finding) яагаад ноцтой вэ?","Учир нь энэ нь <b>залруулах системийн эвдрэл</b>-ийг харуулж байна. Ганц зөрчил нь алдаа, давтагдсан зөрчил нь <b>тогтолцооны асуудал</b>. Шалгалтад гарахаас өмнө өмнөх 3 тайланг унш.","Давталт = систем эвдэрсэн."],
+    ["Хяналт","Аюулгүй байдлын арга хэмжээ ба хариуцлагын арга хэмжээг яаж ялгах вэ?","<b>Аюулгүй байдлын</b> (онгоц зогсоох) — яаралтай, шууд, шийтгэл биш, хойшлуулж болохгүй. <b>Хариуцлагын</b> (торгууль, хүчингүй болгох) — журамтай, гомдол гаргах эрхтэй, яаравчлаж болохгүй.","Нэгийг хойшлуулж, нөгөөг яаравчилж болохгүй."],
+    ["Хүний хүчин зүйл","Швейцарь бяслагны загвар юуг тайлбарладаг вэ?","Хамгаалалт нь хэдэн давхар, тус бүр нүхтэй. Ихэнхдээ нүх зэрэгцдэггүй. Бүх нүх нэг шулуун дээр тохиох үед осол болно. Зохиогч — <b>Жеймс Ризон</b>, 1990.","Нүх зэрэгцэхэд осол."],
+    ["Хүний хүчин зүйл","Идэвхтэй эвдрэл ба далд нөхцөлийн ялгаа? Байцаагчийн үүрэг?","<b>Идэвхтэй</b> — ослын өмнөхөн хийсэн үйлдэл, ослын комисс олно. <b>Далд</b> — олон жилийн өмнөх шийдвэр, журам, нөөц. <b>Далд нөхцөлийг ослын өмнө олж чадах цорын ганц хүн бол байцаагч.</b>","Байцаагч далдыг олно."],
+    ["Хүний хүчин зүйл","SHELL загварын дөрвөн зааг?","<b>L–S</b> журам, гарын авлага · <b>L–H</b> тоног төхөөрөмж, кабин · <b>L–E</b> орчин, цаг агаар, ээлж · <b>L–L</b> хүн хоорондын харилцаа, эрх мэдлийн зөрүү. Зөрчил зааг дээр үүснэ.","Зааг дээр зөрчил."],
+    ["Хүний хүчин зүйл","Бохир 12-ын хамгийн аюултай нь юу вэ, яагаад?","<b>Гажсан хэм хэмжээ (norms).</b> “Бид үргэлж ингэж хийдэг” гэсэн хариулт нь нэг хүний алдаа биш, <b>байгууллага даяар хэвшсэн</b> хазайлт. Дараагийн асуулт: хэдэн жил, хэн зөвшөөрсөн?","Бид үргэлж ингэж хийдэг."],
+    ["Хүний хүчин зүйл","TEM-ийн гурван ойлголт?","<b>Threat</b> — багаас хамааралгүй аюул (цаг агаар, эвдрэл). <b>Error</b> — багийн алдаа. <b>Хүсээгүй байдал</b> — онгоц аюултай байрлалд орсон, сүүлчийн хаалга.","Аюул–Алдаа–Байдал."],
+    ["Хүний хүчин зүйл","WOCL гэж юу вэ?","<b>Window of Circadian Low</b> — циркадиан хэмнэлийн доод цонх, ойролцоогоор <b>02:00–06:00</b>. Сонор сэрэмж хамгийн доогуур. Шөнийн нислэгийн үүрэгт цагийн хязгаар бага байх шалтгаан.","02:00–06:00."],
+    ["Хүний хүчин зүйл","FDTL шалгахдаа ямар нийтлэг алдаа гардаг вэ?","<b>Төлөвлөсөн</b> цагийг харах. Компанийн ээлжийн програм зөрчил заахгүй байж болно. Бодит зөрчил саатал, дахин чиглүүлэлтийн дараа үүснэ — тиймээс <b>бодит гүйцэтгэл</b> ба journey log-ийг харьцуул.","Төлөвлөгөө биш, гүйцэтгэл."],
+    ["Кэйс","Тенерифе 1977 ослоос ямар дүрэм гарсан бэ?","<b>583 хохирогч</b>, түүхэн дэх хамгийн олон. “Take-off” гэдэг үгийг зөвхөн бодит зөвшөөрөлд хэрэглэх, бусад тохиолдолд “departure”. “Line up and wait” стандартчлагдсан. Readback шаардлага чангарсан. CRM-ийн түлхэц.","583 · хэллэг стандартчлагдсан."],
+    ["Кэйс","CRM хэзээ, ямар ослын дараа үүссэн бэ?","<b>Юнайтед 173</b>, 1978.12.28, Портланд — түлш дуусч 10 хүн нас барсан. NASA 1979 семинар, <b>United 1981 онд дэлхийн анхны CRM сургалт</b>. Өнөөдөр Annex 1, 6-ийн шаардлага.","173 → 1981 CRM."],
+    ["Кэйс","Юберлинген 2002 ослоос ямар дүрэм гарсан бэ?","Tu-154 ба B757 мөргөлдөж <b>71 хүн</b> нас барсан (45 хүүхэд). ATC “буу” гэсэн, TCAS “өгс” гэсэн. Дүрэм тодорхой болсон: <b>TCAS-ийн RA-г ATC-ийн зөрчилдөх тушаалаас давуу үзэж дагана.</b>","RA > ATC."],
+    ["Кэйс","Колган 3407 (2009) ослоос АНУ-д ямар өөрчлөлт гарсан бэ?","<b>50 хохирогч.</b> 2010 оны хууль: туслах нисгэгчид <b>ATP үнэмлэх + 1 500 цаг</b> (өмнө 250). Шинэ ядаргааны дүрэм (2014-өөс). Эргэлдэхээс сэргийлэх сургалт заавал. Нисгэгчийн бүртгэлийн нэгдсэн сан.","1 500 цаг."],
+    ["Кэйс","AF447 (2009) ослоос ямар сургалт заавал болсон бэ?","<b>228 хохирогч.</b> Хурд хэмжигч хоолой мөстөж, өндөрт эргэлдэхийг баг таниагүй. <b>UPRT</b> — хүсээгүй байдлаас сэргийлэх, сэргээх сургалт заавал болсон. Гараар нисэх чадварыг хадгалах бодлого.","UPRT."],
+    ["Кэйс","737 MAX ослууд зохицуулагчид ямар сургамж болсон бэ?","<b>346 хохирогч</b>, флот ~20 сар зогссон. MCAS нэг мэдрэгчээс хамаарсан, гарын авлагад тайлбарлаагүй. Сургамж: <b>зохицуулагч салбартаа хэт ойр очвол хяналт болохоо болино.</b> Үйлдвэрлэгчид ч SMS шаардлагатай болсон.","Хараат бус байдал."],
+    ["Кэйс","ValuJet 592 (1996) ослоос гэрээт гүйцэтгэгчийн талаар ямар зарчим гарсан бэ?","<b>110 хохирогч</b>, хугацаа дууссан хүчилтөрөгч үүсгэгч галдсан. Зарчим: <b>тээвэрлэгч ажлаа гэрээгээр гүйцэтгүүлж болно, хариуцлагаа гэрээгээр шилжүүлж чадахгүй.</b> Мөн FAA-гийн “сурталчлах” үүрэг хуулиас хасагдсан.","Хариуцлага шилжихгүй."],
+    ["Кэйс","Helios 522 (2005) ослын үндсэн сургамж?","<b>121 хохирогч.</b> Даралтжуулалт гар удирдлагад үлдсэн, баг гурван checklist алдсан, анхааруулах дохио хөөрөлтийн дохиотой ижил байсан. Сургамж: checklist-ийг “байгаа эсэх”-ээр биш, <b>хэрхэн хэрэглэгдэж байгаагаар</b> шалга.","Гурван checklist алдсан."],
+    ["Кэйс","Aloha 243 (1988) ослоос онгоцны “нас”-ны талаар ямар сургамж гарсан бэ?","Их биеийн дээд хэсэг агаарт тасарсан. Онгоц насныхаа хувьд бага ч <b>даралтжуулалтын мөчлөг ~89 680</b> байсан. Сургамж: нас нь жилээр бус <b>цаг, мөчлөг, орчноор</b> хэмжигдэнэ. Aging Aircraft Program үүссэн.","Жил биш, мөчлөг."]
+  ];
+
+  var fcState = LS.get("insp.cards", {});
+  var order = [], idx = 0;
+  var elTag = document.getElementById("fcTag"), elPos = document.getElementById("fcPos");
+  var elQ = document.getElementById("fcQ"), elA = document.getElementById("fcA");
+  var bShow = document.getElementById("fcShow"), bKnow = document.getElementById("fcKnow");
+  var bAgain = document.getElementById("fcAgain"), bNext = document.getElementById("fcNext");
+  var selCat = document.getElementById("fcCat"), stat = document.getElementById("fcStat");
+
+  function buildOrder(){
+    var cat = selCat.value;
+    order = [];
+    for (var i = 0; i < CARDS.length; i++){
+      if (cat === "all" || CARDS[i][0] === cat) order.push(i);
+    }
+    idx = 0;
+  }
+  function paintStat(){
+    var known = 0, total = 0;
+    order.forEach(function(i){ total++; if (fcState[i] === 1) known++; });
+    stat.textContent = "Мэднэ " + known + " / " + total;
+  }
+  function render(){
+    if (!order.length){ elQ.textContent = "Карт байхгүй."; return; }
+    var c = CARDS[order[idx]];
+    elTag.textContent = c[0] + (fcState[order[idx]] === 1 ? " · мэднэ" : fcState[order[idx]] === 2 ? " · давтах" : "");
+    elPos.textContent = (idx + 1) + " / " + order.length;
+    elQ.innerHTML = c[1];
+    elA.innerHTML = c[2] + (c[3] ? '<span class="hook">Дэгээ: ' + c[3] + "</span>" : "");
+    elA.hidden = true;
+    bShow.hidden = false;
+    bKnow.hidden = true;
+    bAgain.hidden = true;
+    paintStat();
+  }
+  function mark(v){
+    fcState[order[idx]] = v;
+    LS.set("insp.cards", fcState);
+    next();
+  }
+  function next(){ idx = (idx + 1) % order.length; render(); }
+
+  bShow.addEventListener("click", function(){
+    elA.hidden = false; bShow.hidden = true; bKnow.hidden = false; bAgain.hidden = false;
+  });
+  bKnow.addEventListener("click", function(){ mark(1); });
+  bAgain.addEventListener("click", function(){ mark(2); });
+  bNext.addEventListener("click", next);
+  selCat.addEventListener("change", function(){ buildOrder(); render(); });
+  document.getElementById("fcReset").addEventListener("click", function(){
+    fcState = {}; LS.del("insp.cards"); render();
+  });
+  buildOrder(); render();
+
+  /* ---------- quiz ---------- */
+  var QS = [
+    ["Чикагогийн конвенцын аль зүйл нь улсын агаарын зай дээрх бүрэн эрхийг тогтоосон бэ?",
+      ["Зүйл 1","Зүйл 12","Зүйл 33","Зүйл 37"],0,
+      "Зүйл 1 — улс бүр өөрийн нутаг дэвсгэр дээрх агаарын зайд бүрэн, онцгой бүрэн эрхтэй. Зүйл 12 нь агаарын дүрэм, 33 нь гэрчилгээг хүлээн зөвшөөрөх, 37 нь SARPs."],
+    ["Улс ICAO-ийн стандартыг дагаж мөрдөж чадахгүй бол юу хийх ёстой вэ?",
+      ["Дуугүй өнгөрөх","Зүйл 38-ийн дагуу зөрүүг ICAO-д мэдэгдэх","Стандартыг өөрчлөхийг шаардах","ICAO-аас гарах"],1,
+      "Зүйл 38 — зөрүүг (difference) албан ёсоор мэдэгдэж, AIP-ийн GEN 1.7-д хэвлэнэ. Нуух нь аудитад хамгийн ноцтой дутагдал."],
+    ["Ослын шинжилгээ ямар зорилготой вэ?",
+      ["Гэм буруутай хүнийг тогтоох","Даатгалын нөхөн төлбөрийг тооцох","Зөвхөн урьдчилан сэргийлэх","Тээвэрлэгчид торгууль тооцох"],2,
+      "Annex 13 — шинжилгээний цорын ганц зорилго нь урьдчилан сэргийлэх. Гэм буруу, хариуцлага хуваарилах нь зорилго биш. Тиймээс шинжилгээний байгууллага хяналтын байгууллагаас тусдаа байх ёстой."],
+    ["8 Critical Element-ийн аль нь дэлхий дахинд хамгийн бага дүнтэй байдаг вэ?",
+      ["CE-1 үндсэн хууль","CE-4 ажилтны сургалт","CE-8 асуудлыг шийдвэрлэх","CE-2 тусгай дүрэм"],2,
+      "CE-8. Улсууд зөрчил олох боловч түүнийг үндсэн шалтгаанаас хааж чаддаггүй. Хаагдаагүй зөрчил дахин гарна."],
+    ["EI оноо юуг хэмждэг вэ?",
+      ["Ослын тоог","Хяналтын тогтолцооны үр дүнтэй хэрэгжилтийг","Тээвэрлэгчийн тоог","Зорчигчийн эрэлтийг"],1,
+      "EI = хангалттай PQ ÷ хамаарах PQ × 100. Энэ нь хяналтын тогтолцооны хүчин чадлыг хэмждэг, аюулгүй байдлын түвшинг шууд хэмждэггүй."],
+    ["SMS-ийн дөрвөн багана юу вэ?",
+      ["Хууль, дүрэм, бүтэц, сургалт","Бодлого, эрсдэл, баталгаажуулалт, сурталчилгаа","Олгох, шалгах, хаах, тайлагнах","Реактив, проактив, предиктив, шинжилгээ"],1,
+      "Бодлого ба зорилт · Эрсдэлийн менежмент · Баталгаажуулалт · Сурталчилгаа. 12 элемент. Дэгээ: БЭБС."],
+    ["“Зурвас дээр мөс” гэдэг нь юу вэ?",
+      ["Эрсдэл","Аюул","Зөрчил","Осол"],1,
+      "Аюул (hazard) — нөхцөл байдал, нэр үгээр илэрхийлэгдэнэ. Эрсдэл нь түүний үр дагаврын магадлал ба хүндрэл: “мөсөн зурвасаас гулгаж гарах”. Аюулын бүртгэлд эрсдэл бичсэн бол SMS ажиллаагүй байна."],
+    ["TCAS-ийн RA зөвлөмж ба ATC-ийн тушаал зөрчилдвөл нисгэгч аль нэгийг дагах вэ?",
+      ["ATC-ийн тушаалыг","TCAS-ийн RA-г","Хамгийн ойрын онгоцтой тохиролцох","Автомат нисгэгчийг залгах"],1,
+      "TCAS-ийн RA-г дагана. Энэ дүрэм 2002 оны Юберлингений ослын дараа олон улсын хэмжээнд тодорхой болсон — 71 хүн нас барсны дараа."],
+    ["Гэрчилгээжүүлэлтийн 5 шатны аль шатанд proving flight, онцгой байдлын дасгал хийгддэг вэ?",
+      ["1 · Урьдчилсан хандалт","3 · Баримт бичгийн үнэлгээ","4 · Үзүүлэх, шалгах","5 · Гэрчилгээ олгох"],2,
+      "4-р шат. Цаасан дээрх зүйл бодит амьдралд ажиллаж байгааг нүдээр батлах шат. Ихэнх дутагдал энд илэрдэг."],
+    ["Хүсэлт гаргагчийн гарын авлагыг байцаагч өөрөө засаж өгвөл ямар асуудал үүсэх вэ?",
+      ["Цаг хэмнэгдэнэ, асуудал байхгүй","Хараат бус байдал алдагдаж, дараа нь өөрийн бичсэн баримтаа шалгана","Зөвхөн этикийн асуудал","Тээвэрлэгч хариуцлагаас чөлөөлөгдөнө"],1,
+      "Байцаагч өөрийн бичсэн баримтыг шалгаж болохгүй. Зөв арга: дутагдлыг бичгээр жагсааж, хугацаа өгч, буцаах. USOAP аудитад CE-6 дүн буурна."],
+    ["Level 1 зөрчлийн гол шинж юу вэ?",
+      ["Аюулгүй байдлыг шууд бууруулах, гэрчилгээний хүчинтэй байдалд эргэлзээ төрүүлэх","Баримт бичгийн хэлбэрийн алдаа","Хугацаатай залруулга хүрэлцэх","Зөвхөн гадаад тээвэрлэгчид хамаарах"],0,
+      "Level 1 — шууд арга хэмжээ шаардана. Level 2 нь стандартаас хазайсан боловч шууд аюул үүсгээгүй, хугацаатай залруулга."],
+    ["Ramp check-ийн Cat 3 олдвор гарвал юу болох вэ?",
+      ["Тайланд бичээд өнгөрнө","Нислэгийн өмнө засах шаардлагатай, засагдахгүй бол онгоцыг газардуулна","Дараагийн шалгалтад дахин харна","Зөвхөн тээвэрлэгчид мэдэгдэнэ"],1,
+      "Cat 3 нь аюулгүй байдалд шууд нөлөөлөх хүнд олдвор. Гурван боломж: засах, хязгаарлалттай зөвшөөрөх (ж.нь зорчигчгүй ferry), эсвэл газардуулах."],
+    ["Үндсэн шалтгааны шинжилгээ “техникч хайхрамжгүй байсан” гэж төгсвөл?",
+      ["Шинжилгээ дууссан","Шинжилгээ дуусаагүй — хүний нэр шалтгаан биш, шинж тэмдэг","Тухайн хүнийг ажлаас чөлөөлнө","Сургалт хийгээд хаана"],1,
+      "Зөв үндсэн шалтгаан үргэлж процесс, журам, нөөц, эсвэл удирдлагын шийдвэрээр төгсдөг. Хүний нэрээр төгссөн шинжилгээ нь дахин гарахыг зогсоохгүй."],
+    ["Дахин гарсан зөрчил (repeat finding) яагаад ганц зөрчлөөс ноцтой вэ?",
+      ["Илүү олон хүнд хамаарна","Залруулах системийн эвдрэлийг харуулж байна","Торгуулийн хэмжээ өснө","Аудитын цаг хугацаа нэмэгдэнэ"],1,
+      "Давтагдсан зөрчил нь “байгууллага зөрчлөө хааж чаддаггүй” гэсэн үг. Энэ нь тогтолцооны асуудал. Шалгалтад гарахаас өмнө өмнөх 3 тайланг унших нь ийм учиртай."],
+    ["Just Culture-ийн орлуулах тест (substitution test) юуг тодорхойлдог вэ?",
+      ["Хүний туршлагыг","Асуудал системийн эсвэл хувь хүний болохыг","Торгуулийн хэмжээг","Сургалтын үргэлжлэх хугацааг"],1,
+      "Ижил сургалт, туршлагатай өөр гурван мэргэжилтэн тэр нөхцөлд ингэх байсан бол энэ нь системийн асуудал. Тестгүйгээр хүнийг шийтгэвэл дараагийн тайланг хөрөөднө."],
+    ["Тээвэрлэгч техник үйлчилгээг гэрээгээр гүйцэтгүүлж байгаа бол хариуцлага хэнд байх вэ?",
+      ["Гэрээт гүйцэтгэгчид бүрэн шилжинэ","Тээвэрлэгчид үлдэнэ","Эрх бүхий байгууллагад шилжинэ","Онгоцны эзэмшигчид"],1,
+      "Ажлыг гэрээгээр гүйцэтгүүлж болно, хариуцлагыг шилжүүлж чадахгүй. ValuJet 592 (1996, 110 хохирогч) ослын гол сургамж. “Тэд гэрчилгээтэй” гэсэн хариулт хангалтгүй."],
+    ["FDTL зөрчлийг шалгахдаа хамгийн зөв эх сурвалж юу вэ?",
+      ["Компанийн ээлжийн төлөвлөгөө","Бодит гүйцэтгэлийн бүртгэл ба journey log","Багийн аман тайлбар","Нислэгийн хуваарийн зар"],1,
+      "Төлөвлөгөө зөрчил заахгүй байж болно. Бодит зөрчил саатал, дахин чиглүүлэлтийн дараа үүснэ. Мөн 7/14/28 хоногийн нийлбэр хязгаарыг зэрэг шалгана."],
+    ["Ноцтой зөрчил (serious incident) гэж юу вэ?",
+      ["Хүн хүнд гэмтсэн үйл явдал","Онгоц бүрэн эвдэрсэн үйл явдал","Осол болох өндөр магадлалтай нөхцөл үүссэн зөрчил","Техникийн ямар ч эвдрэл"],2,
+      "Жишээ: зурвас руу зөвшөөрөлгүй орох, агаарт мөргөлдөхөөс зайлсхийсэн, газарт мөргөхөөс мултарсан, түлш бүрэн дуусах. Хүн хохирсон бол энэ нь осол болно."],
+    ["Аюулгүй байдлын албан тушаалтан нь бас чанарын менежер, бас сургалтын менежер байвал?",
+      ["Асуудал байхгүй, жижиг байгууллагад хэвийн","SMS-ийн 1-р баганын хараат бус байдал, цаг завд эргэлзээ төрнө","Зөвхөн ажлын хэмжээний асуудал","Гэрчилгээ автоматаар хүчингүй"],1,
+      "Хараат бус байдал ба нөөц нь SMS-ийн үндсэн нөхцөл. Ялангуяа чанарын аудит хийдэг хүн өөрөө аюулгүй байдлыг хариуцвал өөрийгөө аудит хийнэ. Хамрах хүрээг үнэлж, шаардлагатай бол салгуулна."],
+    ["Гадаад тээвэрлэгч “AOC хүчинтэй, 33-р зүйлээр та хүлээн зөвшөөрөх ёстой” гэвэл?",
+      ["Шууд зөвшөөрөх","Аргумент дутуу — хүлээн зөвшөөрөлт нь ICAO доод стандартад нийцсэн байх нөхцөлтэй","Автоматаар татгалзах","ICAO-аас зөвшөөрөл гуйх"],1,
+      "33-р зүйл нөхцөлтэй. Нээлттэй SSC байгаа нь тэр нийцэлд эргэлзээ байгааг ICAO өөрөө зарласан гэсэн үг. Зөв арга: эрсдэлд тохирсон нөхцөлтэй зөвшөөрөл, тэргүүлэх ramp check, богино хугацаа."]
+  ];
+
+  var quizBox = document.getElementById("quizBox");
+  QS.forEach(function(item, i){
+    var d = document.createElement("div");
+    d.className = "q";
+    var opts = item[1].map(function(o, j){
+      return '<label data-i="' + j + '"><input type="radio" name="q' + i + '" value="' + j + '"><span>' + o + "</span></label>";
+    }).join("");
+    d.innerHTML = '<div class="qn">Асуулт ' + (i + 1) + ' / ' + QS.length + '</div><div class="qt">' + item[0] +
+      '</div><div class="opts">' + opts + '</div><div class="exp" hidden><b>Тайлбар.</b> ' + item[3] + "</div>";
+    quizBox.appendChild(d);
+  });
+
+  function gradeOne(card, i, reveal){
+    var correct = QS[i][2];
+    var picked = card.querySelector('input[name="q' + i + '"]:checked');
+    var labels = Array.prototype.slice.call(card.querySelectorAll("label"));
+    labels.forEach(function(l){ l.classList.remove("right", "wrong"); });
+    if (!picked && !reveal) return null;
+    labels.forEach(function(l){
+      var j = parseInt(l.getAttribute("data-i"), 10);
+      if (j === correct) l.classList.add("right");
+      else if (picked && parseInt(picked.value, 10) === j) l.classList.add("wrong");
+    });
+    card.querySelector(".exp").hidden = false;
+    return picked ? (parseInt(picked.value, 10) === correct) : null;
+  }
+
+  var cards = Array.prototype.slice.call(quizBox.querySelectorAll(".q"));
+  document.getElementById("quizCheck").addEventListener("click", function(){
+    var right = 0, answered = 0;
+    cards.forEach(function(c, i){
+      var r = gradeOne(c, i, false);
+      if (r !== null){ answered++; if (r) right++; }
+    });
+    var box = document.getElementById("scoreBox");
+    box.hidden = false;
+    document.getElementById("scoreVal").textContent = right + "/" + QS.length;
+    var pct = Math.round((right / QS.length) * 100);
+    var verdict = pct >= 90 ? "Мэргэжлийн түвшин. Ярилцлагад бэлэн." :
+                  pct >= 75 ? "Сайн. Буруу хариултын тайлбарыг дахин унш." :
+                  pct >= 50 ? "Суурь бий. Модуль 03, 04, 07-г дахин үз." :
+                              "Модулиудыг дарааллаар дахин үзэх шаардлагатай.";
+    document.getElementById("scoreTxt").textContent = answered + " асуултад хариулсан · " + pct + "% · " + verdict;
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+  document.getElementById("quizShowAll").addEventListener("click", function(){
+    cards.forEach(function(c, i){ gradeOne(c, i, true); });
+  });
+  document.getElementById("quizReset").addEventListener("click", function(){
+    cards.forEach(function(c){
+      Array.prototype.slice.call(c.querySelectorAll("input")).forEach(function(inp){ inp.checked = false; });
+      Array.prototype.slice.call(c.querySelectorAll("label")).forEach(function(l){ l.classList.remove("right", "wrong"); });
+      c.querySelector(".exp").hidden = true;
+    });
+    document.getElementById("scoreBox").hidden = true;
+    quizBox.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* ---------- occurrence chevron labels ---------- */
+  Array.prototype.slice.call(document.querySelectorAll("details.occ")).forEach(function(d){
+    var chev = d.querySelector(".chev");
+    if (!chev) return;
+    var openTxt = chev.textContent.indexOf("Нээх") !== -1 ? "Хаах −" : "Хураах −";
+    var shutTxt = chev.textContent;
+    d.addEventListener("toggle", function(){ chev.textContent = d.open ? openTxt : shutTxt; });
+  });
+})();
+</script>
+
+
+</body>
+</html>
