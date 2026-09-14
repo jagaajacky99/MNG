@@ -160,7 +160,15 @@
   async function rest(path, opts, retry) {
     var r = await fetch(BASE + "/rest/v1/" + path, Object.assign({ headers: authHeaders() }, opts || {}));
     if (r.status === 401 && !retry && session) {
+      /* Токен хүчингүй. Эхлээд сэргээхийг оролдоно. */
       if (await renew()) return rest(path, opts, true);
+      /* Сэргээж чадсангүй — нэвтрэлт дууссан. Сешнийг цэвэрлээд
+         УНШИХ хүсэлтийг зочны эрхээр дахин оролдоно. Үгүй бол
+         хэрэглэгч хуудсаа дахин ачаалах хүртэл сан хоосон харагдана. */
+      storeSession(null);
+      if ((opts && opts.method ? opts.method : "GET").toUpperCase() === "GET") {
+        return rest(path, undefined, true);
+      }
     }
     if (!r.ok) {
       var body = await r.text().catch(function () { return ""; });

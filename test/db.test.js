@@ -41,6 +41,8 @@ const DB = {
 
 const calls = [];
 let failNextWithAuth = false;
+let failRefresh = false;       // сэргээх токен хүчингүй болсныг дуурайна
+let expireSession = false;     // бүх токентой хүсэлтийг 401 болгоно
 
 global.fetch = async function (url, opts = {}) {
   const u = new URL(url);
@@ -60,6 +62,7 @@ global.fetch = async function (url, opts = {}) {
       return J(200, { access_token: "TOK1", refresh_token: "REF1", user: { email: body.email } });
     }
     if (u.searchParams.get("grant_type") === "refresh_token") {
+      if (failRefresh) return J(400, { error_description: "Invalid Refresh Token" });
       return J(200, { access_token: "TOK2", refresh_token: "REF2", user: { email: "a@b.mn" } });
     }
   }
@@ -73,6 +76,9 @@ global.fetch = async function (url, opts = {}) {
   const signedIn = /Bearer TOK/.test(auth);
 
   if (failNextWithAuth && method !== "GET") { failNextWithAuth = false; return J(401, { message: "JWT expired" }); }
+  /* Хугацаа дууссан токентой ирсэн бүх хүсэлтийг няцаана. Зөвхөн
+     anon түлхүүрээр (Bearer TOK биш) ирсэн УНШИХ хүсэлт нэвтэрнэ. */
+  if (expireSession && signedIn) return J(401, { message: "JWT expired" });
   if (method !== "GET" && !signedIn) return J(401, { message: "permission denied" });
 
   if (method === "GET") return J(200, DB[table] || []);
@@ -199,8 +205,21 @@ function ok(name, cond) {
   ok("401-ийн дараа дахин оролдсон", calls.slice(before).some(c => c.path.includes("grant_type=refresh_token")));
   ok("сэргээсний дараа бичилт амжилттай", DB.findings[0].severity === "Ноцтой");
 
+  /* --- 6b. Сэргээж ЧАДААГҮЙ үед зочны эрхэд шилжих --- */
+  console.log("\n6b. Нэвтрэлт бүрмөсөн дуусахад зочны эрхээр үргэлжлүүлэх");
+  expireSession = true; failRefresh = true;
+  orgs = [];                                   // кэшийг хоослоно
+  await db.refresh();
+  ok("унших хүсэлт амжилттай (зочны эрхээр)", orgs.length === DB.orgs.length && orgs.length > 0);
+  ok("хүчингүй сесс цэвэрлэгдсэн", db.user() === null && !store["ineg.session"]);
+  let afterExpire = null;
+  try { await db.doc("orgs/org-miat").update({ note: "x" }); } catch (e) { afterExpire = e; }
+  ok("бичих хүсэлт зөв няцаагдсан", afterExpire && afterExpire.code === "permission-denied");
+  expireSession = false; failRefresh = false;
+
   /* --- 7. Гарах --- */
   console.log("\n7. Гарах");
+  await db.signIn("a@b.mn", "зөв-нууц-үг");
   await db.signOut();
   ok("хэрэглэгч цэвэрлэгдсэн", db.user() === null);
   ok("сесс устсан", !store["ineg.session"]);

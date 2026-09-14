@@ -55,13 +55,17 @@
   --shadow:0 1px 2px rgba(13,26,40,.07), 0 6px 18px -8px rgba(13,26,40,.14);
   --r:6px;
 
-  /* --- үсгийн хэв --- */
-  --fd:"Roboto Condensed","Arial Narrow",Arial,sans-serif;
-  --fb:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
-  --fm:"IBM Plex Mono","Courier New",monospace;
-  --f-disp:"Roboto Condensed","Arial Narrow",Arial,sans-serif;
-  --f-body:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
-  --f-mono:"IBM Plex Mono","Courier New",monospace;
+  /* --- үсгийн хэв ---
+     Бүх текст нэг гэр бүлээр. "Arial Mon" нь монгол кирилл үсгийн
+     хувилбар — байхгүй бол энгийн Arial руу шилжинэ. Гуравдагч
+     фонт татахгүй тул хуудас хурдан, офлайн ч зөв харагдана. */
+  --ff:"Arial Mon", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --fd:var(--ff);
+  --fb:var(--ff);
+  --fm:var(--ff);
+  --f-disp:var(--ff);
+  --f-body:var(--ff);
+  --f-mono:var(--ff);
 
   /* --- дэвсгэрийн нарийн хээ --- */
   --page-bg:

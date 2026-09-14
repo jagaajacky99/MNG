@@ -99,8 +99,8 @@
       '<div class="gt"><span class="ge">⚿</span><div><h2>Хаалттай хэсэг</h2>' +
       '<p class="gs">Байцаагчийн гарын авлага</p></div></div>' +
       '<div class="gb">' +
-      '<p class="lead">Энэ материалыг зөвхөн ИНЕГ-ын эрх бүхий ажилтан үзнэ. ' +
-      'Хяналтын сангийн админ эрхээрээ нэвтэрнэ үү.</p>' +
+      '<p class="lead">Энэ материалыг зөвхөн Зам, тээврийн яамны эрх бүхий ажилтан үзнэ. ' +
+      'Мэдээллийн сангийн эрхээрээ нэвтэрнэ үү.</p>' +
       '<label for="g_mail">И-мэйл</label>' +
       '<input id="g_mail" type="email" autocomplete="username" inputmode="email">' +
       '<label for="g_pass">Нууц үг</label>' +
