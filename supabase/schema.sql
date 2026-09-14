@@ -248,17 +248,17 @@ on conflict (id) do nothing;
 
 -- ---------- 4. REALTIME ----------
 -- Дахин ажиллуулахад алдаа гаргахгүйн тулд хамгаалав.
-do $
+do $$
 declare t text;
 begin
-  foreach t in array array['orgs','findings','inspections','certs','plan_lines','settings','regs','actions'] loop
+  foreach t in array array['orgs','findings','inspections','certs','plan_lines','settings'] loop
     if not exists (select 1 from pg_publication_tables
                    where pubname='supabase_realtime' and schemaname='public' and tablename=t) then
       execute format('alter publication supabase_realtime add table %I', t);
     end if;
   end loop;
 exception when others then null;
-end $;
+end $$;
 
 -- ============================================================
 -- 5. НЭМЭЛТ (2026.09.14) — Дүрэм, журмын шинэчлэлт ба
@@ -377,4 +377,17 @@ on conflict (id) do nothing;
 update settings
    set data = data || '{"dueDays":{"Ноцтой":30,"Дунд":60,"Бага":90}}'::jsonb,
        updated_at = now()
- where id = 'main' and not (data ? 'dueDays');
+ where id = 'main' and not jsonb_exists(data, 'dueDays');
+
+-- ---------- regs, actions-ыг realtime-д нэмэх (хүснэгт үүссэний дараа) ----------
+do $$
+declare t text;
+begin
+  foreach t in array array['regs','actions'] loop
+    if not exists (select 1 from pg_publication_tables
+                   where pubname='supabase_realtime' and schemaname='public' and tablename=t) then
+      execute format('alter publication supabase_realtime add table %I', t);
+    end if;
+  end loop;
+exception when others then null;
+end $$;
