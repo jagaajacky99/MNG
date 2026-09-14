@@ -43,6 +43,12 @@ const DB = {
     { id: "a-02", seq: 2, title: "Мөчлөгийг эрсдэлээр ялгах", benchmark: "EASA RBO", owner: null,
       due: "2027 I улирал", status: "Эхлээгүй", progress: 0, steps: "тест" },
   ],
+  aircraft: [
+    { id: "ac-ju-1015", reg_no: "JU-1015", msn: "41318", model: "B737-800",
+      category: "Нисэх онгоц (MTOW 5700кг+)", registry: "Монгол Улсад бүртгэлтэй",
+      reg_date: "2014-05-06", purpose: "Агаарын тээвэр", operator: "\"МИАТ\" ТӨХК",
+      org_id: "org-miat", note: null },
+  ],
   settings: [{ id: "main", data: {
     weights: { complexity: 0.30, compliance: 0.40, maturity: 0.30 },
     penalty: { overdue: 12, nonconformity: 8, requirement: 3 },

@@ -66,6 +66,10 @@
       table: "actions",
       map: { no: "seq" },
     },
+    aircraft: {
+      table: "aircraft",
+      map: { regNo: "reg_no", regDate: "reg_date", orgId: "org_id" },
+    },
   };
 
   function inv(map) { var o = {}; for (var k in map) o[map[k]] = k; return o; }

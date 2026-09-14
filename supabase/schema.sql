@@ -665,3 +665,607 @@ on conflict (id) do nothing;
 insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
 values ('c-faoc-015','FAOC-015','Гадаадын тээвэрлэгч','ИНД-129',null,'JSC AIR COMPANY SCAT','Шинээр олгосон','2026-03-09'::date,'2026-11-10'::date,'НХХ','2026-H1')
 on conflict (id) do nothing;
+
+-- ============================================================================
+-- Агаарын хөлгийн бүртгэл — «Нэгдсэн тайлан 2026 эхний хагас.xlsx»-ын
+-- «Агаарын хөлгийн бүртгэл» хуудас (2026.05.07-ны байдлаар).
+-- ============================================================================
+create table if not exists aircraft (
+  id         text primary key,
+  reg_no     text,                -- бүртгэлийн дугаар (JU-1015, EI-MNG…)
+  msn        text,                -- үйлдвэрлэгчийн дугаар
+  model      text,                -- маяг
+  category   text,                -- ангилал
+  registry   text,                -- Монгол Улсад / гадаадад бүртгэлтэй
+  reg_date   date,
+  purpose    text,                -- үйл ажиллагааны чиглэл
+  operator   text,                -- оператор / эзэмшигч (чөлөөт бичвэр)
+  org_id     text references orgs(id) on delete set null,
+  note       text,
+  updated_at timestamptz default now()
+);
+create index if not exists aircraft_reg_idx on aircraft(reg_no);
+create index if not exists aircraft_org_idx on aircraft(org_id);
+
+alter table aircraft enable row level security;
+do $$
+begin
+  drop policy if exists read_all on aircraft;
+  drop policy if exists write_auth on aircraft;
+  create policy read_all on aircraft for select using (true);
+  create policy write_auth on aircraft for all to authenticated using (true) with check (true);
+end $$;
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables
+                 where pubname='supabase_realtime' and schemaname='public' and tablename='aircraft') then
+    alter publication supabase_realtime add table aircraft;
+  end if;
+exception when others then null;
+end $$;
+
+
+-- ============================================================================
+-- «Нэгдсэн тайлан 2026 эхний хагас.xlsx» (ИНЕГ, 2026 оны I хагас жил)
+-- Гэрчилгээжүүлэлт, бүртгэлийн нэгдсэн мэдээллээс шивсэн бүртгэлүүд.
+-- ============================================================================
+
+-- ---------- Шинээр нэмэгдсэн гэрчилгээ эзэмшигчид ----------
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-nuia','«НьюУлаанбаатар Интернэйшнл Эйрпорт» ХХК','НУБИА','Аэродром','ААХХХ',ARRAY['ИНД-139'],'13',null,null,null,'Чингис хаан ОУНБ (ZMCK), хяналтын код 4E.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-tosontsengel','«Тосонцэнгэл» нисэх буудал','Тосонцэнгэл','Аэродром','ААХХХ',ARRAY['ИНД-139'],'03',null,null,null,'Завхан аймаг, Тосонцэнгэл сум (ZBTL). Хязгаарлагдмал гэрчилгээ.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-ab-baruun-urt','«Баруун-Урт» нисэх буудал','Баруун-Урт','Аэродром','ААХХХ',ARRAY['ИНД-139'],'06',null,null,null,'Сүхбаатар аймаг, Баруун-Урт сум (ZMBU). Хязгаарлагдмал гэрчилгээ.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-mn-aviation-academy','Монголын нисэхийн академи','МНА','Сургалтын байгууллага','МҮХ',ARRAY['ИНД-141'],null,null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-shutis','ШУТИС Механик тээврийн сургууль','ШУТИС МТС','Сургалтын байгууллага','МҮХ',ARRAY['ИНД-141'],null,null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-dragonfly-heli','Драгонфлай Хели ХХК','Драгонфлай Хели','Сургалтын байгууллага','МҮХ',ARRAY['ИНД-141'],null,null,null,null,null)
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-mergevan','«Мэргэван» ХХК','Мэргэван','Хангамжийн байгууллага','НТЧХ',ARRAY['ИНД-144'],null,null,null,null,'Агаарын хөлгийн шатахуун хадгалалт, түгээлт.')
+on conflict (id) do nothing;
+insert into orgs (id,name,short,type,dept,inds,cert_no,complexity,ms_maturity,last_inspection,note)
+values ('org-erchis-oil','«Эрчис Ойл» ХХК','Эрчис Ойл','Хангамжийн байгууллага','НТЧХ',ARRAY['ИНД-144'],null,null,null,null,'Агаарын хөлгийн шатахуун хадгалалт, түгээлт.')
+on conflict (id) do nothing;
+
+-- ---------- Нисэх буудлууд аэродромын гэрчилгээтэй тул төрлийг нь тодотгов ----------
+update orgs set type='Аэродром', inds=ARRAY['ИНД-139','ИНД-140']
+ where id in ('org-ab-gurvansaikhan','org-ab-otgontenger','org-ab-khovd','org-ab-choibalsan',
+              'org-ab-muren','org-ab-altai','org-ab-ulgii','org-ab-deglii-tsagaan','org-ab-bayankhongor')
+   and inds = ARRAY['ИНД-140'];
+update orgs set inds=ARRAY['ИНД-139','ИНД-140'] where id='org-ach-services' and inds=ARRAY['ИНД-140'];
+
+-- ---------- Аэродромын гэрчилгээ (ИНД-139) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmck','13 (ZMCK)','Аэродром','ИНД-139','org-nuia','Чингис хаан ОУНБ — “НьюУлаанбаатар Интернэйшнл Эйрпорт” ХХК','Сунгасан',null,'2030-10-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmdz','06 (ZMDZ)','Аэродром','ИНД-139','org-ab-gurvansaikhan','Гурвансайхан — “Гурвансайхан” НБ','Сунгасан',null,'2029-05-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmug','07 (ZMUG)','Аэродром','ИНД-139','org-ab-deglii-tsagaan','Дэглий цагаан — “Дэглий цагаан” НБ','Сунгасан',null,'2027-11-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-znkb','03 (ZNKB)','Аэродром','ИНД-139',null,'Ханбумбат — “Эй Си Эйч Сервисес”ХХК','Сунгасан',null,'2026-10-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmmn','05 (ZMMN)','Аэродром','ИНД-139','org-ab-muren','Мөрөн — “Мөрөн” НБ','Сунгасан',null,'2029-05-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmul','17 (ZMUL)','Аэродром','ИНД-139','org-ab-ulgii','Өлгий — “Өлгий” НБ','Сунгасан',null,'2028-04-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmat','21 (ZMAT)','Аэродром','ИНД-139','org-ab-altai','Алтай — “Алтай” НБ','Сунгасан',null,'2028-04-01'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmkd','19 (ZMKD)','Аэродром','ИНД-139','org-ab-khovd','Ховд — “Ховд” НБ','Сунгасан',null,'2028-05-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmdn','24 (ZMDN)','Аэродром','ИНД-139','org-ab-otgontenger','Отгон тэнгэр — “Отгон тэнгэр” НБ','Сунгасан',null,'2028-08-31'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmcd','04 (ZMCD)','Аэродром','ИНД-139','org-ab-choibalsan','Чойбалсан — “Чойбалсан” НБ','Сунгасан',null,'2026-10-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmbh','15 (ZMBH)','Аэродром','ИНД-139','org-ab-bayankhongor','Баянхонгор — “Баянхонгор” НБ','Сунгасан',null,'2029-07-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zbtl','03 (ZBTL)','Аэродром (хязгаарлагдмал)','ИНД-139','org-ab-tosontsengel','“Тосонцэнгэл” нисэх буудал — “Тосонцэнгэл” нисэх буудал','Сунгасан',null,'2028-06-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-139-zmbu','06 (ZMBU)','Аэродром (хязгаарлагдмал)','ИНД-139','org-ab-baruun-urt','“Баруун-Урт” нисэх буудал — “Баруун-Урт” нисэх буудал','Сунгасан',null,'2026-10-30'::date,'ААХХХ',null)
+on conflict (id) do nothing;
+
+-- ---------- Агаарын хөлгийн бүртгэл (2026.05.07-ны байдлаар) ----------
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ei-mng','EI-MNG','43795','B737-8MAX','Нисэх онгоц (MTOW 5700кг+)','Гадаадад бүртгэлтэй','2019-01-30'::date,'Агаарын тээвэр','"МИАТ" ТӨХК','org-miat','Ирланд Улсын ИНЕГ')
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ei-cxv','EI-CXV','32364','B737-800','Нисэх онгоц (MTOW 5700кг+)','Гадаадад бүртгэлтэй','2008-01-14'::date,'Агаарын тээвэр','MASL IRELAND (14) LIMITED',null,'Ирланд Улсын ИНЕГ')
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ei-mgl','EI-MGL','60326','B787-9','Нисэх онгоц (MTOW 5700кг+)','Гадаадад бүртгэлтэй','2023-08-10'::date,'Агаарын тээвэр','WILMINGTON TRUST SP SERVICES (DUBLIN) LIMITED',null,'Ирланд Улсын ИНЕГ')
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ei-ubn','EI-UBN','60322','B787-9','Нисэх онгоц (MTOW 5700кг+)','Гадаадад бүртгэлтэй','2024-04-18'::date,'Агаарын тээвэр','WILMINGTON TRUST SP SERVICES (DUBLIN) LIMITED',null,'Ирланд Улсын ИНЕГ')
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ei-hun','EI-HUN','19020171','ERJ190-400','Нисэх онгоц (MTOW 5700кг+)','Гадаадад бүртгэлтэй','2025-03-31'::date,'Агаарын тээвэр','"Хүннү Эйр" ХХК','org-hunnu','Ирланд Улсын ИНЕГ')
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ei-huu','EI-HUU','19020196','ERJ190-400','Нисэх онгоц (MTOW 5700кг+)','Гадаадад бүртгэлтэй','2025-12-23'::date,'Агаарын тээвэр','AZORRA AIRCRAFT IRELAND 1 LIMITED',null,'Ирланд Улсын ИНЕГ')
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1015','JU-1015','41318','B737-800','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2014-05-06'::date,'Агаарын тээвэр','"МИАТ" ТӨХК','org-miat',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1088','JU-1088','37961','B737-800','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2019-06-08'::date,'Агаарын тээвэр','Sunrise UK Leasing Limited',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1021','JU-1021','41519','B767-300ER','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2013-05-11'::date,'Агаарын тээвэр','MIAT Mongolian Airlines','org-miat',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1109','JU-1109','25397','B757-222','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2022-08-10'::date,'Ачаа тээвэр','Aquila Air Capital (Ireland) 2 DAC',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1700','JU-1700','10303','CL-600-2C10','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2024-04-23'::date,'Агаарын тээвэр','CemAir Pty Ltd',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1701','JU-1701','10289','CL-600-2C10','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2025-08-15'::date,'Агаарын тээвэр','CemAir Pty Ltd',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-8811','JU-8811','19000476','ERJ190-100LR','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2019-05-22'::date,'Агаарын тээвэр','"Хүннү Эйр" ХХК','org-hunnu',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1812','JU-1812','19000547','ERJ190-100LR','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2023-09-15'::date,'Агаарын тээвэр','"Хүннү Эйр" ХХК','org-hunnu',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1199','JU-1199','3895','A319-112','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2021-06-08'::date,'Агаарын тээвэр','"Аэромонголиа" ХХК','org-aeromongolia',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1188','JU-1188','02456','A319-115','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2023-10-13'::date,'Агаарын тээвэр','WWTAI AIROPCO II DAC',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1410','JU-1410','4692','A320-214','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2022-11-29'::date,'Агаарын тээвэр','"Монголиан Эйрвейс Карго" ХХК','org-mn-airways-cargo',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1234','JU-1234','1057','ATR72-600','Нисэх онгоц (MTOW 5700кг+)','Монгол Улсад бүртгэлтэй','2025-03-12'::date,'Агаарын тээвэр','"Чингис Аэрлайнс Юнити" ХХК','org-chinggis-unity',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3366','JU-3366','208B5703','CESSNA 208B','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2024-11-07'::date,'Агаарын тээвэр','"Хүннү Эйр" ХХК','org-hunnu',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3367','JU-3367','208B5932','CESSNA 208B','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2026-03-31'::date,'Агаарын тээвэр','"Хүннү Эйр" ХХК','org-hunnu',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9991','JU-9991','208B1246','CESSNA 208B','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2007-07-05'::date,'Агаарын тээвэр','"Геосан" ХХК','org-geosan',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9993','JU-9993','208B2103','CESSNA 208B','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2009-06-23'::date,'Агаарын тээвэр','"Геосан" ХХК','org-geosan',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3999','JU-3999','208B5663','CESSNA 208B','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2022-04-18'::date,'Агаарын тээвэр','"Геосан" ХХК','org-geosan',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9999','JU-9999','208B5541','CESSNA 208B','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2019-07-16'::date,'Ерөнхий зориулалт','"Тэнгэрийн Улаач Шинэ" ХХК','org-tengeriin-ulaach',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3010','JU-3010','172S12633','CESSNA 172S','Нисэх онгоц (MTOW 5700кг хүртэл)','Монгол Улсад бүртгэлтэй','2021-07-21'::date,'Сургалтын үйл ажиллагаанд','"Монголын Нисэхийн Академи" ХХК','org-mn-aviation-academy',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-1918','JU-1918','602-1184','Airtractor AT-602','Хөдөө аж ахуйн','Монгол Улсад бүртгэлтэй','2012-07-04'::date,'Хөдөө аж ахуй','"Томас Эйр" ХХК','org-tomas-air',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-4444','JU-4444','1Г22125','An-2','Хөдөө аж ахуйн','Монгол Улсад бүртгэлтэй','2021-07-21'::date,'Хөдөө аж ахуй','"Томас Эйр" ХХК','org-tomas-air',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3434','JU-3434','1Г16651','An-2','Хөдөө аж ахуйн','Монгол Улсад бүртгэлтэй','2022-08-26'::date,'Хөдөө аж ахуй','"Скайхаукс" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5008','JU-5008','95739','Mi-8МТВ','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2023-01-18'::date,'Ачаа тээвэр','"Зорт Эйр" ХХК','org-zort-air',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5888','JU-5888','59489605670','Mi-8AMT','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2022-10-11'::date,'Ачаа тээвэр','"Зорт Эйр" ХХК','org-zort-air',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5999','JU-5999','34001212461','Mi-26T','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2024-11-01'::date,'Ачаа тээвэр','"Зорт Эйр" ХХК','org-zort-air',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6600','JU-6600','8AMT00496114709U','Mi-171','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2011-10-13'::date,'Агаарын тээвэр','"Хүннү Эйр" ХХК','org-hunnu',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6868','JU-6868','1239','G2 Cabri','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2022-08-10'::date,'Агаарын тээвэр','"Монголиан Эйрвэйс" ХХК','org-mongolian-airways',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6889','JU-6889','8442','AS350B3','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2020-09-23'::date,'Агаарын тээвэр','"Голомт Файнэншил Групп" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5115','JU-5115','8318','AS350B3','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2025-07-31'::date,'Агаарын тээвэр','"Монголиан Эйрвэйс" ХХК','org-mongolian-airways',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5678','JU-5678','65633','BELL 505','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2025-10-17'::date,'Агаарын тээвэр','"Номин Трейдинг" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6789','JU-6789','14917','R44 Raven II','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2026-05-06'::date,'Агаарын тээвэр','"Флай Эдвэнчур" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5050','JU-5050','8138','EC130 T2','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2021-03-25'::date,'Агаарын тээвэр','"Скай Жет" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5555','JU-5555','8574','EC130 T2','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2021-06-22'::date,'Агаарын тээвэр','"Оранж Эйр" ХХК','org-orange-air',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6886','JU-6886','9807','AS350B3','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2025-11-28'::date,'Агаарын тээвэр','"Цэцэнс майнинг энд Энержи" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6333','JU-6333','9427','AS350B3e','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2025-09-22'::date,'Агаарын тээвэр','"Альфа Аврора Эвиэйшн" ХХК','org-alfa-aurora',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6444','JU-6444','9538','AS350B3e','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2023-12-06'::date,'Агаарын тээвэр','"Альфа Аврора Эвиэйшн" ХХК','org-alfa-aurora',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6555','JU-6555','9599','AS350B3e','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2024-05-30'::date,'Агаарын тээвэр','"Альфа Аврора Эвиэйшн" ХХК','org-alfa-aurora',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5588','JU-5588','21264','MBB-BK117 D-3','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2024-04-05'::date,'Агаарын тээвэр','"Геосан" ХХК','org-geosan',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-6999','JU-6999','21240','MBB-BK117 D-3','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2024-05-03'::date,'Агаарын тээвэр','Gem Charter Pte. Ltd,',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5598','JU-5598','9263','MBB-BK117 C-2','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2011-10-28'::date,'Агаарын тээвэр','"А-Жет Авиэйшн" ХХК','org-ajet',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-5499','JU-5499','9253','MBB-BK117 C-2','Нисдэг тэрэг','Монгол Улсад бүртгэлтэй','2012-08-08'::date,'Агаарын тээвэр','"А-Жет Авиэйшн" ХХК','org-ajet',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9001','JU-9001','M00925','MTO Sport','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2014-03-18'::date,'Ерөнхий зориулалт','"Топ Экстрим Экшин Монголиа" ХХК','org-top-extreme',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9002','JU-9002','M00990','MTO Sport','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2014-03-18'::date,'Ерөнхий зориулалт','"Топ Экстрим Экшин Монголиа" ХХК','org-top-extreme',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9003','JU-9003','C00397','Calidus','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2016-04-13'::date,'Ерөнхий зориулалт','"Топ Экстрим Экшин Монголиа" ХХК','org-top-extreme',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9005','JU-9005','V00230','Cavalon','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2016-04-13'::date,'Ерөнхий зориулалт','"Топ Экстрим Экшин Монголиа" ХХК','org-top-extreme',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9009','JU-9009','CAF13C3D03AA008L','Xenon 4','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2016-04-13'::date,'Ерөнхий зориулалт','"Сэлиэр Авиэйшн Монголиа" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3287','JU-3287','HSU004','SAVANNAH, BINGO','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2016-07-28'::date,'Ерөнхий зориулалт','Б.Түвшинбаяр',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9055','JU-9055','T167BM/92AHA15','Oren Avia D-34','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2017-08-22'::date,'Ерөнхий зориулалт','"Континентал Эйр" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3289','JU-3289','02-07-51-153','SAVANNAH, BINGO','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2017-11-10'::date,'Ерөнхий зориулалт','"Залуу бүргэд Женерал Авэйшн" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9080','JU-9080','0086','АК1-3','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2018-05-29'::date,'Ерөнхий зориулалт','"Аэрохели" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9077','JU-9077','2011 3913','EV-97 Eurostar','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2022-07-26'::date,'Ерөнхий зориулалт','"Нью Клеос" ХХК','org-new-cleos',null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9066','JU-9066','477','Aeroprakt A22 LS','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2024-05-06'::date,'Ерөнхий зориулалт','"Ти Ди Би Лизинг" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-8888','JU-8888','07121960','Rans S6S Coyote II','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2023-09-11'::date,'Ерөнхий зориулалт','Иргэн Н.Лхамаа',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9099','JU-9099','026-02-16SAF','SAFARI LSA','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2023-08-24'::date,'Ерөнхий зориулалт','"Бльюмон" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9033','JU-9033','V00637','Cavalon','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2026-04-17'::date,'Ерөнхий зориулалт','"Бльюмон" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9010','JU-9010','V-00486','Cavalon','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2022-02-18'::date,'Ерөнхий зориулалт','Л.Чинбат',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-9000','JU-9000','J798','Jabiru J430 microlight','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2011-10-07'::date,'Ерөнхий зориулалт','"Медика Монголиа" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-8899','JU-8899','8-4998','STOL-CH801HD','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2023-07-18'::date,'Ерөнхий зориулалт','Иргэн Сүхбаатар Болдбаатар',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-3056','JU-3056','030G','Sling 4 High Wing','Хэт хөнгөн / Туршилтын','Монгол Улсад бүртгэлтэй','2025-11-12'::date,'Ерөнхий зориулалт','"ТрайПилларс Авиэшн" ХХК',null,null)
+on conflict (id) do nothing;
+insert into aircraft (id,reg_no,msn,model,category,registry,reg_date,purpose,operator,org_id,note)
+values ('ac-ju-7799','JU-7799','2000910','АТ104-70АТ','Халуун бөмбөлөг','Монгол Улсад бүртгэлтэй','2020-08-10'::date,'Агаарын халуун бөмбөлөг','"Сатурн Экстрем Монголиа" ХХК',null,null)
+on conflict (id) do nothing;
+
+-- ---------- Нислэгт тэнцэх чадварын гэрчилгээ (2026.05.21-ний байдлаар) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ei-mng','EI-MNG','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B737-8MAX','Сунгасан','2026-04-13'::date,'2027-01-29'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ei-cxv','EI-CXV','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B737-800','Сунгасан','2025-06-05'::date,'2026-07-02'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ei-mgl','EI-MGL','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B787-9','Сунгасан','2025-07-23'::date,'2026-08-09'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ei-ubn','EI-UBN','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B787-9','Сунгасан','2026-04-13'::date,'2027-04-18'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ei-hun','EI-HUN','Нислэгт тэнцэх чадвар','ИНД-21','org-hunnu','"Хүннү Эйр" ХХК — ERJ190-400','Сунгасан','2026-03-27'::date,'2027-03-30'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ei-huu','EI-HUU','Нислэгт тэнцэх чадвар','ИНД-21','org-hunnu','"Хүннү Эйр" ХХК — ERJ190-400','Сунгасан','2025-12-23'::date,'2026-12-22'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1015','JU-1015','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B737-800','Сунгасан','2026-04-15'::date,'2027-04-15'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1021','JU-1021','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B767-300ER','Сунгасан','2025-10-29'::date,'2026-10-29'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1088','JU-1088','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B737-800','Сунгасан','2025-10-28'::date,'2026-10-28'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1109','JU-1109','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — B757-222','Сунгасан','2026-03-31'::date,'2027-03-31'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1700','JU-1700','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — CL-600-2C10','Сунгасан','2026-05-20'::date,'2027-03-31'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1701','JU-1701','Нислэгт тэнцэх чадвар','ИНД-21','org-miat','"МИАТ" ТӨХК — CL-600-2C10','Сунгасан','2025-08-25'::date,'2026-08-25'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1199','JU-1199','Нислэгт тэнцэх чадвар','ИНД-21','org-aeromongolia','"Аэромонголиа" ХХК — A319-112','Сунгасан','2025-11-19'::date,'2026-11-19'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1188','JU-1188','Нислэгт тэнцэх чадвар','ИНД-21','org-aeromongolia','"Аэромонголиа" ХХК — A319-115','Сунгасан','2025-10-06'::date,'2026-10-06'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-8811','JU-8811','Нислэгт тэнцэх чадвар','ИНД-21','org-hunnu','"Хүннү Эйр" ХХК — ERJ190-100LR','Сунгасан','2025-11-20'::date,'2026-11-20'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1812','JU-1812','Нислэгт тэнцэх чадвар','ИНД-21','org-hunnu','"Хүннү Эйр" ХХК — ERJ190-100LR','Сунгасан','2025-08-26'::date,'2026-09-01'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1410','JU-1410','Нислэгт тэнцэх чадвар','ИНД-21','org-mn-airways-cargo','"Монголиан Эйрвейс Карго" ХХК — A320-214','Сунгасан','2025-09-11'::date,'2026-09-11'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1234','JU-1234','Нислэгт тэнцэх чадвар','ИНД-21','org-chinggis-unity','"Чингис Аэрлайнс Юнити" ХХК — ATR72-600','Сунгасан','2026-03-12'::date,'2027-03-12'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-3366','JU-3366','Нислэгт тэнцэх чадвар','ИНД-21','org-hunnu','"Хүннү Эйр" ХХК — CESSNA 208B','Сунгасан','2025-10-31'::date,'2026-10-30'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-3367','JU-3367','Нислэгт тэнцэх чадвар','ИНД-21','org-hunnu','"Хүннү Эйр" ХХК — CESSNA 208B','Сунгасан','2026-03-31'::date,'2027-03-31'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-9993','JU-9993','Нислэгт тэнцэх чадвар','ИНД-21','org-geosan','"Геосан" ХХК — CESSNA 208B','Сунгасан','2025-11-07'::date,'2026-11-06'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-9991','JU-9991','Нислэгт тэнцэх чадвар','ИНД-21','org-geosan','"Геосан" ХХК — CESSNA 208B','Сунгасан','2025-09-30'::date,'2026-09-29'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-3999','JU-3999','Нислэгт тэнцэх чадвар','ИНД-21','org-geosan','"Геосан" ХХК — CESSNA 208B','Сунгасан','2026-05-20'::date,'2027-05-20'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-9999','JU-9999','Нислэгт тэнцэх чадвар','ИНД-21','org-tengeriin-ulaach','"Тэнгэрийн Улаач Шинэ" ХХК — CESSNA 208B','Сунгасан','2026-01-15'::date,'2027-01-15'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-3010','JU-3010','Нислэгт тэнцэх чадвар','ИНД-21','org-mn-aviation-academy','"Монголын Нисэхийн Академи" ХХК — CESSNA 172S','Сунгасан','2026-05-15'::date,'2027-05-14'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-1918','JU-1918','Нислэгт тэнцэх чадвар','ИНД-21','org-tomas-air','"Томас Эйр" ХХК — AT-602','Сунгасан','2025-12-15'::date,'2026-10-01'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5888','JU-5888','Нислэгт тэнцэх чадвар','ИНД-21','org-zort-air','"Зорт Эйр" ХХК — Mi-8AMT','Сунгасан','2025-06-13'::date,'2026-06-15'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5008','JU-5008','Нислэгт тэнцэх чадвар','ИНД-21','org-zort-air','"Зорт Эйр" ХХК — Mi-8MTV-1','Сунгасан','2025-06-13'::date,'2026-06-15'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5999','JU-5999','Нислэгт тэнцэх чадвар','ИНД-21','org-zort-air','"Зорт Эйр" ХХК — Mi-26Т','Сунгасан','2025-06-13'::date,'2026-06-15'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-6444','JU-6444','Нислэгт тэнцэх чадвар','ИНД-21','org-alfa-aurora','"Альфа Аврора Эвиэйшн" ХХК — AS350B3e','Сунгасан','2025-12-05'::date,'2026-12-04'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-6555','JU-6555','Нислэгт тэнцэх чадвар','ИНД-21','org-alfa-aurora','"Альфа Аврора Эвиэйшн" ХХК — AS350B3e','Сунгасан','2026-04-08'::date,'2027-04-08'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5588','JU-5588','Нислэгт тэнцэх чадвар','ИНД-21','org-geosan','"Геосан" ХХК — MBB-BK117 D-3','Сунгасан','2026-05-21'::date,'2027-05-21'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-6999','JU-6999','Нислэгт тэнцэх чадвар','ИНД-21','org-geosan','"Геосан" ХХК — MBB-BK117 D-3','Сунгасан','2025-06-12'::date,'2026-06-11'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-6886','JU-6886','Нислэгт тэнцэх чадвар','ИНД-21','org-orange-air','"Оранж Эйр" ХХК — AS350B3','Сунгасан','2025-12-12'::date,'2026-12-11'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5555','JU-5555','Нислэгт тэнцэх чадвар','ИНД-21','org-orange-air','"Оранж Эйр" ХХК — EC130 T2','Сунгасан','2026-02-03'::date,'2027-02-03'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5050','JU-5050','Нислэгт тэнцэх чадвар','ИНД-21',null,'"Скай Жет" ХХК — EC130 T2','Сунгасан','2026-03-16'::date,'2027-03-16'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5115','JU-5115','Нислэгт тэнцэх чадвар','ИНД-21','org-mongolian-airways','"Монголиан Эйрвэйс" ХХК — AS350B3','Сунгасан','2025-08-07'::date,'2026-09-01'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-6868','JU-6868','Нислэгт тэнцэх чадвар','ИНД-21','org-mongolian-airways','"Монголиан Эйрвэйс" ХХК — G2 Cabri','Сунгасан','2025-09-19'::date,'2026-09-18'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-5678','JU-5678','Нислэгт тэнцэх чадвар','ИНД-21',null,'"Номин Трейдинг" ХХК — BELL 505','Сунгасан','2025-10-30'::date,'2026-10-30'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ntch-ju-3056','JU-3056','Нислэгт тэнцэх чадвар','ИНД-21',null,'"ТрайПилларс Авиэшн" ХХК — Sling 4 HW','Сунгасан','2026-02-11'::date,'2027-02-11'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+
+-- ---------- Нисэхийн сургалтын байгууллагын гэрчилгээ (ИНД-141, ИНД-147) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-xxxt-txkhkhk-xxxxx',null,'Сургалтын байгууллага','ИНД-141','org-inut','"ИНҮТ" ТӨХХК Нисэхийн сургалтын төв','Сунгасан','2023-05-01'::date,'2026-06-30'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-mxxxxxxx-xxxxxxxx',null,'Сургалтын байгууллага','ИНД-141','org-mn-aviation-academy','Монголын нисэхийн академи','Сунгасан','2023-04-02'::date,'2028-04-02'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-xxtxs-mxxaxxx-txxx',null,'Сургалтын байгууллага','ИНД-141','org-shutis','ШУТИС Механик тээврийн сургууль','Сунгасан','2023-06-19'::date,'2028-06-19'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-xxaxxxxxax-khxxx-khkh',null,'Сургалтын байгууллага','ИНД-141','org-dragonfly-heli','Драгонфлай Хели ХХК','Сунгасан','2025-06-15'::date,'2030-06-15'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-china-sky-wing-int',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'China Sky-Wing International Education Technology Co.,LTD','Сунгасан','2023-07-07'::date,'2028-07-07'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-hansxx-university',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'HАNSЕО University','Сунгасан','2022-07-05'::date,'2027-07-05'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-saa-aeronautical',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'SAA, Aeronautical Academy','Сунгасан','2021-12-03'::date,'2026-12-03'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-cockpit-4u-aviatio',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Cockpit 4U Aviation Service GmbH','Сунгасан','2021-09-14'::date,'2026-09-30'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-cae-center',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'CAE Center','Сунгасан','2021-09-14'::date,'2026-08-31'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-baltic-commercial',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Baltic Commercial Aviation Training','Сунгасан','2021-11-23'::date,'2026-11-23'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-boeing-singapore-t',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Boeing Singapore Training & Flight Services PTE LTD.','Сунгасан','2026-03-03'::date,'2029-03-02'::date,'МҮХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-sats',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'САТС','Сунгасан','2022-04-12'::date,'2027-04-12'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-baa-training-vietn',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'BAA Training Vietnam','Сунгасан','2023-06-26'::date,'2028-06-26'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-coptersafety-oy',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Coptersafety OY','Сунгасан','2024-12-16'::date,'2027-12-31'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-singapore-cae-flig',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Singapore CAE Flight Training PTE LTD.','Сунгасан','2025-03-26'::date,'2028-03-26'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-baa-training-spai',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'BAA Training, Spain','Сунгасан','2025-08-15'::date,'2028-08-15'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-simaero',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'SIMAERO','Сунгасан','2025-08-15'::date,'2030-08-15'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-hainan-sky-plumage',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Hainan Sky Plumage Flight Training Co.,Ltd.','Сунгасан','2025-10-31'::date,'2026-10-31'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-aeronautical-radio',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Aeronautical Radio of Thailand.Ltd','Сунгасан','2025-12-30'::date,'2027-12-30'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-aviation-exchange',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Aviation Exchange Group','Сунгасан','2026-01-28'::date,'2027-01-28'::date,'МҮХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-simuflight-pty-l',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'SIMUFLIGHT (PTY) LTD','Сунгасан','2024-09-30'::date,'2029-09-30'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-141-autonomous-non-pro',null,'Сургалтын байгууллага (гадаад)','ИНД-141',null,'Autonomous Non-profit Organization of Supplementary Professional Education PERSONNEL TRAINING CENTER','Сунгасан','2026-01-30'::date,'2029-01-30'::date,'МҮХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-147-dviation-training',null,'Сургалтын байгууллага (гадаад)','ИНД-147',null,'Dviation training centre SDN BHD','Сунгасан','2023-02-16'::date,'2028-02-16'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-147-flightpath-interna',null,'Сургалтын байгууллага (гадаад)','ИНД-147',null,'Flightpath international limited','Сунгасан','2024-09-12'::date,'2029-09-12'::date,'МҮХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-xxx-147-aero-ground-traini',null,'Сургалтын байгууллага (гадаад)','ИНД-147',null,'Aero Ground Training','Сунгасан','2026-01-28'::date,'2027-01-28'::date,'МҮХ','2026-H1')
+on conflict (id) do nothing;
+
+-- ---------- Агаарын хөлгийн техник үйлчилгээний байгууллага (ИНД-145) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-amo-01','AMO/01','ТҮ байгууллага','ИНД-145','org-miat','"MИAT" ТӨХК','Сунгасан','2025-06-23'::date,'2026-06-23'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-0908','MCAA.145.0908','ТҮ байгууллага','ИНД-145','org-hunnu','"Хүннү Эйр" ХХК','Сунгасан','2025-12-05'::date,'2026-12-04'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-1209','MCAA.145.1209','ТҮ байгууллага','ИНД-145','org-aeromongolia','"Аэромонголиа" ХХК','Сунгасан','2025-04-18'::date,'2027-04-20'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-1819','MCAA.145.1819','ТҮ байгууллага','ИНД-145','org-izinis','"Изинис Эйрвэйз" ХХК','Сунгасан','2025-03-17'::date,'2027-03-31'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-1920','MCAA.145.1920','ТҮ байгууллага','ИНД-145','org-mn-airways-cargo','"Монголиан Эйрвейс Карго" ХХК','Сунгасан','2025-09-15'::date,'2026-11-02'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-5723','MCAA.145.5723','ТҮ байгууллага','ИНД-145','org-alfa-aurora','"Альфа Аврора Эвиэйшн" ХХК','Сунгасан','2025-12-19'::date,'2026-12-18'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-5824','MCAA.145.5824','ТҮ байгууллага','ИНД-145','org-orange-air','"Оранж Эйр" ХХК','Сунгасан','2025-07-08'::date,'2026-10-30'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-6926','MCAA.145.6926','ТҮ байгууллага','ИНД-145','org-chinggis-unity','"Чингис Аэрлайнс Юнити" ХХК','Сунгасан','2026-04-17'::date,'2027-04-16'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f4923','MCAA.145.F4923','ТҮ байгууллага (гадаад)','ИНД-145',null,'Abakan Air LLC','Сунгасан','2025-09-02'::date,'2026-09-02'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f1211','MCAA.145.F1211','ТҮ байгууллага (гадаад)','ИНД-145',null,'Aircraft Maintenance and Engineering Corporation','Сунгасан','2025-08-04'::date,'2026-11-05'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f3619','MCAA.145.F3619','ТҮ байгууллага (гадаад)','ИНД-145',null,'GDAT General Aviation Company Limited','Сунгасан','2025-08-04'::date,'2026-11-05'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f6625','MCAA.145.F6625','ТҮ байгууллага (гадаад)','ИНД-145',null,'Vietnam Airlines Engineering Company Limited (VAECO)','Сунгасан','2025-11-07'::date,'2026-11-06'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f6124','MCAA.145.F6124','ТҮ байгууллага (гадаад)','ИНД-145',null,'Bamboo Airways JSC','Сунгасан','2026-01-16'::date,'2027-01-15'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f5523','MCAA.145.F5523','ТҮ байгууллага (гадаад)','ИНД-145',null,'Taikoo (Shandong) Aircraft Engineering Co., Ltd (STAECO)','Сунгасан','2026-02-03'::date,'2027-02-03'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f6726','MCAA.145.F6726','ТҮ байгууллага (гадаад)','ИНД-145',null,'GA Telesis Engine Services (GATES)','Сунгасан','2026-02-16'::date,'2027-02-16'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f4722','MCAA.145.F4722','ТҮ байгууллага (гадаад)','ИНД-145',null,'Turkish Airlines Technic Inc.','Сунгасан','2026-02-23'::date,'2027-02-23'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f6525','MCAA.145.F6525','ТҮ байгууллага (гадаад)','ИНД-145',null,'Art of Maintenance LLC','Сунгасан','2025-05-20'::date,'2027-05-20'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f5223','MCAA.145.F5223','ТҮ байгууллага (гадаад)','ИНД-145',null,'Salus Aviation (AW) Limited','Сунгасан','2025-08-12'::date,'2027-08-12'::date,'НТЧХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-145-mcaa-145-f5023','MCAA.145.F5023','ТҮ байгууллага (гадаад)','ИНД-145',null,'Tian Jin Haite Aircraft Engineering Company Limited','Сунгасан','2026-05-19'::date,'2027-05-19'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+
+-- ---------- Агаарын навигацийн үйлчилгээний байгууллага (ИНД-171–175) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ans-171-02','№171-02','Агаарын навигацийн үйлчилгээ','ИНД-171','org-inut','Агаарын навигацийн техник үйлчилгээний байгууллага','Сунгасан','2025-04-07'::date,'2026-10-12'::date,'АНХХ',null)
+on conflict (id) do nothing;
+update certs set expiry_date='2026-10-08'::date,
+       note = coalesce(note,'') || ' Хүчинтэй хугацаа: 2026-10-08 (нэгдсэн тайлангаас).'
+  where id = 'c-172-02' and expiry_date is null;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ans-173-02','№173-02','Агаарын навигацийн үйлчилгээ','ИНД-173','org-inut','Хэрэглэлийн нислэгийн журмын үйлчилгээний байгууллага','Сунгасан','2025-05-22'::date,'2026-05-22'::date,'АНХХ',null)
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ans-174-01','№174-01','Агаарын навигацийн үйлчилгээ','ИНД-174','org-ncut','Нисэхийн цаг уурын үйлчилгээний байгууллага','Сунгасан','2026-03-05'::date,'2029-03-05'::date,'АНХХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-ans-175-02','№175-02','Агаарын навигацийн үйлчилгээ','ИНД-175','org-inut','Нисэхийн мэдээллийн үйлчилгээний байгууллага','Сунгасан','2025-04-07'::date,'2026-04-12'::date,'АНХХ',null)
+on conflict (id) do nothing;
+
+-- ---------- Нисэхийн хангамжийн байгууллага (ИНД-144) ----------
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-144-mxxxxxax-khkhk',null,'Хангамжийн байгууллага','ИНД-144','org-mergevan','"Мэргэван" ХХК — Агаарын хөлгийн шатахуун хадгалалт, түгээлтийн үйлчилгээ','Сунгасан','2026-04-15'::date,'2026-10-15'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-144-xxxxxxx-xxxxx',null,'Хангамжийн байгууллага','ИНД-144','org-inut','"Иргэний нисэхийн үндэсний төв" ТӨХХК — Агаарын хөлгийн шатахуун тээвэрлэлтийн үйлчилгээ','Сунгасан','2026-05-21'::date,'2027-05-21'::date,'НТЧХ','2026-H1')
+on conflict (id) do nothing;
+insert into certs (id,cert_no,category,ind,org_id,holder,action,issue_date,expiry_date,dept,period)
+values ('c-144-xxxxx-xxx-khkh',null,'Хангамжийн байгууллага','ИНД-144','org-erchis-oil','"Эрчис Ойл" ХХК — Агаарын хөлгийн шатахуун хадгалалт, түгээлтийн үйлчилгээ','Сунгасан','2025-05-21'::date,'2026-11-02'::date,'НТЧХ',null)
+on conflict (id) do nothing;
