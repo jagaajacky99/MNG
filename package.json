@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node serve.js",
     "test": "node test/db.test.js",
-    "mock": "node test/mock-supabase.js"
+    "mock": "node test/mock-supabase.js",
+    "verify": "node test/verify-supabase.js"
   },
   "license": "UNLICENSED"
 }
