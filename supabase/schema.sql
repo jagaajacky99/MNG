@@ -391,3 +391,23 @@ begin
   end loop;
 exception when others then null;
 end $$;
+
+-- ---------- 0616.xlsx «ОНЦЛОХ ҮЙЛ ЯВЦ» — АНХХ-ийн санал өгсөн баримт бичгүүд ----------
+-- Эх тайлангийн 3-р хуудасны АНХХ-1-д нэрлэсэн, USOAP-CMA-ийн бэлтгэлийн хүрээнд
+-- шинэчлэгдэн боловсруулагдсан баримт бичгүүд. Батлагдсан огноо, тушаалын дугаарыг
+-- эх тайланд заагаагүй тул хоосон орхив — тодруулсны дараа «Засах» цонхноос нөхнө.
+insert into regs (id,title,kind,ind,order_no,issuer,date,dept,impact) values
+('r-2026-hyanalt-zaavar','Иргэний нисэхийн хяналт шалгалтын заавар',
+ 'Заавар',null,null,'ИНЕГ',null,'АНХХ',
+ 'USOAP-CMA-ийн бэлтгэл ажлын хүрээнд шинэчлэгдэн боловсруулагдаж, АНХХ санал өгсөн. Батлагдсан огноо тодруулах.')
+on conflict (id) do nothing;
+insert into regs (id,title,kind,ind,order_no,issuer,date,dept,impact) values
+('r-2026-erh-shiljuuleh','Эрх шилжүүлэх журам',
+ 'Журам',null,null,'ИНЕГ',null,'АНХХ',
+ 'USOAP-CMA-ийн бэлтгэл ажлын хүрээнд шинэчлэгдэн боловсруулагдаж, АНХХ санал өгсөн. Батлагдсан огноо тодруулах.')
+on conflict (id) do nothing;
+insert into regs (id,title,kind,ind,order_no,issuer,date,dept,impact) values
+('r-2026-anhh-uaz','Агаарын навигацийн хяналтын хэлтсийн үйл ажиллагааны заавар (ҮАЗ)',
+ 'Үйл ажиллагааны заавар',null,null,'ИНЕГ',null,'АНХХ',
+ 'USOAP-CMA-ийн бэлтгэл ажлын хүрээнд ИНЕГ-ын хэмжээнд шинэчлэгдсэн баримт бичгүүдийн хамт боловсруулагдсан. Батлагдсан огноо тодруулах.')
+on conflict (id) do nothing;
