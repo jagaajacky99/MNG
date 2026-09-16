@@ -76,8 +76,8 @@
   --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
     radial-gradient(1100px 460px at 50% -180px, rgba(11,61,107,.11), transparent 70%),
-    linear-gradient(180deg, rgba(238,243,248,.28) 0%, rgba(238,243,248,.55) 190px,
-                    rgba(233,238,244,.88) 430px, rgba(233,238,244,.965) 760px),
+    linear-gradient(180deg, rgba(238,243,248,.14) 0%, rgba(238,243,248,.38) 190px,
+                    rgba(233,238,244,.74) 460px, rgba(233,238,244,.84) 900px),
     var(--page-photo);
   --page-bg-size:auto, auto, cover;
   --page-bg-pos:center, center, center top;
@@ -112,8 +112,8 @@
     --page-photo:url("/assets/bg-earth.jpg");
     --page-bg:
       radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-      linear-gradient(180deg, rgba(12,24,34,.18) 0%, rgba(12,24,34,.45) 190px,
-                      rgba(10,20,29,.84) 430px, rgba(10,20,29,.955) 760px),
+      linear-gradient(180deg, rgba(12,24,34,.10) 0%, rgba(12,24,34,.30) 190px,
+                      rgba(10,20,29,.66) 460px, rgba(10,20,29,.78) 900px),
       var(--page-photo);
     --page-bg-size:auto, auto, cover;
     --page-bg-pos:center, center, center top;
@@ -148,8 +148,8 @@
   --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
     radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-    linear-gradient(180deg, rgba(12,24,34,.18) 0%, rgba(12,24,34,.45) 190px,
-                    rgba(10,20,29,.84) 430px, rgba(10,20,29,.955) 760px),
+    linear-gradient(180deg, rgba(12,24,34,.10) 0%, rgba(12,24,34,.30) 190px,
+                    rgba(10,20,29,.66) 460px, rgba(10,20,29,.78) 900px),
     var(--page-photo);
   --page-bg-size:auto, auto, cover;
   --page-bg-pos:center, center, center top;

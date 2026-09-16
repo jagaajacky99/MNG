@@ -29,7 +29,17 @@ a{color:var(--accent)}
 .tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
 
 /* ---------- hero ---------- */
-.hero{padding:46px 0 8px}
+/* Баннер нь дэвсгэр зургийн хамгийн тод хэсэгт таарах тул өөрийн шилэн
+   гадаргуутай — бараан бичвэрийн тодорол хадгалагдана. */
+.hero{padding:40px 30px 34px;margin-top:26px;border-radius:calc(var(--r) + 4px);
+  background:color-mix(in srgb, var(--surface) 76%, transparent);
+  -webkit-backdrop-filter:blur(20px) saturate(1.25); backdrop-filter:blur(20px) saturate(1.25);
+  border:1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  box-shadow:var(--shadow)}
+@media(max-width:640px){.hero{padding:30px 20px 26px}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .hero{background:var(--surface)}
+}
 .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
   color:var(--accent);background:var(--accent-soft);padding:7px 13px;border-radius:3px}
 .hero h2{margin-top:20px;font-size:clamp(26px,4.2vw,38px);font-weight:700;letter-spacing:-.01em;max-width:20ch;line-height:1.22}

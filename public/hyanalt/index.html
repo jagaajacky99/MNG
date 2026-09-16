@@ -19,7 +19,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .shell{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
 /* Цэс ба толгойн мөрийг бага зэрэг тунгалаг болгож дэвсгэр зургийг мэдрэгдүүлнэ.
    Хүснэгт агуулсан .panel-ууд бүрэн дүүрэн хэвээр — уншилт нэн тэргүүнд. */
-.rail{background:color-mix(in srgb, var(--surface) 84%, transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+.rail{background:color-mix(in srgb, var(--surface) 78%, transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:14px 10px 18px}
 .brand{padding:6px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
 .brand .mark{font-family:var(--fd);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
@@ -35,7 +35,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 .main{min-width:0;display:flex;flex-direction:column}
 .topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid var(--line);
-  background:color-mix(in srgb, var(--surface) 84%, transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  background:color-mix(in srgb, var(--surface) 70%, transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
 .topbar h1{font-size:20px;font-weight:700}
 .topbar .spacer{flex:1}
 .wrap{padding:20px 24px 56px;max-width:1280px;width:100%}
@@ -50,7 +50,23 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 
 /* ---------- primitives ---------- */
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+/* --- шилэн гадаргуу: дэвсгэр зураг нэвт мэдрэгдэнэ --- */
+.panel{background:color-mix(in srgb, var(--surface) 88%, transparent);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2); backdrop-filter:blur(16px) saturate(1.2);
+  border:1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius:var(--r); box-shadow:var(--shadow)}
+.panel>header{border-bottom-color:color-mix(in srgb, var(--line) 60%, transparent)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .panel,.rail,.topbar{background:var(--surface)}
+  .tile{background:var(--surface)} .tile.ghost{background:var(--surface-2)}
+}
+.tile{background:color-mix(in srgb, var(--surface) 62%, transparent)}
+.tile.ghost{background:color-mix(in srgb, var(--surface-2) 62%, transparent)}
+.tblwrap table{background:transparent}
+thead th{background:color-mix(in srgb, var(--surface-2) 45%, transparent)}
+tfoot td{background:color-mix(in srgb, var(--surface-2) 55%, transparent)}
+.banner.info{background:color-mix(in srgb, var(--accent-soft) 78%, transparent)}
+.banner.warn{background:color-mix(in srgb, var(--warn-soft) 78%, transparent)}
 .panel>header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .panel>header h2{font-size:14.5px;font-weight:700;letter-spacing:.02em}
 .panel>header .hint{font-size:11.5px;color:var(--ink-3)}
