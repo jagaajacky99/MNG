@@ -1864,13 +1864,27 @@ function intlBar(v){
    эцсийн тайлангаас (mcaa.gov.mn); 2026 оны мөр нь дотоод тайлангийн (0616.xlsx)
    мэдээлэл бөгөөд ICAO-гийн нээлттэй санд хараахан ороогүй. */
 const MN_AUDITS = [
-  {year:2010, what:"USOAP CSA иж бүрэн аудит", dates:"06.28 – 07.07", ei:87.92,
+  {year:2010, what:"USOAP CSA иж бүрэн аудит", dates:"06.28 – 07.07", ei:87.92, pq:null,
    src:"ICAO эцсийн тайлан (2011.05)", note:"Найман чухал элементийн суурь үнэлгээ"},
-  {year:2017, what:"ICVM зохицуулалтын баталгаажуулалт", dates:"08.29 – 09.04", ei:89.55,
+  {year:2017, what:"ICVM зохицуулалтын баталгаажуулалт", dates:"08.29 – 09.04", ei:89.55, pq:55,
    src:"ICAO ICVM эцсийн тайлан (2017.12)",
    note:"LEG, PEL, OPS, ANS чиглэлийн 55 PQ-г хянаж 12-ыг нь хангалттай болгов"},
-  {year:2026, what:"USOAP CMA аудит · AGA", dates:"04.22 – 05.04", ei:null,
-   src:"Дотоод тайлан 2026-H1", note:"AGA чиглэлийн 153 PQ · 83.06 оноо. ICAO-д хараахан ороогүй"},
+  {year:2026, what:"USOAP CMA бүрэн хэмжээний аудит", dates:"04.22 – 05.04", ei:74.96, pq:835,
+   prelim:true, src:"ИНЕГ · mcaa.gov.mn (2026.05.06)",
+   note:"8 чиглэл · 835 протокол асуулга · урьдчилсан үнэлгээ. 2024 онд бүрэн шинэчилсэн аргачлалаар"},
+];
+
+/* 2026 оны аудитын хамрах хүрээ — ИНЕГ-ын мэдээнд заасан дараалал.
+   Чиглэл тус бүрийн оноог ИНЕГ нийтлээгүй; AGA-гийн тоо нь дотоод тайлангийнх. */
+const MN_2026_AREAS = [
+  ["LEG","Иргэний нисэхийн хууль, эрх зүйн зохицуулалт", null],
+  ["ORG","ИНЕГ ба осол шинжлэн шалгах албаны бүтэц, зохион байгуулалт", null],
+  ["AIG","Агаарын хөлгийн осол, зөрчлийг шинжлэн шалгах үйл ажиллагаа", null],
+  ["OPS","Нислэгийн үйл ажиллагааны хяналт, зохицуулалт", null],
+  ["AIR","Агаарын хөлгийн нислэгт тэнцэх чадварын хяналт, зохицуулалт", null],
+  ["PEL","Мэргэжлийн үнэмлэхжүүлэлт", null],
+  ["AGA","Аэродромын хяналт, зохицуулалт", {pq:153, score:83.06, src:"Дотоод тайлан 2026-H1"}],
+  ["ANS","Агаарын навигацийн үйлчилгээний хяналт, зохицуулалт", null],
 ];
 
 /* ИНД-129-өөр гэрчилгээ авсан гадаадын тээвэрлэгчийн харьяа улс.
@@ -1908,6 +1922,10 @@ function viewIntl(){
     : `<span class="chip ${a-b>=0?"good":"crit"}"><span class="dot"></span>${a-b>=0?"+":""}${(a-b).toFixed(2)}</span>`;
   const eiChip = c => ei(c)==null ? `<span class="chip neutral"><span class="dot"></span>ICAO-д алга</span>`
     : `<span class="chip ${intlLvl(ei(c))}"><span class="dot"></span>${intlPct(ei(c))}</span>`;
+  /* Хамгийн сүүлийн аудит ба түүний дэлхий/бүсийн дундажтай харьцуулсан зөрүү */
+  const last = MN_AUDITS[MN_AUDITS.length-1];
+  const gap = v => (v==null || last.ei==null) ? "—"
+    : (last.ei-v>=0?"+":"") + (last.ei-v).toFixed(2);
 
   /* Хөрш, түнш орны жагсаалтад Монгол Улсыг нэмж эрэмбэлнэ */
   const peers = [...d.peers, "MNG"].sort((a,b)=> ei(b) - ei(a));
@@ -1950,29 +1968,59 @@ function viewIntl(){
         <span class="hint">USOAP CMA · үр дүнтэй хэрэгжилт (EI)</span></header>
       <div class="body">
         <div class="tiles">
-          <div class="tile"><div class="k">Сүүлийн аудит</div>
-            <div class="v">${MN_AUDITS[MN_AUDITS.length-1].year}</div>
-            <div class="n">${esc(MN_AUDITS[MN_AUDITS.length-1].what)}</div></div>
-          <div class="tile ${mn.overall>=80?"goodv":"warnv"}"><div class="k">ICAO-д нийтлэгдсэн EI</div>
+          <div class="tile ${last.ei>=(world?world.overall:60)?"goodv":"warnv"}">
+            <div class="k">${last.year} аудит · урьдчилсан EI</div>
+            <div class="v">${intlPct(last.ei)}</div>
+            <div class="n">${esc(last.dates)} · ${last.pq} протокол асуулга</div></div>
+          <div class="tile"><div class="k">Дэлхийн дунджаас</div>
+            <div class="v">${gap(world&&world.overall)}</div>
+            <div class="n">дэлхийн дундаж ${intlPct(world&&world.overall)}</div></div>
+          <div class="tile"><div class="k">APAC дунджаас</div>
+            <div class="v">${gap(apac&&apac.overall)}</div>
+            <div class="n">бүсийн дундаж ${intlPct(apac&&apac.overall)}</div></div>
+          <div class="tile ghost"><div class="k">ICAO-д нийтлэгдсэн EI</div>
             <div class="v">${intlPct(mn.overall)}</div>
-            <div class="n">${mn.year} оны үйл ажиллагаанд холбогдсон · хараахан шинэчлэгдээгүй</div></div>
-          <div class="tile"><div class="k">Дэлхийн эрэмбэ</div>
-            <div class="v">${d.rank}</div><div class="n">${d.states} улсаас</div></div>
-          <div class="tile"><div class="k">${esc(INTL_REGIONS["APAC"])}</div>
-            <div class="v">${intlPct(apac&&apac.overall)}</div>
-            <div class="n">бүсийн дундаж, ${apac?apac.year:"—"} он</div></div>
-          <div class="tile"><div class="k">Дэлхийн дундаж</div>
-            <div class="v">${intlPct(world&&world.overall)}</div>
-            <div class="n">${d.states} гишүүн улсын дундаж</div></div>
+            <div class="n">${mn.year} · хуучин аргачлал · шинэчлэгдээгүй</div></div>
+          <div class="tile ghost"><div class="k">Дэлхийн эрэмбэ</div>
+            <div class="v">${d.rank}</div><div class="n">${d.states} улсаас · ${mn.year} оны дүнгээр</div></div>
         </div>
-        <div class="banner warn" style="margin-top:14px"><div><b>Яагаад ${mn.year} он гэж гарч байна вэ?</b>
-          Монгол Улс <b>2026.04.22 – 05.04-нд USOAP CMA аудитад орсон</b> боловч ICAO тэр үр дүнг
-          нийтийн сандаа <b>хараахан оруулаагүй</b> байна — ICAO-гийн өөрийн нээлттэй жагсаалтад
-          Монгол Улс өнөөдрийн байдлаар «${mn.year}» гэж бичигдсэн хэвээр (шалгасан:
-          ${esc(intlWhen(d.fetchedAt))}). Аудитын үр дүн PQ-гийн статус ICAO-гийн төв байгууллагад
-          баталгаажсаны дараа нийтлэгддэг тул хэдэн сарын хоцролт үүсдэг. ICAO шинэчилмэгц энэ хуудас
-          <b>дараагийн ачаалалтаа өөрөө татна</b> — гараар засах шаардлагагүй.</div></div>
+        <div class="banner warn" style="margin-top:14px"><div><b>${intlPct(last.ei)} ба ${intlPct(mn.overall)}-ийг
+          хооронд нь бүү харьцуул.</b> USOAP-CMA-гийн аргачлал, протокол асуулгууд
+          <b>2024 онд бүрэн шинэчлэгдсэн</b> бөгөөд Монгол Улс 2010 оноос хойш 16 жилийн дараа
+          шинэчилсэн аргачлалаар анх удаа шалгуулсан. Өөрөөр хэлбэл ${last.year} оны ${intlPct(last.ei)}
+          нь <b>өөр шугамаар хэмжсэн</b> дүн — бууралт биш. Харьцуулах зөв суурь нь дэлхийн
+          (${intlPct(world&&world.overall)}) болон APAC (${intlPct(apac&&apac.overall)}) дундаж бөгөөд
+          Монгол Улс хоёуланг нь давсан.</div></div>
+        <div class="banner info" style="margin-top:10px"><div>ICAO-гийн нээлттэй санд Монгол Улс
+          өнөөдрийн байдлаар «${mn.year}» гэж бичигдсэн хэвээр (шалгасан: ${esc(intlWhen(d.fetchedAt))}) —
+          ${last.year} оны үр дүн PQ-гийн статус ICAO-гийн төв байгууллагад баталгаажсаны дараа
+          нийтлэгддэг тул хоцролт үүсдэг. ICAO шинэчилмэгц энэ хуудас
+          <b>дараагийн ачаалалтаа өөрөө татна</b> — гараар засах шаардлагагүй.
+          Дээрх эрэмбэ, дэлхийн харьцуулалтууд нь ICAO-гийн нийтэлсэн ${mn.year} оны дүнд
+          суурилсныг анхаарна уу.</div></div>
       </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>${last.year} оны аудитын хамрах хүрээ</h2>
+        <span class="hint">${MN_2026_AREAS.length} чиглэл · ${last.pq} протокол асуулга</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Чиглэл</th><th>Агуулга</th><th class="num">Протокол асуулга</th>
+          <th class="num">Оноо</th><th>Эх сурвалж</th></tr></thead>
+        <tbody>${MN_2026_AREAS.map(([code,name,r])=>`<tr>
+          <td><span class="code">${esc(code)}</span></td>
+          <td class="small">${esc(name)}</td>
+          <td class="num ${r?"":"muted"}">${r?r.pq:"тусад нь заагаагүй"}</td>
+          <td class="num ${r?"":"muted"}">${r?`<b>${r.score}</b>`:"—"}</td>
+          <td class="small muted">${r?esc(r.src):""}</td></tr>`).join("")}</tbody>
+        <tfoot><tr><td colspan="2">НИЙТ · урьдчилсан үнэлгээ</td>
+          <td class="num">${last.pq}</td><td class="num">${intlPct(last.ei)}</td>
+          <td class="small">${esc(last.src)}</td></tr></tfoot>
+      </table></div></div>
+      <div class="body" style="padding-top:0"><div class="banner info"><div>ИНЕГ чиглэл тус бүрийн оноог
+        тусад нь нийтлээгүй — зөвхөн нийт урьдчилсан үнэлгээг зарласан. AGA-гийн мөрийн тоо нь
+        дотоод тайлангийнх. ICAO эцсийн тайлангаа гаргасны дараа чиглэл тус бүрийн EI
+        ICAO-гийн нээлттэй санд орж, энэ хуудсанд автоматаар гарч ирнэ.</div></div></div>
     </section>
 
     <section class="panel">
@@ -1982,14 +2030,15 @@ function viewIntl(){
         <thead><tr><th class="num">Он</th><th>Үйл ажиллагаа</th><th class="num">Хугацаа</th>
           <th class="num">EI</th><th>Эх сурвалж</th><th>Тэмдэглэл</th></tr></thead>
         <tbody>
-          ${MN_AUDITS.map(a=>`<tr${a.ei==null?' style="background:var(--warn-soft)"':""}>
+          ${MN_AUDITS.map(a=>`<tr${a.prelim?' style="background:var(--accent-soft)"':""}>
             <td class="num"><b>${a.year}</b></td>
             <td class="small">${esc(a.what)}</td>
             <td class="num muted">${esc(a.dates)}</td>
-            <td class="num">${a.ei!=null?`<b>${a.ei}%</b>`:`<span class="chip warn"><span class="dot"></span>ICAO-д алга</span>`}</td>
+            <td class="num"><b>${a.ei}%</b>${a.prelim
+              ?` <span class="chip warn"><span class="dot"></span>урьдчилсан</span>`:""}</td>
             <td class="small muted">${esc(a.src)}</td>
             <td class="small muted">${esc(a.note||"")}</td></tr>`).join("")}
-          <tr style="background:var(--accent-soft)">
+          <tr style="background:var(--surface-2)">
             <td class="num"><b>${mn.year}</b></td>
             <td class="small"><b>ICAO-гийн нээлттэй санд яг одоо</b></td>
             <td class="num muted">—</td>
@@ -2231,7 +2280,11 @@ function viewIntl(){
             Автоматаар татагдана (<span class="code">/api/intl</span> → iSTARS).
             <a href="${esc(d.source&&d.source.url||"https://www.icao.int/safety/Pages/USOAP-Results.aspx")}"
                target="_blank" rel="noopener noreferrer">icao.int</a></li>
-          <li><b>Монголын тоо баримт</b> — «Тайлан 2026-H1» (0616.xlsx, нэгдсэн тайлан) ба хяналтын сангийн
+          <li><b>ИНЕГ (mcaa.gov.mn)</b> — ${last.year} оны USOAP CMA аудитын урьдчилсан үнэлгээ
+            ${intlPct(last.ei)}, хамрах хүрээний ${MN_2026_AREAS.length} чиглэл, ${last.pq} протокол асуулга.
+            <a href="https://mcaa.gov.mn/news/post1" target="_blank" rel="noopener noreferrer">2026.05.06-ны мэдээ</a>.
+            2010 ба 2017 оны EI нь мөн ИНЕГ-ын байршуулсан ICAO-гийн эцсийн тайлангуудаас.</li>
+          <li><b>Монголын бусад тоо баримт</b> — «Тайлан 2026-H1» (0616.xlsx, нэгдсэн тайлан) ба хяналтын сангийн
             гэрчилгээ, агаарын хөлгийн бүртгэл. Гэрчилгээний тоо сан шинэчлэгдэх бүрт өөрчлөгдөнө.</li>
           <li><b>ЕХ-ны нисэхийн аюулгүй байдлын жагсаалт</b> (ЕХ-нд нисэхийг хориглосон тээвэрлэгчид) —
             Европын комисс зөвхөн PDF хэлбэрээр нийтэлдэг тул автоматаар уншуулах боломжгүй.
