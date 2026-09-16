@@ -17,7 +17,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* ---------- shell ---------- */
 .shell{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
-.rail{background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:14px 10px 18px}
+.rail{background:var(--surface-2);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:14px 10px 18px}
 .brand{position:relative;overflow:hidden;border-radius:var(--r);
   margin:-14px -10px 12px;padding:16px 14px 15px;border-bottom:0}
 .brand .mark{font-family:var(--fd);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
@@ -31,13 +31,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .nav{display:flex;flex-direction:column;gap:1px}
 .nav button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;padding:8px 9px;border-radius:var(--r);cursor:pointer;color:var(--ink-2);font-size:13.5px}
 .nav button:hover{background:var(--surface-2);color:var(--ink)}
-.nav button[aria-current="true"]{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.nav button[aria-current="true"]{background:var(--accent);color:var(--on-accent);font-weight:600}
 .nav .ct{margin-left:auto;font-family:var(--fm);font-size:11px;color:var(--ink-3)}
-.nav button[aria-current="true"] .ct{color:var(--accent-ink)}
+.nav button[aria-current="true"] .ct{color:var(--on-accent);opacity:.75}
 .railfoot{margin-top:auto;padding:10px 9px 0;border-top:1px solid var(--line);font-size:11px;color:var(--ink-3);line-height:1.45}
 
 .main{min-width:0;display:flex;flex-direction:column}
-.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--surface)}
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--surface-2)}
 .topbar h1{font-size:20px;font-weight:700}
 .topbar .spacer{flex:1}
 .wrap{padding:20px 24px 56px;max-width:1280px;width:100%}
@@ -53,7 +53,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* ---------- primitives ---------- */
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
-.panel>header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.panel>header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--surface-2);border-radius:var(--r) var(--r) 0 0}
 .panel>header h2{font-size:14.5px;font-weight:700;letter-spacing:.02em}
 .panel>header .hint{font-size:11.5px;color:var(--ink-3)}
 .panel .body{padding:16px}
@@ -118,7 +119,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* ---------- tables ---------- */
 .tblwrap{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:13px}
-th{font-family:var(--fd);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-strong);white-space:nowrap;font-weight:700}
+th{font-family:var(--fd);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-ink);text-align:left;padding:8px 10px;
+  background:var(--accent-soft);border-bottom:1px solid var(--line-strong);white-space:nowrap;font-weight:700}
 td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
 tbody tr:hover{background:var(--surface-2)}
 td.num,th.num{text-align:right;font-family:var(--fm);font-variant-numeric:tabular-nums}

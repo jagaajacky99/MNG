@@ -14,32 +14,34 @@
   color-scheme: light;
 
   /* --- үндсэн гадаргуу --- */
-  --bg:#e7edf6;            --ground:#e7edf6;
+  --bg:#dbe6f5;            --ground:#dbe6f5;
   --surface:#ffffff;
-  --surface-2:#f2f6fc;
-  --surface-3:#dde7f6;
+  --surface-2:#eaf1fb;
+  --surface-3:#cfdff4;
 
   /* --- шугам --- */
-  --line:#ccd9ec;          --line-soft:#dde6f2;
-  --line-strong:#a6b9d6;
+  --line:#bcd0ea;          --line-soft:#d4e0f1;
+  --line-strong:#8fa9cf;
 
   /* --- бичвэр --- */
   --ink:#171d2b;
   --ink-2:#3c4a63;
-  --ink-3:#5c6b84;
+  --ink-3:#54627b;
 
   /* --- албан ёсны гүн цэнхэр --- */
   --accent:#074580;
   --accent-ink:#05335f;
   --accent-2:#0475c5;
-  --accent-soft:#dde8f8;
+  --accent-soft:#d3e3f9;
+  /* Үндсэн өнгөн дэвсгэр дээр бичих бичвэр (товч, идэвхтэй цэс) */
+  --on-accent:#ffffff;
 
   /* --- алтлаг өргөлт (тэмдэг, тууз) --- */
   --gold:#8a6b1f;
   --gold-soft:#f5edda;
 
   /* --- эрх зүйн лавлагаа (гарын авлага) --- */
-  --air:#0475c5;           --air-soft:#dcebf9;
+  --air:#0475c5;           --air-soft:#d2e7fa;
 
   /* --- ноцтой байдал --- */
   --good:#14653f;          --good-soft:#dceee5;
@@ -73,8 +75,8 @@
      цахим хуудасны жишиг. */
   --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
-    radial-gradient(1100px 460px at 50% -180px, rgba(7,69,128,.10), transparent 70%),
-    linear-gradient(180deg, #edf2f9 0%, var(--bg) 420px);
+    radial-gradient(1100px 460px at 50% -180px, rgba(7,69,128,.16), transparent 70%),
+    linear-gradient(180deg, #e4edf9 0%, var(--bg) 420px);
   --page-bg-size:auto, auto;
   --page-bg-pos:center, center;
 }
@@ -84,17 +86,18 @@
     color-scheme: dark;
     --bg:#161b28;          --ground:#161b28;
     --surface:#252c3f;
-    --surface-2:#2d3548;
-    --surface-3:#374056;
+    --surface-2:#2e3750;
+    --surface-3:#3a4562;
     --line:#38415a;        --line-soft:#2b3346;
     --line-strong:#4d5876;
     --ink:#e8eef8;
     --ink-2:#a9b7cf;
-    --ink-3:#919eb8;
+    --ink-3:#9aa7bf;
     --accent:#4a9ee2;
     --accent-ink:#8fc4ef;
     --accent-2:#6fb4e9;
-    --accent-soft:#0d3357;
+    --accent-soft:#0b2c4e;
+  --on-accent:#0c1f33;
     --gold:#d6ad55;        --gold-soft:#2e2413;
     --air:#4a9ee2;         --air-soft:#0f2c46;
     --good:#46b585;        --good-soft:#0d2c1f;
@@ -117,17 +120,18 @@
   color-scheme: dark;
   --bg:#161b28;            --ground:#161b28;
   --surface:#252c3f;
-  --surface-2:#2d3548;
-  --surface-3:#374056;
+  --surface-2:#2e3750;
+  --surface-3:#3a4562;
   --line:#38415a;          --line-soft:#2b3346;
   --line-strong:#4d5876;
   --ink:#e8eef8;
   --ink-2:#a9b7cf;
-  --ink-3:#919eb8;
+  --ink-3:#9aa7bf;
   --accent:#4a9ee2;
   --accent-ink:#8fc4ef;
   --accent-2:#6fb4e9;
-  --accent-soft:#0d3357;
+  --accent-soft:#0b2c4e;
+    --on-accent:#0c1f33;
   --gold:#d6ad55;          --gold-soft:#2e2413;
   --air:#4a9ee2;           --air-soft:#0f2c46;
   --good:#46b585;          --good-soft:#0d2c1f;
