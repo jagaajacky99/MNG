@@ -7,3 +7,6 @@
 
 /hyanalt/config.js
   Cache-Control: no-cache
+
+/assets/bg-earth.jpg
+  Cache-Control: public, max-age=2592000

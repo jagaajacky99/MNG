@@ -67,10 +67,20 @@
   --f-body:var(--ff);
   --f-mono:var(--ff);
 
-  /* --- дэвсгэрийн нарийн хээ --- */
+  /* --- дэвсгэр: сансраас харсан агаарын тээврийн сүлжээ --- */
+  /* Гэрэл зураг хамгийн доод давхаргад; дээр нь хөшиг тавьж бичвэрийн
+     тодоролтыг хамгаална. Дээд тал нь илүү тунгалаг тул хуудасны толгойн
+     ард дэлхий харагдана. */
+  /* CSS хувьсагч доторх зам нь загварын файл биш, хуудасны хаягаар
+     шийдэгддэг тул үнэмлэхүй зам заавал хэрэгтэй. */
+  --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
     radial-gradient(1100px 460px at 50% -180px, rgba(11,61,107,.11), transparent 70%),
-    linear-gradient(180deg, #eef3f8 0%, var(--bg) 420px);
+    linear-gradient(180deg, rgba(238,243,248,.28) 0%, rgba(238,243,248,.55) 190px,
+                    rgba(233,238,244,.88) 430px, rgba(233,238,244,.965) 760px),
+    var(--page-photo);
+  --page-bg-size:auto, auto, cover;
+  --page-bg-pos:center, center, center top;
 }
 
 @media (prefers-color-scheme: dark){
@@ -99,9 +109,14 @@
     --crit:#e8726d;        --crit-soft:#371718;
     --s1:#5aa7e0; --s2:#e0954a; --s3:#46b585;
     --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 18px -8px rgba(0,0,0,.65);
+    --page-photo:url("/assets/bg-earth.jpg");
     --page-bg:
       radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-      linear-gradient(180deg, #0c1822 0%, var(--bg) 420px);
+      linear-gradient(180deg, rgba(12,24,34,.18) 0%, rgba(12,24,34,.45) 190px,
+                      rgba(10,20,29,.84) 430px, rgba(10,20,29,.955) 760px),
+      var(--page-photo);
+    --page-bg-size:auto, auto, cover;
+    --page-bg-pos:center, center, center top;
   }
 }
 
@@ -130,9 +145,14 @@
   --crit:#e8726d;          --crit-soft:#371718;
   --s1:#5aa7e0; --s2:#e0954a; --s3:#46b585;
   --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 18px -8px rgba(0,0,0,.65);
+  --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
     radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-    linear-gradient(180deg, #0c1822 0%, var(--bg) 420px);
+    linear-gradient(180deg, rgba(12,24,34,.18) 0%, rgba(12,24,34,.45) 190px,
+                    rgba(10,20,29,.84) 430px, rgba(10,20,29,.955) 760px),
+    var(--page-photo);
+  --page-bg-size:auto, auto, cover;
+  --page-bg-pos:center, center, center top;
 }
 
 /* hidden шинжийг хүчтэй болгоно. Тодорхой display-тэй элемент
