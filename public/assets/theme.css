@@ -67,20 +67,16 @@
   --f-body:var(--ff);
   --f-mono:var(--ff);
 
-  /* --- дэвсгэр: сансраас харсан агаарын тээврийн сүлжээ --- */
-  /* Гэрэл зураг хамгийн доод давхаргад; дээр нь хөшиг тавьж бичвэрийн
-     тодоролтыг хамгаална. Дээд тал нь илүү тунгалаг тул хуудасны толгойн
-     ард дэлхий харагдана. */
-  /* CSS хувьсагч доторх зам нь загварын файл биш, хуудасны хаягаар
-     шийдэгддэг тул үнэмлэхүй зам заавал хэрэгтэй. */
+  /* --- дэвсгэрийн нарийн хээ --- */
+  /* Гэрэл зураг нь агуулгын ард биш, зөвхөн .photoband туузанд хэрэглэгдэнэ.
+     Өгөгдлийн хуудас тайван, нэг өнгийн дэвсгэртэй байх нь албан ёсны
+     цахим хуудасны жишиг. */
   --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
-    radial-gradient(1100px 460px at 50% -180px, rgba(11,61,107,.11), transparent 70%),
-    linear-gradient(180deg, rgba(238,243,248,.14) 0%, rgba(238,243,248,.38) 190px,
-                    rgba(233,238,244,.74) 460px, rgba(233,238,244,.84) 900px),
-    var(--page-photo);
-  --page-bg-size:auto, auto, cover;
-  --page-bg-pos:center, center, center top;
+    radial-gradient(1100px 460px at 50% -180px, rgba(11,61,107,.10), transparent 70%),
+    linear-gradient(180deg, #eef3f8 0%, var(--bg) 420px);
+  --page-bg-size:auto, auto;
+  --page-bg-pos:center, center;
 }
 
 @media (prefers-color-scheme: dark){
@@ -109,14 +105,11 @@
     --crit:#e8726d;        --crit-soft:#371718;
     --s1:#5aa7e0; --s2:#e0954a; --s3:#46b585;
     --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 18px -8px rgba(0,0,0,.65);
-    --page-photo:url("/assets/bg-earth.jpg");
     --page-bg:
       radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-      linear-gradient(180deg, rgba(12,24,34,.10) 0%, rgba(12,24,34,.30) 190px,
-                      rgba(10,20,29,.66) 460px, rgba(10,20,29,.78) 900px),
-      var(--page-photo);
-    --page-bg-size:auto, auto, cover;
-    --page-bg-pos:center, center, center top;
+      linear-gradient(180deg, #0c1822 0%, var(--bg) 420px);
+    --page-bg-size:auto, auto;
+    --page-bg-pos:center, center;
   }
 }
 
@@ -145,16 +138,29 @@
   --crit:#e8726d;          --crit-soft:#371718;
   --s1:#5aa7e0; --s2:#e0954a; --s3:#46b585;
   --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 18px -8px rgba(0,0,0,.65);
-  --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
     radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-    linear-gradient(180deg, rgba(12,24,34,.10) 0%, rgba(12,24,34,.30) 190px,
-                    rgba(10,20,29,.66) 460px, rgba(10,20,29,.78) 900px),
-    var(--page-photo);
-  --page-bg-size:auto, auto, cover;
-  --page-bg-pos:center, center, center top;
+    linear-gradient(180deg, #0c1822 0%, var(--bg) 420px);
+  --page-bg-size:auto, auto;
+  --page-bg-pos:center, center;
 }
 
+
+/* ============================================================
+   Зургийн туузан толгой — албан ёсны цахим хуудасны жишгээр зургийг
+   агуулгын ард биш, тусгаарласан туузанд хэрэглэнэ. Дээр нь байгууллагын
+   хөх өнгийн хөшиг тавьсан тул цагаан бичвэрийн тодорол хангагдана.
+   ============================================================ */
+.photoband{ position:relative; overflow:hidden; background-color:#0b2136; color:#eaf2fb; }
+.photoband::before{ content:""; position:absolute; inset:0;
+  background:var(--page-photo) center 42% / cover no-repeat; }
+.photoband::after{ content:""; position:absolute; inset:0;
+  background:linear-gradient(100deg, rgba(8,26,45,.95) 0%, rgba(8,26,45,.86) 38%,
+                             rgba(8,26,45,.66) 78%, rgba(8,26,45,.54) 100%); }
+.photoband > *{ position:relative; z-index:1 }
+.photoband .edge{ position:absolute; left:0; right:0; bottom:0; height:3px;
+  background:var(--gold); z-index:2 }
+@media (prefers-reduced-motion:no-preference){ .photoband::before{ will-change:auto } }
 /* hidden шинжийг хүчтэй болгоно. Тодорхой display-тэй элемент
    (жишээ нь .btn{display:inline-flex}) хөтчийн анхны дүрмийг
    дарж, hidden байсан ч харагддаг. */

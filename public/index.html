@@ -29,17 +29,10 @@ a{color:var(--accent)}
 .tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
 
 /* ---------- hero ---------- */
-/* Баннер нь дэвсгэр зургийн хамгийн тод хэсэгт таарах тул өөрийн шилэн
-   гадаргуутай — бараан бичвэрийн тодорол хадгалагдана. */
-.hero{padding:40px 30px 34px;margin-top:26px;border-radius:calc(var(--r) + 4px);
-  background:color-mix(in srgb, var(--surface) 76%, transparent);
-  -webkit-backdrop-filter:blur(20px) saturate(1.25); backdrop-filter:blur(20px) saturate(1.25);
-  border:1px solid color-mix(in srgb, var(--line) 55%, transparent);
-  box-shadow:var(--shadow)}
-@media(max-width:640px){.hero{padding:30px 20px 26px}}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .hero{background:var(--surface)}
-}
+/* Баннер — бүтэн өргөнтэй зургийн тууз. Агуулга нь .wrap-ийн өргөнд таарна. */
+.hero{padding:0}
+.hero .in{max-width:1080px;margin:0 auto;padding:54px 22px 50px}
+@media(max-width:640px){.hero .in{padding:38px 20px 34px}}
 .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
   color:var(--accent);background:var(--accent-soft);padding:7px 13px;border-radius:3px}
 .hero h2{margin-top:20px;font-size:clamp(26px,4.2vw,38px);font-weight:700;letter-spacing:-.01em;max-width:20ch;line-height:1.22}
@@ -48,6 +41,15 @@ a{color:var(--accent)}
 .hero dl{margin:26px 0 0;display:flex;gap:30px;flex-wrap:wrap}
 .hero dt{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .hero dd{margin:5px 0 0;font-size:14px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+/* Тууз дээрх бичвэр — хөх хөшиг дээр гэрэл өнгөөр. Эдгээр нь дээрх үндсэн
+   дүрмүүдийн дараа байх ёстой, эс бөгөөс бараан өнгө нь дарна. */
+.hero .eyebrow{color:#e2eefc;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28)}
+.hero h2{color:#f7fbff}
+.hero p{color:#d3e2f2}
+.hero .rule{background:var(--gold)}
+.hero dt{color:#a8c6e2}
+.hero dd{color:#eef5fd}
 
 /* ---------- орц ---------- */
 section.blk{padding:30px 0}
@@ -117,9 +119,8 @@ section.blk{padding:30px 0}
   </div>
 </header>
 
-<main class="wrap">
-
-  <section class="hero">
+<section class="hero photoband">
+  <div class="in">
     <span class="eyebrow">Албан ёсны мэдээллийн систем</span>
     <h2>Эрсдэлд суурилсан хяналтын мэдээллийн сан</h2>
     <div class="rule"></div>
@@ -130,7 +131,11 @@ section.blk{padding:30px 0}
       <div><dt>Эрсдэлийн загвар</dt><dd>EASA RBO · 3 хүчин зүйл</dd></div>
       <div><dt>Хамрах хэлтэс</dt><dd>5</dd></div>
     </dl>
-  </section>
+  </div>
+  <span class="edge"></span>
+</section>
+
+<main class="wrap">
 
   <section class="blk">
     <div class="sec-h">
