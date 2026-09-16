@@ -99,6 +99,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .dashrow input[type=text]{width:100%;background:var(--surface);border:1px solid var(--line-strong);
   border-radius:var(--r);padding:5px 9px;font-size:13px;color:var(--ink)}
 .dashrow .sw{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);white-space:nowrap}
+/* Бичвэр засварладаг мөр — талбар нь доогуураа бүтэн мөр эзэлнэ */
+.dashrow.wtext{grid-template-areas:"ord ttl sw chip" "txt txt txt txt"}
+.dashrow.wtext .ord{grid-area:ord} .dashrow.wtext input[type=text]{grid-area:ttl}
+.dashrow.wtext .sw{grid-area:sw} .dashrow.wtext .chip{grid-area:chip}
+.dashrow.wtext textarea{grid-area:txt;width:100%;min-height:76px;resize:vertical;margin-top:2px;
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);
+  padding:7px 9px;font-size:12.5px;line-height:1.5;color:var(--ink);font-family:var(--fb)}
 .tile.warnv .v{color:var(--warn)}
 .tile.goodv .v{color:var(--good)}
 
@@ -487,10 +494,41 @@ const DASH_BLOCKS = [
   {id:"regs",       t:"Сүүлд шинэчлэгдсэн дүрэм, журам"},
   {id:"usoap",      t:"USOAP-CMA дүгнэлт"},
 ];
+/* «Олон улс» хэсгийн самбарууд. `text` талбартай нь админ засварладаг тайлбар
+   бичвэртэй: хоосон мөрөөр догол мөр тусгаарлана, мөрийн эхний «!» тэмдэг нь
+   анхааруулгын өнгө өгнө, **од хоёроор** хүрээлсэн үг тодоор гарна.
+   Доорх буржгар хаалттай түлхүүрүүд нь амьд утгаар солигдоно. */
+const INTL_BLOCKS = [
+  {id:"stand", t:"Монгол Улсын байр суурь", text:
+`!{АУДИТ_ОН} оны үнэлгээг {ОН} оны үзүүлэлттэй шууд харьцуулах үндэслэлгүй болно. USOAP CMA-гийн аргачлал, протокол асуулга 2024 онд бүрэн шинэчлэгдсэн бөгөөд Монгол Улс шинэчилсэн аргачлалаар 2010 оноос хойш анх удаа хамрагдсан. Харьцуулах үндэслэл нь дэлхийн ({ДЭЛХИЙ}) болон Ази, Номхон далайн бүсийн ({АЗИ}) дундаж үзүүлэлт бөгөөд Монгол Улс хоёуланг нь давсан байна.
+
+ICAO-гийн нээлттэй санд Монгол Улсын үзүүлэлт {ОН} оны үйл ажиллагаагаар тусгагдсан хэвээр байна (шалгасан: {ТАТСАН}). Аудитын үр дүн нь протокол асуулгын статус ICAO-гийн төв байгууллагад баталгаажсаны дараа нээлттэй санд тусгагддаг журамтай. ICAO шинэчилсэн даруйд энэ хуудас дараагийн ачаалалтаар автоматаар шинэчлэгдэнэ. Дэлхийн эрэмбэ болон улс хоорондын доорх харьцуулалт нь ICAO-гийн нийтэлсэн {ОН} оны үзүүлэлтэд суурилсан болно.`},
+  {id:"scope", t:"Аудитын хамрах хүрээ", text:
+`Аудит {ХУГАЦАА}-ны хооронд Иргэний нисэхийн ерөнхий газар, Агаарын хөлгийн осол, зөрчлийг шинжлэн шалгах албыг хамран явагдаж, {АСУУЛГА} протокол асуулгаар шалгагдсан. ИНЕГ 2026.05.06-ны мэдээгээр урьдчилсан үнэлгээг 74.96 хувь гэж мэдээлсэн бөгөөд чиглэл тус бүрийн үзүүлэлт ICAO-гийн эцсийн тайлангаар тодорхойлогдож, нээлттэй санд тусгагдмагц энэ хуудсанд автоматаар нэмэгдэнэ.`},
+  {id:"history", t:"USOAP-ийн үйл ажиллагааны түүх", text:
+`Гишүүн улс залруулах төлөвлөгөө (CAP)-өө USOAP CMA Online Framework-д эцсийн тайлан хүлээн авснаас хойш **{CAP} хоногийн дотор** шинэчлэн байршуулах үүрэгтэй. {АУДИТ_ОН} оны аудитын залруулах төлөвлөгөөний хугацааг мөн энэ журмаар тооцно.`},
+  {id:"ce",      t:"Найман чухал элемент (CE)"},
+  {id:"areas",   t:"Аудитын найман чиглэл"},
+  {id:"trend",   t:"Үр дүнтэй хэрэгжилтийн чиг хандлага", text:
+`ICAO-гийн зөвлөмжөөр эрсдэлд суурилсан хяналтад шилжихээс өмнө суурь стандартын үр дүнтэй хэрэгжилт **60-аас доошгүй хувь** байх шаардлагатай. Монгол Улс энэ босгыг бүх чухал элементээр давсан байна.`},
+  {id:"regions", t:"Бүс нутгийн харьцуулалт"},
+  {id:"peers",   t:"Хөрш ба түнш орнууд"},
+  {id:"foreign", t:"Гадаад улстай холбоотой үйл ажиллагаа", text:
+`Монгол Улсын нисэхийн хяналтын тодорхой хэсэг нь **гадаад улсын эрх бүхий байгууллагын үйл ажиллагаанд тулгуурладаг**: гадаадын тээвэрлэгчийн аюулгүй ажиллагааг тухайн улсын иргэний нисэхийн байгууллага, гадаадад бүртгэлтэй агаарын хөлгийн нислэгт тэнцэх чадварыг бүртгэсэн улсын эрх бүхий байгууллага тус тус хариуцна. Иймд эдгээр улсын USOAP-ийн үзүүлэлт нь Монгол Улсын хяналтын эрсдэлд шууд нөлөөлнө.`},
+  {id:"carriers", t:"Гадаадын агаарын тээвэрлэгчийн харьяа улсын хяналтын чадавх", text:
+`!Тээвэрлэгчийн харьяа улсыг нэрээр нь тогтоосон болно — ИНД-129-ийн гэрчилгээний бүртгэлд улсын талбар тусгагдаагүй. Эрсдэлийн үнэлгээнд ашиглахын өмнө гэрчилгээний эх баримтаар баталгаажуулна уу. Улсын үзүүлэлт нь тухайн улсын хяналтын тогтолцооны нэгдсэн үнэлгээ бөгөөд тодорхой нэг тээвэрлэгчийн аюулгүй ажиллагааны үнэлгээ бус болно.`},
+  {id:"aircraft", t:"Гадаадад бүртгэлтэй агаарын хөлөг"},
+  {id:"top",      t:"Дэлхийн тэргүүлэх 10 улс"},
+  {id:"ssc",      t:"Ноцтой аюулгүй байдлын асуудал (SSC)", text:
+`SSC нь тухайн улсын хяналтын тогтолцоо аюулгүй ажиллагааны ноцтой эрсдэлийг арилгах чадавхаа харуулж чадаагүйг илэрхийлэх бөгөөд ICAO-гийн цахим хуудсаар нийтэд зарлагддаг.`},
+  {id:"sources",  t:"Эх сурвалж"},
+];
+
 const dashDefaults = () => ({
   views:  VIEW_DEFS.map(b=>({id:b.id, title:b.t, on:true})),
   blocks: DASH_BLOCKS.map(b=>({id:b.id, title:b.t, on:true})),
   tiles:  DASH_TILES.map(b=>({id:b.id, title:b.t, on:true})),
+  intl:   normDash(INTL_BLOCKS, null),
 });
 
 const DEFAULTS = {
@@ -526,11 +564,17 @@ function settings(){ return state.settings || DEFAULTS; }
    автоматаар гарч ирнэ, устсан хэсгийн үлдэгдэл хаягдана. */
 function normDash(defs, saved){
   const out=[], seen=new Set();
+  /* Анхны жагсаалтад бичвэртэй хэсэг байвал хадгалсан бичвэрийг нь авч үлдэнэ */
+  const mk=(d,it)=>{
+    const o={id:d.id, title:String((it&&it.title)||"").trim()||d.t, on:it? it.on!==false : true};
+    if(d.text!==undefined) o.text = (it && typeof it.text==="string") ? it.text : d.text;
+    return o;
+  };
   (Array.isArray(saved)?saved:[]).forEach(it=>{
     if(!it || seen.has(it.id)) return;
     const d=defs.find(x=>x.id===it.id); if(!d) return;
     seen.add(d.id);
-    out.push({id:d.id, title:String(it.title||"").trim()||d.t, on:it.on!==false});
+    out.push(mk(d,it));
   });
   // Шинээр нэмэгдсэн хэсгийг сүүлд биш, анхны жагсаалт дахь байрандаа оруулна:
   // өмнөх хөршөө хадгалсан дараалалаас олоод түүний ард тавина.
@@ -541,7 +585,7 @@ function normDash(defs, saved){
       const p = out.findIndex(x=>x.id===defs[k].id);
       if(p>=0){ at = p+1; break; }
     }
-    out.splice(at, 0, {id:d.id, title:d.t, on:true});
+    out.splice(at, 0, mk(d, null));
     seen.add(d.id);
   });
   return out;
@@ -555,7 +599,8 @@ function dashCfg(){
   }
   return {views,
           blocks: normDash(DASH_BLOCKS, raw.blocks),
-          tiles:  normDash(DASH_TILES,  raw.tiles)};
+          tiles:  normDash(DASH_TILES,  raw.tiles),
+          intl:   normDash(INTL_BLOCKS, raw.intl)};
 }
 /* Засварлаж байгаа (хараахан хадгалаагүй) хувилбар */
 function dashDraft(){
@@ -1900,6 +1945,33 @@ const INTL_CARRIER_STATE = {
   "JSC AIR COMPANY SCAT":"KAZ", "Vista Jet Limited Ltd":"MLT",
 };
 
+/* Тайлбар бичвэрт амьд утгаар солигдох түлхүүрүүд — Тохиргоо хэсэгт жагсаана */
+const INTL_PH_HELP = {
+  "ОН":"ICAO-д тусгагдсан он", "ICAO":"ICAO-гийн үзүүлэлт",
+  "АУДИТ_ОН":"сүүлийн аудитын он", "АУДИТ":"сүүлийн аудитын үнэлгээ",
+  "ХУГАЦАА":"аудитын хугацаа", "АСУУЛГА":"протокол асуулгын тоо",
+  "ЧИГЛЭЛ":"чиглэлийн тоо", "ДЭЛХИЙ":"дэлхийн дундаж", "АЗИ":"APAC-ийн дундаж",
+  "ЭРЭМБЭ":"дэлхийн эрэмбэ", "УЛС":"нийт улсын тоо",
+  "ТАТСАН":"сүүлд шинэчилсэн огноо", "CAP":"CAP байршуулах хоног",
+};
+
+/* Админы бичсэн тайлбарыг аюулгүйгээр хөрвүүлнэ: хоосон мөр = догол мөр,
+   мөрийн эхний «!» = анхааруулгын өнгө, **үг** = тод, {ТҮЛХҮҮР} = амьд утга. */
+function intlNote(txt, ph){
+  const t = String(txt||"").trim();
+  if(!t) return "";
+  return t.split(/\n\s*\n/).map(p=>{
+    const s = p.trim();
+    const warn = s.startsWith("!");
+    let body = esc(warn ? s.slice(1).trim() : s)
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+      .replace(/\n/g, " ");
+    body = body.replace(/\{([A-Za-zА-Яа-яЁё_]+)\}/g,
+      (m,k)=> (ph && ph[k]!=null) ? ph[k] : m);
+    return `<div class="banner ${warn?"warn":"info"}" style="margin-top:12px"><div>${body}</div></div>`;
+  }).join("");
+}
+
 function viewIntl(){
   const S = state.intl;
   if(S.status==="idle"){ loadIntl(); }
@@ -1915,6 +1987,8 @@ function viewIntl(){
   const apac  = d.regions.find(r=>r.region==="APAC");
   const mn = d.mn;
   const u  = REPORT.usoap;
+  const adm = state.canWrite;
+  const cfg = dashCfg();
   const nm = c => (d.all[c]||[c])[0];
   const ei = c => (d.all[c]||[])[1];
   const yr = c => (d.all[c]||[])[2];
@@ -1926,6 +2000,16 @@ function viewIntl(){
   const last = MN_AUDITS[MN_AUDITS.length-1];
   const gap = v => (v==null || last.ei==null) ? "—"
     : (last.ei-v>=0?"+":"") + (last.ei-v).toFixed(2);
+
+  const PH = {
+    "ОН":mn.year, "ICAO":intlPct(mn.overall),
+    "АУДИТ_ОН":last.year, "АУДИТ":last.ei,
+    "ХУГАЦАА":esc(last.dates), "АСУУЛГА":last.pq,
+    "ЧИГЛЭЛ":MN_2026_AREAS.length, "ДЭЛХИЙ":intlPct(world&&world.overall),
+    "АЗИ":intlPct(apac&&apac.overall), "ЭРЭМБЭ":d.rank, "УЛС":d.states,
+    "ТАТСАН":esc(intlWhen(d.fetchedAt)), "CAP":u.icvm.capDays,
+  };
+  const note = it => intlNote(it.text, PH);
 
   /* Хөрш, түнш орны жагсаалтад Монгол Улсыг нэмж эрэмбэлнэ */
   const peers = [...d.peers, "MNG"].sort((a,b)=> ei(b) - ei(a));
@@ -1954,18 +2038,10 @@ function viewIntl(){
   const below = faocRows.filter(r=>ei(r.code)!=null && ei(r.code)<60).length;
   const sscStates = new Set(d.ssc.map(s=>s.state));
 
-  return `
-  <div class="grid">
-    <div class="banner info"><div>Энэ хэсгийн олон улсын үзүүлэлт нь Олон улсын иргэний нисэхийн
-      байгууллага (ICAO)-ын USOAP CMA нээлттэй сангаас автоматаар шинэчлэгдэх бөгөөд Монгол Улсын
-      албан ёсны тоо баримттай зэрэгцүүлэн тусгав.
-      ${d.fetchedAt?`Сүүлд шинэчилсэн: <b>${esc(intlWhen(d.fetchedAt))}</b>.`:""}
-      ${S.live ? `<span class="chip good" style="margin-left:6px"><span class="dot"></span>шууд холболтоор</span>`
-               : `<span class="chip warn" style="margin-left:6px"><span class="dot"></span>сүүлд хадгалсан хувилбараар</span>`}</div></div>
+  /* ---- Самбар бүрийн агуулга. Хоосон буцаавал тэр самбар огт гарахгүй. ---- */
+  const BLOCK = {
 
-    <section class="panel">
-      <header><h2>Монгол Улсын байр суурь</h2>
-        <span class="hint">USOAP CMA · үр дүнтэй хэрэгжилт (EI)</span></header>
+    stand: {hint:()=>"USOAP CMA · үр дүнтэй хэрэгжилт (EI)", body: it=>`
       <div class="body">
         <div class="tiles">
           <div class="tile ${last.ei>=(world?world.overall:60)?"goodv":"warnv"}">
@@ -1985,25 +2061,10 @@ function viewIntl(){
             <div class="v">${d.rank}</div>
             <div class="n">${d.states} улсаас · ${mn.year} оны үзүүлэлтээр</div></div>
         </div>
-        <div class="banner warn" style="margin-top:14px"><div><b>${last.year} оны үнэлгээг ${mn.year} оны
-          үзүүлэлттэй шууд харьцуулах үндэслэлгүй болно.</b> USOAP CMA-гийн аргачлал, протокол асуулга
-          2024 онд бүрэн шинэчлэгдсэн бөгөөд Монгол Улс шинэчилсэн аргачлалаар 2010 оноос хойш
-          анх удаа хамрагдсан. Харьцуулах үндэслэл нь тухайн үеийн дэлхийн
-          (${intlPct(world&&world.overall)}) болон Ази, Номхон далайн бүсийн
-          (${intlPct(apac&&apac.overall)}) дундаж үзүүлэлт бөгөөд Монгол Улс хоёуланг нь давсан байна.</div></div>
-        <div class="banner info" style="margin-top:10px"><div>ICAO-гийн нээлттэй санд Монгол Улсын
-          үзүүлэлт ${mn.year} оны үйл ажиллагаагаар тусгагдсан хэвээр байна
-          (шалгасан: ${esc(intlWhen(d.fetchedAt))}). Аудитын үр дүн нь протокол асуулгын статус
-          ICAO-гийн төв байгууллагад баталгаажсаны дараа нээлттэй санд тусгагддаг журамтай.
-          ICAO шинэчилсэн даруйд энэ хуудас дараагийн ачаалалтаар автоматаар шинэчлэгдэнэ.
-          Дэлхийн эрэмбэ болон улс хоорондын доорх харьцуулалт нь ICAO-гийн нийтэлсэн ${mn.year} оны
-          үзүүлэлтэд суурилсан болно.</div></div>
-      </div>
-    </section>
+        ${note(it)}
+      </div>`},
 
-    <section class="panel">
-      <header><h2>${last.year} оны аудитын хамрах хүрээ</h2>
-        <span class="hint">${MN_2026_AREAS.length} чиглэл · ${last.pq} протокол асуулга</span></header>
+    scope: {hint:()=>`${MN_2026_AREAS.length} чиглэл · ${last.pq} протокол асуулга`, body: it=>`
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Чиглэл</th><th>Агуулга</th><th class="num">Чиглэлийн үзүүлэлт</th></tr></thead>
         <tbody>${MN_2026_AREAS.map(([code,name])=>`<tr>
@@ -2013,18 +2074,9 @@ function viewIntl(){
         <tfoot><tr><td colspan="2">НИЙТ ҮНЭЛГЭЭ · ${last.pq} протокол асуулга</td>
           <td class="num">${last.ei}</td></tr></tfoot>
       </table></div></div>
-      <div class="body" style="padding-top:0"><div class="banner info"><div>Аудит ${esc(last.dates)}-ны
-        хооронд Иргэний нисэхийн ерөнхий газар, Агаарын хөлгийн осол, зөрчлийг шинжлэн шалгах албыг
-        хамран явагдаж, ${last.pq} протокол асуулгаар шалгагдсан. Дотоод тайланд аэродром, газрын
-        туслах хэрэгслийн чиглэлээр ${u.pq} протокол асуулга тусгагдсан байна. ИНЕГ 2026.05.06-ны
-        мэдээгээр урьдчилсан үнэлгээг 74.96 хувь гэж мэдээлсэн бөгөөд чиглэл тус бүрийн үзүүлэлт
-        ICAO-гийн эцсийн тайлангаар тодорхойлогдож, нээлттэй санд тусгагдмагц энэ хуудсанд
-        автоматаар нэмэгдэнэ.</div></div></div>
-    </section>
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-    <section class="panel">
-      <header><h2>USOAP-ийн үйл ажиллагааны түүх</h2>
-        <span class="hint">2010 оноос хойш</span></header>
+    history: {hint:()=>"2010 оноос хойш", body: it=>`
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th class="num">Он</th><th>Үйл ажиллагаа</th><th class="num">Хугацаа</th>
           <th class="num">Үнэлгээ</th><th>Эх сурвалж</th><th>Тэмдэглэл</th></tr></thead>
@@ -2061,16 +2113,10 @@ function viewIntl(){
               <td>${diff(v, w[2])}</td></tr>`;}).join("")}
           </tbody>
         </table></div>
-        <div class="banner info" style="margin-top:12px"><div>Гишүүн улс залруулах төлөвлөгөө (CAP)-өө
-          USOAP CMA Online Framework-д эцсийн тайлан хүлээн авснаас хойш
-          <b>${u.icvm.capDays} хоногийн дотор</b> шинэчлэн байршуулах үүрэгтэй. ${last.year} оны
-          аудитын залруулах төлөвлөгөөний хугацааг мөн энэ журмаар тооцно.</div></div>
-      </div>
-    </section>
+        ${note(it)}
+      </div>`},
 
-    <section class="panel">
-      <header><h2>Найман чухал элемент (CE)</h2>
-        <span class="hint">Монгол Улс, дэлхий ба бүс нутгийн харьцуулалт</span></header>
+    ce: {hint:()=>"Монгол Улс, дэлхий ба бүс нутгийн харьцуулалт", body: it=>`
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Элемент</th><th>Агуулга</th><th class="num">Монгол Улс</th><th style="width:130px">Түвшин</th>
           <th class="num">ICVM-ийн тайлан</th><th class="num">Дэлхий</th><th class="num">APAC</th>
@@ -2091,11 +2137,9 @@ function viewIntl(){
           <td class="num">${intlPct(world&&world.overall)}</td><td class="num">${intlPct(apac&&apac.overall)}</td>
           <td>${diff(mn.overall, world&&world.overall)}</td></tr></tfoot>
       </table></div></div>
-    </section>
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-    <section class="panel">
-      <header><h2>Аудитын найман чиглэл</h2>
-        <span class="hint">USOAP-ийн шалгалтын хамрах хүрээ</span></header>
+    areas: {hint:()=>"USOAP-ийн шалгалтын хамрах хүрээ", body: it=>`
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Чиглэл</th><th>Агуулга</th><th class="num">Монгол Улс</th><th style="width:150px">Түвшин</th>
           <th class="num">Дэлхий</th><th class="num">APAC</th><th>Дэлхийтэй харьцуулбал</th></tr></thead>
@@ -2109,25 +2153,19 @@ function viewIntl(){
             <td class="num muted">${intlPct(a)}</td>
             <td>${diff(v,w)}</td></tr>`;}).join("")}</tbody>
       </table></div></div>
-    </section>
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-    <section class="panel">
-      <header><h2>Үр дүнтэй хэрэгжилтийн чиг хандлага</h2>
-        <span class="hint">${world?world.trend[0][0]:""} – ${world?world.trend[world.trend.length-1][0]:""}</span></header>
+    trend: {hint:()=>`${world?world.trend[0][0]:""} – ${world?world.trend[world.trend.length-1][0]:""}`,
+      body: it=>`
       <div class="body">
         ${intlSpark([
           {n:"Дэлхийн дундаж", c:"var(--ink-3)",  pts: world?world.trend:[]},
           {n:"Ази, Номхон далайн бүс", c:"var(--warn)", pts: apac?apac.trend:[]},
         ], {x:mn.year, y:mn.overall, t:intlPct(mn.overall), n:"Монгол Улс ("+mn.year+")"})}
-        <div class="banner info" style="margin-top:12px"><div>ICAO-гийн зөвлөмжөөр эрсдэлд суурилсан
-          хяналтад шилжихээс өмнө суурь стандартын үр дүнтэй хэрэгжилт <b>60-аас доошгүй хувь</b>
-          байх шаардлагатай. Монгол Улс энэ босгыг бүх чухал элементээр давсан байна.</div></div>
-      </div>
-    </section>
+        ${note(it)}
+      </div>`},
 
-    <section class="panel">
-      <header><h2>Бүс нутгийн харьцуулалт</h2>
-        <span class="hint">ICAO-гийн бүсүүдийн нэгдсэн үзүүлэлт</span></header>
+    regions: {hint:()=>"ICAO-гийн бүсүүдийн нэгдсэн үзүүлэлт", body: it=>`
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Бүс</th><th class="num">EI</th><th style="width:220px">Түвшин</th><th class="num">Он</th>
           <th class="num">Монгол Улстай харьцуулбал</th></tr></thead>
@@ -2138,11 +2176,10 @@ function viewIntl(){
           <td class="num muted">${r.year}</td>
           <td>${diff(mn.overall, r.overall)}</td></tr>`).join("")}</tbody>
       </table></div></div>
-    </section>
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-    <section class="panel">
-      <header><h2>Хөрш ба түнш орнууд</h2>
-        <span class="hint">ИНД-129-өөр гэрчилгээ авсан гадаадын тээвэрлэгчийн харьяа улсууд хамаарна</span></header>
+    peers: {hint:()=>"ИНД-129-өөр гэрчилгээ авсан гадаадын тээвэрлэгчийн харьяа улсууд хамаарна",
+      body: it=>`
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th style="width:200px">Түвшин</th>
           <th class="num">Аудитын он</th></tr></thead>
@@ -2153,11 +2190,9 @@ function viewIntl(){
           <td>${intlBar(ei(p))}</td>
           <td class="num muted">${yr(p)||"—"}</td></tr>`).join("")}</tbody>
       </table></div></div>
-    </section>
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-    <section class="panel">
-      <header><h2>Гадаад улстай холбоотой үйл ажиллагаа</h2>
-        <span class="hint">${hasDb ? "хяналтын сангийн бүртгэлээр" : "Тайлан 2026-H1-ээр"}</span></header>
+    foreign: {hint:()=> hasDb ? "хяналтын сангийн бүртгэлээр" : "Тайлан 2026-H1-ээр", body: it=>`
       <div class="body">
         <div class="tiles">
           <div class="tile"><div class="k">Гадаадын тээвэрлэгч</div>
@@ -2171,19 +2206,11 @@ function viewIntl(){
           <div class="tile"><div class="k">Хөрвүүлсэн үнэмлэх</div>
             <div class="v">31</div><div class="n">ИНД-61 · шинээр олгосон 34-өөс</div></div>
         </div>
-        <div class="banner info" style="margin-top:14px"><div>Монгол Улсын нисэхийн хяналтын тодорхой
-          хэсэг нь <b>гадаад улсын эрх бүхий байгууллагын үйл ажиллагаанд тулгуурладаг</b>:
-          гадаадын тээвэрлэгчийн аюулгүй ажиллагааг тухайн улсын иргэний нисэхийн байгууллага,
-          гадаадад бүртгэлтэй агаарын хөлгийн нислэгт тэнцэх чадварыг бүртгэсэн улсын эрх бүхий
-          байгууллага тус тус хариуцна. Иймд эдгээр улсын USOAP-ийн үзүүлэлт нь Монгол Улсын
-          хяналтын эрсдэлд шууд нөлөөлнө.</div></div>
-      </div>
-    </section>
+        ${note(it)}
+      </div>`},
 
-    ${faocRows.length ? `
-    <section class="panel">
-      <header><h2>Гадаадын агаарын тээвэрлэгчийн харьяа улсын хяналтын чадавх</h2>
-        <span class="hint">ИНД-129 · ${faocRows.length} гэрчилгээ · улсын үзүүлэлтээр эрэмбэлсэн</span></header>
+    carriers: {hint:()=>`ИНД-129 · ${faocRows.length} гэрчилгээ · улсын үзүүлэлтээр эрэмбэлсэн`,
+      body: it=> !faocRows.length ? null : `
       <div class="body">
         <div class="tiles" style="margin-bottom:14px">
           <div class="tile"><div class="k">Харьяалагдах улс</div>
@@ -2215,18 +2242,11 @@ function viewIntl(){
             <td class="num">${esc(r.c.expiryDate||"—")}</td>
             <td><span class="chip ${r.st.k}"><span class="dot"></span>${esc(r.st.t)}</span></td></tr>`).join("")}</tbody>
         </table></div>
-        <div class="banner warn" style="margin-top:12px"><div>Тээвэрлэгчийн харьяа улсыг нэрээр нь
-          тогтоосон болно — ИНД-129-ийн гэрчилгээний бүртгэлд улсын талбар тусгагдаагүй. Эрсдэлийн
-          үнэлгээнд ашиглахын өмнө гэрчилгээний эх баримтаар баталгаажуулна уу. Улсын үзүүлэлт нь
-          тухайн улсын хяналтын тогтолцооны нэгдсэн үнэлгээ бөгөөд тодорхой нэг тээвэрлэгчийн
-          аюулгүй ажиллагааны үнэлгээ бус болно.</div></div>
-      </div>
-    </section>` : ""}
+        ${note(it)}
+      </div>`},
 
-    ${foreignAc.length ? `
-    <section class="panel">
-      <header><h2>Гадаадад бүртгэлтэй агаарын хөлөг</h2>
-        <span class="hint">${foreignAc.length} хөлөг · нислэгт тэнцэх чадварыг бүртгэсэн улс хариуцна</span></header>
+    aircraft: {hint:()=>`${foreignAc.length} хөлөг · нислэгт тэнцэх чадварыг бүртгэсэн улс хариуцна`,
+      body: it=> !foreignAc.length ? null : `
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Бүртгэлийн дугаар</th><th>Маяг</th><th>Оператор</th>
           <th class="num">Бүртгэсэн огноо</th><th>Бүртгэсэн улс</th></tr></thead>
@@ -2237,46 +2257,37 @@ function viewIntl(){
           <td class="num muted">${esc(a.regDate||"—")}</td>
           <td class="small muted">${esc(a.note||"—")}</td></tr>`).join("")}</tbody>
       </table></div></div>
-    </section>` : ""}
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-    <div class="split">
-      <section class="panel">
-        <header><h2>Дэлхийн тэргүүлэх 10 улс</h2></header>
-        <div class="body" style="padding:0"><div class="tblwrap"><table>
-          <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th class="num">Он</th></tr></thead>
-          <tbody>${d.top.map((p,i)=>`<tr><td class="num muted">${i+1}</td>
-            <td class="small">${esc(nm(p))} <span class="code">${esc(p)}</span></td>
-            <td class="num"><b>${intlPct(ei(p))}</b></td>
-            <td class="num muted">${yr(p)||"—"}</td></tr>`).join("")}</tbody>
-        </table></div></div>
-      </section>
+    top: {half:true, body: it=>`
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th class="num">Он</th></tr></thead>
+        <tbody>${d.top.map((p,i)=>`<tr><td class="num muted">${i+1}</td>
+          <td class="small">${esc(nm(p))} <span class="code">${esc(p)}</span></td>
+          <td class="num"><b>${intlPct(ei(p))}</b></td>
+          <td class="num muted">${yr(p)||"—"}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+      ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
 
-      <section class="panel">
-        <header><h2>Ноцтой аюулгүй байдлын асуудал (SSC)</h2>
-          <span class="hint">хүчин төгөлдөр жагсаалт</span></header>
-        <div class="body" style="padding:0">
-          ${d.ssc.length ? `<div class="tblwrap"><table>
-            <thead><tr><th>Улс</th><th>Чиглэл</th><th class="num">Тогтоосон он</th></tr></thead>
-            <tbody>${d.ssc.map(s=>`<tr><td class="small">${esc(s.name)} <span class="code">${esc(s.state)}</span></td>
-              <td class="small">${esc(INTL_SSC_AREA[s.area]||s.area)} <span class="code">${esc(s.area)}</span></td>
-              <td class="num">${s.year}</td></tr>`).join("")}</tbody>
-          </table></div>` : `<div class="body muted">Жагсаалт хоосон байна.</div>`}
-          <div class="banner ${sscStates.has("MNG")?"warn":"info"}" style="margin:12px"><div>
-            ${sscStates.has("MNG")
-              ? "<b>Монгол Улсын хувьд ноцтой аюулгүй байдлын асуудал тогтоогдсон</b> — дээрх жагсаалтыг үзнэ үү."
-              : "<b>Монгол Улс ноцтой аюулгүй байдлын асуудлаас ангид байна.</b>"}
-            ${faocRows.some(r=>r.code && sscStates.has(r.code))
-              ? " ИНД-129-ийн гэрчилгээ эзэмшигчдийн дотор ноцтой аюулгүй байдлын асуудал тогтоогдсон улсын тээвэрлэгч байгааг дээрх хүснэгтэд <b>SSC</b> тэмдгээр ялгав."
-              : ""}
-            SSC нь тухайн улсын хяналтын тогтолцоо аюулгүй ажиллагааны ноцтой эрсдэлийг арилгах
-            чадавхаа харуулж чадаагүйг илэрхийлэх бөгөөд ICAO-гийн цахим хуудсаар нийтэд
-            зарлагддаг.</div></div>
-        </div>
-      </section>
-    </div>
+    ssc: {half:true, hint:()=>"хүчин төгөлдөр жагсаалт", body: it=>`
+      <div class="body" style="padding:0">
+        ${d.ssc.length ? `<div class="tblwrap"><table>
+          <thead><tr><th>Улс</th><th>Чиглэл</th><th class="num">Тогтоосон он</th></tr></thead>
+          <tbody>${d.ssc.map(s=>`<tr><td class="small">${esc(s.name)} <span class="code">${esc(s.state)}</span></td>
+            <td class="small">${esc(INTL_SSC_AREA[s.area]||s.area)} <span class="code">${esc(s.area)}</span></td>
+            <td class="num">${s.year}</td></tr>`).join("")}</tbody>
+        </table></div>` : `<div class="body muted">Жагсаалт хоосон байна.</div>`}
+        <div class="banner ${sscStates.has("MNG")?"warn":"info"}" style="margin:12px"><div>
+          ${sscStates.has("MNG")
+            ? "<b>Монгол Улсын хувьд ноцтой аюулгүй байдлын асуудал тогтоогдсон</b> — дээрх жагсаалтыг үзнэ үү."
+            : "<b>Монгол Улс ноцтой аюулгүй байдлын асуудлаас ангид байна.</b>"}
+          ${faocRows.some(r=>r.code && sscStates.has(r.code))
+            ? " ИНД-129-ийн гэрчилгээ эзэмшигчдийн дотор ноцтой аюулгүй байдлын асуудал тогтоогдсон улсын тээвэрлэгч байгааг дээрх хүснэгтэд <b>SSC</b> тэмдгээр ялгав."
+            : ""}</div></div>
+        ${note(it)?`<div style="padding:0 12px 12px">${note(it).replace(/margin-top:12px/g,"margin-top:0")}</div>`:""}
+      </div>`},
 
-    <section class="panel">
-      <header><h2>Эх сурвалж</h2></header>
+    sources: {body: it=>`
       <div class="body">
         <ul class="notes" style="margin:0;padding-left:18px">
           <li><b>ICAO USOAP CMA</b> — үр дүнтэй хэрэгжилт, чухал элемент, ноцтой аюулгүй байдлын
@@ -2300,9 +2311,59 @@ function viewIntl(){
           <li class="muted">Прокси ажиллах боломжгүй үед хуудас <span class="code">hyanalt/intl-snapshot.json</span>
             дахь сүүлд хадгалсан хувилбарыг ашиглах бөгөөд энэ тухай дээд талд тэмдэглэгдэнэ.</li>
         </ul>
-      </div>
-    </section>
-  </div>`;
+        ${note(it)}
+      </div>`},
+  };
+
+  /* Самбарыг хайрцагт хийнэ — админд нуух/харуулах товчтой */
+  function panelHtml(it){
+    const m = BLOCK[it.id]; if(!m) return "";
+    const inner = m.body(it); if(inner==null) return "";
+    const hint = m.hint ? m.hint() : "";
+    return `<section class="panel${it.on?"":" ghost"}">
+      <header><h2>${esc(it.title)}</h2>
+        ${hint?`<span class="hint">${hint}</span>`:""}
+        ${adm?`<span style="flex:1"></span>
+          ${it.on?"":`<span class="chip warn"><span class="dot"></span>Зочинд нуусан</span>`}
+          <button class="btn sm" data-act="intlBlock:${esc(it.id)}">${it.on?"Нуух":"Харуулах"}</button>`:""}
+      </header>
+      ${inner}</section>`;
+  }
+
+  /* Хагас өргөнтэй хоёр самбарыг зэрэгцүүлж, бусдыг бүтэн мөрөөр байрлуулна */
+  const parts=[]; let pair=[];
+  const flush=()=>{ if(!pair.length) return;
+    parts.push(pair.length===2?`<div class="split">${pair.join("")}</div>`:pair[0]); pair=[]; };
+  (cfg.intl||[]).filter(dashShow).forEach(it=>{
+    const m=BLOCK[it.id]; if(!m) return;
+    const h=panelHtml(it); if(!h) return;
+    if(m.half){ pair.push(h); if(pair.length===2) flush(); }
+    else { flush(); parts.push(h); }
+  });
+  flush();
+
+  const offIntl = (cfg.intl||[]).filter(v=>!v.on).length;
+  const adminBar = adm ? `<div class="banner ${offIntl?"warn":"info"}">
+    <div><b>Админ горим:</b> ${offIntl
+      ? `${offIntl} самбар зочинд хаалттай байна.`
+      : "бүх самбар зочинд нээлттэй байна."}
+      Самбар бүрийн <b>Нуух / Харуулах</b> товчоор зочны харагдацыг шууд соль.
+      Гарчиг, тайлбар бичвэр, дарааллыг <b>Тохиргоо → Зочны харагдац → «Олон улс» хэсгийн самбарууд</b>
+      хэсгээс засна.</div>
+  </div>` : "";
+
+  const empty = parts.length ? "" :
+    `<div class="banner warn"><div>Энэ хэсэгт харуулах самбар сонгогдоогүй байна.${
+      adm?" «Тохиргоо» хэсгээс самбаруудыг буцааж асаана уу.":""}</div></div>`;
+
+  const src = `<div class="banner info"><div>Энэ хэсгийн олон улсын үзүүлэлт нь Олон улсын иргэний
+    нисэхийн байгууллага (ICAO)-ын USOAP CMA нээлттэй сангаас автоматаар шинэчлэгдэх бөгөөд Монгол
+    Улсын албан ёсны тоо баримттай зэрэгцүүлэн тусгав.
+    ${d.fetchedAt?`Сүүлд шинэчилсэн: <b>${esc(intlWhen(d.fetchedAt))}</b>.`:""}
+    ${S.live ? `<span class="chip good" style="margin-left:6px"><span class="dot"></span>шууд холболтоор</span>`
+             : `<span class="chip warn" style="margin-left:6px"><span class="dot"></span>сүүлд хадгалсан хувилбараар</span>`}</div></div>`;
+
+  return `<div class="grid">${src}${adminBar}${empty}${parts.join("")}</div>`;
 }
 
 function viewReport(){
@@ -2472,7 +2533,7 @@ function dashCfgPanel(){
   if(!state.canWrite) return "";           // зөвхөн админд — зочин нуусан хэсгийн жагсаалтыг харах шаардлагагүй
   const d = dashDraft(), dirty = dashDirty();
 
-  const row=(kind, it, i, n)=>`<div class="dashrow">
+  const row=(kind, it, i, n)=>`<div class="dashrow${it.text!==undefined?" wtext":""}">
     <div class="ord">
       <button class="btn sm" data-act="dashUp:${kind}:${esc(it.id)}" title="Дээш" ${i>0?"":"disabled"}>↑</button>
       <button class="btn sm" data-act="dashDown:${kind}:${esc(it.id)}" title="Доош" ${i<n-1?"":"disabled"}>↓</button>
@@ -2482,6 +2543,8 @@ function dashCfgPanel(){
     <label class="sw"><input type="checkbox" data-dashon="${kind}:${esc(it.id)}"
       ${it.on?"checked":""}> Зочинд харуулах</label>
     <span class="chip ${it.on?"good":"warn"}"><span class="dot"></span>${it.on?"Нээлттэй":"Нуусан"}</span>
+    ${it.text!==undefined?`<textarea data-dashtxt="${kind}:${esc(it.id)}"
+      aria-label="Тайлбар бичвэр" placeholder="Тайлбар бичвэр">${esc(it.text)}</textarea>`:""}
   </div>`;
 
   const offViews = d.views.filter(v=>!v.on).length;
@@ -2510,6 +2573,14 @@ function dashCfgPanel(){
 
       <div class="eyebrow" style="margin:18px 0 4px">Самбарын хэсгүүд</div>
       ${d.blocks.map((it,i)=>row("blocks",it,i,d.blocks.length)).join("")}
+
+      <div class="eyebrow" style="margin:18px 0 4px">«Олон улс» хэсгийн самбарууд</div>
+      <div class="banner info" style="margin-bottom:10px"><div>Самбар бүрийн <b>гарчиг</b> ба
+        <b>тайлбар бичвэрийг</b> шууд засна. Хоосон мөр үлдээвэл догол мөр болно; мөрийг
+        <b>!</b> тэмдгээр эхэлбэл анхааруулгын өнгөтэй гарна; <b>**од хоёроор**</b> хүрээлсэн үг
+        тодоор бичигдэнэ. Доорх буржгар хаалттай түлхүүрүүд амьд утгаар солигдоно:
+        ${Object.keys(INTL_PH_HELP).map(k=>`<span class="code">{${k}}</span>`).join(" ")}.</div></div>
+      ${(d.intl||[]).map((it,i)=>row("intl",it,i,(d.intl||[]).length)).join("")}
 
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn primary" data-act="saveDash">Харагдацыг хадгалах</button>
@@ -2652,6 +2723,9 @@ function wire(){
   root.querySelectorAll("[data-dashttl]").forEach(el=>el.oninput=()=>{
     const it=dashItem(el.dataset.dashttl); if(it) it.title=el.value;
   });
+  root.querySelectorAll("[data-dashtxt]").forEach(el=>el.oninput=()=>{
+    const it=dashItem(el.dataset.dashtxt); if(it) it.text=el.value;
+  });
   root.querySelectorAll("[data-dashon]").forEach(el=>el.onchange=()=>{
     const it=dashItem(el.dataset.dashon); if(it){ it.on=el.checked; render(); }
   });
@@ -2675,9 +2749,9 @@ document.addEventListener("keydown", e=>{
 
 async function act(a){
   /* ---- хяналтын самбарын харагдац ---- */
-  if(a.startsWith("dashTile:") || a.startsWith("dashBlock:")){
+  if(a.startsWith("dashTile:") || a.startsWith("dashBlock:") || a.startsWith("intlBlock:")){
     // Самбар дээрээс шууд нуух/харуулах — тэр дороо хадгална
-    const kind = a.startsWith("dashTile:") ? "tiles" : "blocks";
+    const kind = a.startsWith("dashTile:") ? "tiles" : a.startsWith("intlBlock:") ? "intl" : "blocks";
     const id = a.split(":")[1];
     const next = dashCfg();
     const it = next[kind].find(x=>x.id===id);
@@ -2699,8 +2773,11 @@ async function act(a){
   if(a==="dropDash"){ state.dashDraft=null; render(); toast("Өөрчлөлтийг болилоо"); return; }
   if(a==="saveDash"){
     const d=dashDraft();
-    const clean=x=>({id:x.id, title:String(x.title||"").trim(), on:!!x.on});
-    const next={views:d.views.map(clean), blocks:d.blocks.map(clean), tiles:d.tiles.map(clean)};
+    const clean=x=>{ const o={id:x.id, title:String(x.title||"").trim(), on:!!x.on};
+      if(x.text!==undefined) o.text=String(x.text);
+      return o; };
+    const next={views:d.views.map(clean), blocks:d.blocks.map(clean),
+                tiles:d.tiles.map(clean), intl:(d.intl||[]).map(clean)};
     if(!next.views.some(v=>v.on) && !confirm("Зочинд нэг ч хэсэг харагдахгүй болно.\n\nҮргэлжлүүлэх үү?")) return;
     if(await saveDash(next)){ state.dashDraft=null; toast("Харагдацыг хадгаллаа"); render(); }
     return;
