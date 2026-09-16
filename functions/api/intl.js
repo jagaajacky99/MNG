@@ -38,7 +38,6 @@ const rpct = v => v==null ? null : Math.round(v*10000)/100; /* бүс: 0..1 бу
 const pick = (row, keys, f) => Object.fromEntries(keys.map(k=>[k, f(row[k])]));
 const dedupe = (rows, key) => { const seen=new Set();
   return rows.filter(r => { const k=key(r); if(seen.has(k)) return false; seen.add(k); return true; }); };
-const slim = r => ({state:r.State, name:r.Name, year:r.ei_year, overall:pct(r.overall)});
 
 export async function onRequest(context){
   try{
@@ -68,9 +67,12 @@ export async function onRequest(context){
            areas:pick(mnRow, AREAS, pct), ce:pick(mnRow, CES, pct)},
       rank: ranked.findIndex(x=>x.State===MN) + 1,
       states: ei.length,
-      top: ranked.slice(0,10).map(slim),
-      peers: PEERS.map(c => ei.find(x=>x.State===c)).filter(Boolean).map(slim)
-                  .sort((a,b)=> b.overall - a.overall),
+      /* Бүх улсын нэгдсэн дүн — [нэр, EI, аудитын он]. Гадаадын тээвэрлэгч,
+         сургалт, ТҮ байгууллагын харьяа улсыг энэ жагсаалтаас хайна. */
+      all: Object.fromEntries(ei.map(r => [r.State, [r.Name, pct(r.overall), r.ei_year]])),
+      top: ranked.slice(0,10).map(r=>r.State),
+      peers: PEERS.filter(c => ei.some(x=>x.State===c))
+                  .sort((a,b)=> ei.find(x=>x.State===b).overall - ei.find(x=>x.State===a).overall),
       regions,
       /* SSC_List нэг асуудлыг хоёр удаа буцаадаг тул давхардлыг цэвэрлэнэ. */
       ssc: dedupe((ssc||[]).map(s=>({state:s.State, name:s.Name, area:s.area, year:s.year})),

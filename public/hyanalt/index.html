@@ -52,6 +52,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .panel>header .hint{font-size:11.5px;color:var(--ink-3)}
 .panel .body{padding:16px}
 .grid{display:grid;gap:14px}
+/* Grid-ийн нүд анхдагчаар агуулгынхаа өргөнөөс багасдаггүй тул өргөн хүснэгт
+   бүхэл хуудсыг хэвтээ гүйлгэдэг байв. .tblwrap дотроо гүйх боломжийг өгнө. */
+.grid>*,.split>*{min-width:0}
 .eyebrow{font-family:var(--fd);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
 .mono{font-family:var(--fm);font-variant-numeric:tabular-nums}
 .muted{color:var(--ink-3)}
@@ -1856,6 +1859,20 @@ function intlBar(v){
       intlLvl(v)==="good"?"good":intlLvl(v)==="warn"?"warn":"crit"})"></span></div>`;
 }
 
+/* ИНД-129-өөр гэрчилгээ авсан гадаадын тээвэрлэгчийн харьяа улс.
+   Гэрчилгээний бүртгэлд улсын талбар байхгүй тул тээвэрлэгчийн нэрээр тогтоов —
+   энэ бол ИНЕГ-ын эх сурвалжийн биш, энэ сангийн ангилал. */
+const INTL_CARRIER_STATE = {
+  "Aeroflot":"RUS", "ИрАэро":"RUS", "Красавиа":"RUS", "Аврора":"RUS",
+  "Korean Air":"KOR", "Air Busan":"KOR", "Asiana Airlines":"KOR", "Air Incheon":"KOR",
+  "Jeju Air":"KOR", "T`Way Air":"KOR", "Jin Air":"KOR", "Aero K Airlines":"KOR",
+  "Air China":"CHN", "SF Airlines":"CHN", "Juneyao Airlines Co., Ltd":"CHN",
+  "China United Airlines":"CHN", "Spring Airlines":"CHN",
+  "Turkish Airlines":"TUR", "MNG Airlines":"TUR",
+  "Thai Vietjet":"THA", "My Freighter LLC":"UZB", "United Airlines":"USA",
+  "JSC AIR COMPANY SCAT":"KAZ", "Vista Jet Limited Ltd":"MLT",
+};
+
 function viewIntl(){
   const S = state.intl;
   if(S.status==="idle"){ loadIntl(); }
@@ -1870,17 +1887,46 @@ function viewIntl(){
   const world = d.regions.find(r=>r.region==="World");
   const apac  = d.regions.find(r=>r.region==="APAC");
   const mn = d.mn;
+  const nm = c => (d.all[c]||[c])[0];
+  const ei = c => (d.all[c]||[])[1];
+  const yr = c => (d.all[c]||[])[2];
   const diff = (a,b) => (a==null||b==null) ? "—"
     : `<span class="chip ${a-b>=0?"good":"crit"}"><span class="dot"></span>${a-b>=0?"+":""}${(a-b).toFixed(2)}</span>`;
+  const eiChip = c => ei(c)==null ? `<span class="chip neutral"><span class="dot"></span>ICAO-д алга</span>`
+    : `<span class="chip ${intlLvl(ei(c))}"><span class="dot"></span>${intlPct(ei(c))}</span>`;
 
   /* Хөрш, түнш орны жагсаалтад Монгол Улсыг нэмж эрэмбэлнэ */
-  const peers = [...d.peers, {state:"MNG", name:"Mongolia", year:mn.year, overall:mn.overall}]
-    .sort((a,b)=> b.overall - a.overall);
+  const peers = [...d.peers, "MNG"].sort((a,b)=> ei(b) - ei(a));
+
+  /* ---- Монголын дотоод өгөгдөл: гадаадтай холбоотой хэсэг ---- */
+  const u = REPORT.usoap;
+  const faoc = state.certs.filter(c=>c.ind==="ИНД-129");
+  const foreignTrain = state.certs.filter(c=>c.category==="Сургалтын байгууллага (гадаад)");
+  const foreignMro   = state.certs.filter(c=>c.category==="ТҮ байгууллага (гадаад)");
+  const foreignAc    = state.aircraft.filter(a=>/Гадаад/i.test(a.registry||""));
+  const hasDb = state.db && (faoc.length || foreignAc.length);
+
+  /* Гадаадын тээвэрлэгчийг харьяа улсын хяналтын чадавхаар нь эрэмбэлнэ —
+     EI хамгийн бага улс эхэнд, өөрөөр хэлбэл эрсдэл өндөртэй нь дээр гарна. */
+  const faocRows = faoc.map(c=>{
+    const code = INTL_CARRIER_STATE[String(c.holder||"").trim()] || null;
+    const dd = c.expiryDate ? days(c.expiryDate, today()) : null;
+    return {c, code,
+            st: dd==null ? {t:"Хугацаа заагаагүй", k:"neutral"}
+              : dd<0 ? {t:"Хугацаа дууссан", k:"crit"}
+              : dd<=60 ? {t:"Удахгүй дуусна", k:"warn"} : {t:"Хүчинтэй", k:"good"}};
+  }).sort((a,b)=> (ei(a.code)??999) - (ei(b.code)??999));
+
+  /* Улсаар нэгтгэсэн дүн */
+  const byState = {};
+  faocRows.forEach(r=>{ const k=r.code||"—"; (byState[k]=byState[k]||[]).push(r); });
+  const stateRoll = Object.entries(byState).sort((a,b)=> (ei(a[0])??999) - (ei(b[0])??999));
+  const below = faocRows.filter(r=>ei(r.code)!=null && ei(r.code)<60).length;
 
   return `
   <div class="grid">
-    <div class="banner info"><div>Энэ хэсгийн бүх тоо <b>ICAO-гийн USOAP CMA (iSTARS)</b> нээлттэй сангаас
-      автоматаар татагдана. Дотоодын тайлангийн хэсгээс хамааралгүй, бие даасан лавлагаа.
+    <div class="banner info"><div>Энэ хэсэгт <b>ICAO-гийн USOAP CMA (iSTARS)</b> сангаас автоматаар татсан
+      олон улсын үзүүлэлтийг <b>Монгол Улсын өөрийн тоо баримттай</b> зэрэгцүүлж харуулна.
       ${d.fetchedAt?`Сүүлд татсан: <b>${esc(intlWhen(d.fetchedAt))}</b>.`:""}
       ${S.live ? `<span class="chip good" style="margin-left:6px"><span class="dot"></span>шууд холболт</span>`
                : `<span class="chip warn" style="margin-left:6px"><span class="dot"></span>хадгалсан хуулбар</span>`}</div></div>
@@ -1900,32 +1946,68 @@ function viewIntl(){
             <div class="n">бүсийн дундаж, ${apac?apac.year:"—"} он</div></div>
           <div class="tile"><div class="k">Дэлхийн дундаж</div>
             <div class="v">${intlPct(world&&world.overall)}</div>
-            <div class="n">187 гишүүн улсын дундаж</div></div>
+            <div class="n">${d.states} гишүүн улсын дундаж</div></div>
         </div>
-        <div class="banner warn" style="margin-top:14px"><div>ICAO-гийн нээлттэй санд Монгол Улсын хамгийн сүүлд
-          нийтлэгдсэн EI нь <b>${mn.year} оны</b> дүн (${intlPct(mn.overall)}). Дотоод тайланд дурдсан
-          <b>2026.04.22 – 05.04-ний AGA аудитын 83.06</b> оноо болон ${REPORT.usoap.icvm.year} оны ICVM-ийн
-          ${REPORT.usoap.icvm.ei}% нь ICAO-гийн нийтийн санд хараахан шинэчлэгдээгүй байна — хоёр эх сурвалжийн
-          зөрүүг тайлбарлахдаа үүнийг анхаарна уу.</div></div>
       </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Олон улсын аудит — дотоод тайлан ба ICAO-гийн сан</h2>
+        <span class="hint">хоёр эх сурвалжийн зэрэгцүүлэлт</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Үзүүлэлт</th><th class="num">Утга</th><th>Эх сурвалж</th><th>Тэмдэглэл</th></tr></thead>
+        <tbody>
+          <tr><td>USOAP-CMA аудит · ${esc(u.area)}</td>
+            <td class="num"><b>${u.score}</b></td>
+            <td class="small">Дотоод тайлан 2026-H1</td>
+            <td class="small muted">${esc(u.dates)} · ${u.pq} протокол асуулга. ${esc(u.note||"")}</td></tr>
+          <tr><td>ICVM ${u.icvm.year} · нэгдсэн EI</td>
+            <td class="num"><b>${u.icvm.ei}%</b></td>
+            <td class="small">Дотоод тайлан 2026-H1</td>
+            <td class="small muted">Улсын хэмжээнд хэмжсэн үр дүнтэй хэрэгжилт</td></tr>
+          <tr><td>ICAO-д нийтлэгдсэн EI (${mn.year})</td>
+            <td class="num"><b>${intlPct(mn.overall)}</b></td>
+            <td class="small">ICAO iSTARS</td>
+            <td class="small muted">Зөрүү: ${(u.icvm.ei - mn.overall).toFixed(2)} нэгж</td></tr>
+          ${u.icvm.weak.map(w=>{
+            const k = "ce" + w[0].replace(/\D/g,"");
+            return `<tr><td>${esc(w[0])} · ${esc(w[1])}</td>
+              <td class="num"><b>${w[2]}%</b></td>
+              <td class="small">Дотоод тайлан 2026-H1</td>
+              <td class="small muted">ICAO-гийн санд ${intlPct(mn.ce[k])} — зөрүү ${(w[2]-(mn.ce[k]||0)).toFixed(2)} нэгж</td></tr>`;
+          }).join("")}
+          <tr><td>CAP байршуулах хугацаа</td>
+            <td class="num"><b>${u.icvm.capDays}</b></td>
+            <td class="small">ICAO USOAP CMA Online Framework</td>
+            <td class="small muted">Тайлан хүлээн авснаас хойш хоногоор</td></tr>
+        </tbody>
+      </table></div></div>
+      <div class="body" style="padding-top:0"><div class="banner warn"><div>Дотоод тайлангийн тоо ICAO-гийн
+        нийтийн сангийнхаас зөрж байна. ICAO-гийн санд Монгол Улсын хамгийн сүүлд нийтлэгдсэн дүн нь
+        <b>${mn.year} оных</b> бөгөөд <b>2026.04-ний AGA аудитын үр дүн хараахан ороогүй</b>.
+        Олон улсын хэмжүүрээр тайлагнахдаа аль эх сурвалжийг ашигласнаа заавал тэмдэглэнэ үү.</div></div></div>
     </section>
 
     <section class="panel">
       <header><h2>Найман чухал элемент (CE) — харьцуулалт</h2>
         <span class="hint">Монгол Улс vs дэлхий, бүс нутаг</span></header>
       <div class="body" style="padding:0"><div class="tblwrap"><table>
-        <thead><tr><th>Элемент</th><th>Агуулга</th><th class="num">Монгол</th><th style="width:150px">Түвшин</th>
-          <th class="num">Дэлхий</th><th class="num">APAC</th><th>Зөрүү (дэлхийтэй)</th></tr></thead>
+        <thead><tr><th>Элемент</th><th>Агуулга</th><th class="num">Монгол (ICAO)</th><th style="width:130px">Түвшин</th>
+          <th class="num">Дотоод тайлан</th><th class="num">Дэлхий</th><th class="num">APAC</th>
+          <th>Зөрүү (дэлхийтэй)</th></tr></thead>
         <tbody>${REPORT.ce.map((c,i)=>{
           const k="ce"+(i+1), v=mn.ce[k], w=world&&world.ce[k], a=apac&&apac.ce[k];
+          const dom=u.icvm.weak.find(x=>x[0]===c[0]);
           return `<tr><td><span class="code">${esc(c[0])}</span></td>
             <td class="small">${esc(c[1])}</td>
             <td class="num"><b>${intlPct(v)}</b></td>
             <td>${intlBar(v)}</td>
+            <td class="num ${dom?"":"muted"}">${dom?dom[2]+"%":"тусад нь заагаагүй"}</td>
             <td class="num muted">${intlPct(w)}</td>
             <td class="num muted">${intlPct(a)}</td>
             <td>${diff(v,w)}</td></tr>`;}).join("")}</tbody>
         <tfoot><tr><td colspan="2">НЭГДСЭН EI</td><td class="num">${intlPct(mn.overall)}</td><td></td>
+          <td class="num">${u.icvm.ei}%</td>
           <td class="num">${intlPct(world&&world.overall)}</td><td class="num">${intlPct(apac&&apac.overall)}</td>
           <td>${diff(mn.overall, world&&world.overall)}</td></tr></tfoot>
       </table></div></div>
@@ -1984,14 +2066,95 @@ function viewIntl(){
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th style="width:200px">Түвшин</th>
           <th class="num">Аудитын он</th></tr></thead>
-        <tbody>${peers.map((p,i)=>`<tr${p.state==="MNG"?' style="background:var(--accent-soft)"':""}>
+        <tbody>${peers.map((p,i)=>`<tr${p==="MNG"?' style="background:var(--accent-soft)"':""}>
           <td class="num muted">${i+1}</td>
-          <td>${p.state==="MNG"?"<b>Монгол Улс</b>":esc(p.name)} <span class="code">${esc(p.state)}</span></td>
-          <td class="num"><b>${intlPct(p.overall)}</b></td>
-          <td>${intlBar(p.overall)}</td>
-          <td class="num muted">${p.year}</td></tr>`).join("")}</tbody>
+          <td>${p==="MNG"?"<b>Монгол Улс</b>":esc(nm(p))} <span class="code">${esc(p)}</span></td>
+          <td class="num"><b>${intlPct(ei(p))}</b></td>
+          <td>${intlBar(ei(p))}</td>
+          <td class="num muted">${yr(p)||"—"}</td></tr>`).join("")}</tbody>
       </table></div></div>
     </section>
+
+    <section class="panel">
+      <header><h2>Гадаадын оролцоо Монголын нисэхэд</h2>
+        <span class="hint">${hasDb ? "хяналтын сангаас" : "Тайлан 2026-H1-ээс"}</span></header>
+      <div class="body">
+        <div class="tiles">
+          <div class="tile"><div class="k">Гадаадын тээвэрлэгч</div>
+            <div class="v">${hasDb ? faoc.length : 24}</div><div class="n">ИНД-129 гэрчилгээ</div></div>
+          <div class="tile"><div class="k">Гадаадын ТҮ байгууллага</div>
+            <div class="v">${hasDb ? foreignMro.length : 11}</div><div class="n">ИНД-145 · нийт 19-өөс</div></div>
+          <div class="tile"><div class="k">Гадаадын сургалт</div>
+            <div class="v">${hasDb ? foreignTrain.length : 18}</div><div class="n">ИНД-141 · нийт 22-оос</div></div>
+          <div class="tile"><div class="k">Гадаадад бүртгэлтэй АХ</div>
+            <div class="v">${hasDb ? foreignAc.length : 6}</div><div class="n">нийт 66 агаарын хөлгөөс</div></div>
+          <div class="tile"><div class="k">Хөрвүүлсэн үнэмлэх</div>
+            <div class="v">31</div><div class="n">ИНД-61 · шинээр олгосон 34-өөс</div></div>
+        </div>
+        <div class="banner info" style="margin-top:14px"><div>Монгол Улсын нисэхийн хяналтын нэлээд хэсэг нь
+          <b>гадаад улсын хяналтын байгууллагын ажилд тулгуурладаг</b>: гадаадын тээвэрлэгчийн аюулгүй
+          ажиллагааг тухайн улсын ИНЕГ, гадаадад бүртгэлтэй агаарын хөлгийн нислэгт тэнцэх чадварыг
+          бүртгэсэн улсын эрх бүхий байгууллага хариуцна. Тиймээс тэдгээр улсын USOAP үнэлгээ нь
+          Монголын хяналтын эрсдэлд шууд нөлөөлнө.</div></div>
+      </div>
+    </section>
+
+    ${faocRows.length ? `
+    <section class="panel">
+      <header><h2>Гадаадын агаарын тээвэрлэгч — харьяа улсын хяналтын чадавх</h2>
+        <span class="hint">ИНД-129 · ${faocRows.length} гэрчилгээ · улсын EI-ээр эрэмбэлсэн</span></header>
+      <div class="body">
+        <div class="tiles" style="margin-bottom:14px">
+          <div class="tile"><div class="k">Харьяалагдах улс</div>
+            <div class="v">${stateRoll.filter(x=>x[0]!=="—").length}</div>
+            <div class="n">${faocRows.length} тээвэрлэгч</div></div>
+          <div class="tile ${below?"alert":""}"><div class="k">60%-иас доогуур улс</div>
+            <div class="v">${below}</div><div class="n">тээвэрлэгчийн тоогоор</div></div>
+          <div class="tile"><div class="k">Хугацаа дуусах</div>
+            <div class="v">${faocRows.filter(r=>r.st.k==="warn"||r.st.k==="crit").length}</div>
+            <div class="n">60 хоногт багтаж эсвэл дууссан</div></div>
+        </div>
+        <div class="eyebrow" style="margin-bottom:6px">Улсаар</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+          ${stateRoll.map(([c,rows])=> c==="—"
+            ? `<span class="chip neutral"><span class="dot"></span>тодорхойгүй · ${rows.length}</span>`
+            : `<span class="chip ${intlLvl(ei(c))}"><span class="dot"></span>${esc(nm(c))} · ${rows.length} · ${intlPct(ei(c))}</span>`).join("")}
+        </div>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Тээвэрлэгч</th><th>Гэрчилгээ</th><th>Харьяа улс</th><th>Улсын EI (ICAO)</th>
+            <th class="num">Аудитын он</th><th class="num">Дуусах огноо</th><th>Гэрчилгээний төлөв</th></tr></thead>
+          <tbody>${faocRows.map(r=>`<tr>
+            <td>${esc(r.c.holder||"—")}</td>
+            <td><span class="code">${esc(r.c.certNo||"—")}</span></td>
+            <td class="small">${r.code?esc(nm(r.code)):"<span class='muted'>тодорхойгүй</span>"}
+              ${r.code?`<span class="code">${esc(r.code)}</span>`:""}</td>
+            <td>${r.code?eiChip(r.code):`<span class="chip neutral"><span class="dot"></span>—</span>`}</td>
+            <td class="num muted">${r.code?(yr(r.code)||"—"):"—"}</td>
+            <td class="num">${esc(r.c.expiryDate||"—")}</td>
+            <td><span class="chip ${r.st.k}"><span class="dot"></span>${esc(r.st.t)}</span></td></tr>`).join("")}</tbody>
+        </table></div>
+        <div class="banner warn" style="margin-top:12px"><div>Улсын харьяаллыг <b>тээвэрлэгчийн нэрээр тогтоов</b> —
+          ИНД-129-ийн гэрчилгээний бүртгэлд улсын талбар байхгүй. Эрсдэлийн үнэлгээнд ашиглахын өмнө
+          гэрчилгээний эх баримтаас баталгаажуулна уу. Улсын EI нь тухайн улсын <b>нийт</b> хяналтын
+          тогтолцооны үзүүлэлт бөгөөд тодорхой нэг тээвэрлэгчийн аюулгүй ажиллагааны үнэлгээ биш.</div></div>
+      </div>
+    </section>` : ""}
+
+    ${foreignAc.length ? `
+    <section class="panel">
+      <header><h2>Гадаадад бүртгэлтэй агаарын хөлөг</h2>
+        <span class="hint">${foreignAc.length} хөлөг · нислэгт тэнцэх чадварыг бүртгэсэн улс хариуцна</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Бүртгэлийн дугаар</th><th>Маяг</th><th>Оператор</th>
+          <th class="num">Бүртгэсэн огноо</th><th>Бүртгэсэн улс</th></tr></thead>
+        <tbody>${foreignAc.map(a=>`<tr>
+          <td><span class="code">${esc(a.regNo||"—")}</span></td>
+          <td class="small">${esc(a.model||"—")}</td>
+          <td class="small">${esc(a.operator||"—")}</td>
+          <td class="num muted">${esc(a.regDate||"—")}</td>
+          <td class="small muted">${esc(a.note||"—")}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+    </section>` : ""}
 
     <div class="split">
       <section class="panel">
@@ -1999,9 +2162,9 @@ function viewIntl(){
         <div class="body" style="padding:0"><div class="tblwrap"><table>
           <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th class="num">Он</th></tr></thead>
           <tbody>${d.top.map((p,i)=>`<tr><td class="num muted">${i+1}</td>
-            <td class="small">${esc(p.name)} <span class="code">${esc(p.state)}</span></td>
-            <td class="num"><b>${intlPct(p.overall)}</b></td>
-            <td class="num muted">${p.year}</td></tr>`).join("")}</tbody>
+            <td class="small">${esc(nm(p))} <span class="code">${esc(p)}</span></td>
+            <td class="num"><b>${intlPct(ei(p))}</b></td>
+            <td class="num muted">${yr(p)||"—"}</td></tr>`).join("")}</tbody>
         </table></div></div>
       </section>
 
@@ -2019,6 +2182,9 @@ function viewIntl(){
             ${d.ssc.some(x=>x.state==="MNG")
               ? "<b>Монгол Улсад SSC тогтоогдсон байна</b> — дээрх жагсаалтыг харна уу."
               : "Монгол Улсад тогтоосон SSC байхгүй."}
+            ${faocRows.some(r=>r.code && d.ssc.some(s=>s.state===r.code))
+              ? "<b>Гэвч ИНД-129-ийн тээвэрлэгчийн дотор SSC-тэй улсын тээвэрлэгч байна</b> — дээрх хүснэгтээс харна уу."
+              : ""}
             SSC нь тухайн улсын хяналтын тогтолцоо аюулгүй ажиллагааны ноцтой эрсдэлийг арилгаж
             чадаагүйг илэрхийлдэг бөгөөд ICAO-гийн цахим хуудсаар нийтэд зарлагддаг.</div></div>
         </div>
@@ -2029,10 +2195,12 @@ function viewIntl(){
       <header><h2>Эх сурвалж</h2></header>
       <div class="body">
         <ul class="notes" style="margin:0;padding-left:18px">
-          <li><b>ICAO USOAP CMA</b> — үр дүнтэй хэрэгжилт, чухал элемент, SSC.
+          <li><b>ICAO USOAP CMA</b> — үр дүнтэй хэрэгжилт, чухал элемент, SSC, 187 улсын үнэлгээ.
             Автоматаар татагдана (<span class="code">/api/intl</span> → iSTARS).
             <a href="${esc(d.source&&d.source.url||"https://www.icao.int/safety/Pages/USOAP-Results.aspx")}"
                target="_blank" rel="noopener noreferrer">icao.int</a></li>
+          <li><b>Монголын тоо баримт</b> — «Тайлан 2026-H1» (0616.xlsx, нэгдсэн тайлан) ба хяналтын сангийн
+            гэрчилгээ, агаарын хөлгийн бүртгэл. Гэрчилгээний тоо сан шинэчлэгдэх бүрт өөрчлөгдөнө.</li>
           <li><b>ЕХ-ны нисэхийн аюулгүй байдлын жагсаалт</b> (ЕХ-нд нисэхийг хориглосон тээвэрлэгчид) —
             Европын комисс зөвхөн PDF хэлбэрээр нийтэлдэг тул автоматаар уншуулах боломжгүй.
             ИНД-129-ийн хяналтад ашиглахдаа албан ёсны эх хувийг шалгана уу.

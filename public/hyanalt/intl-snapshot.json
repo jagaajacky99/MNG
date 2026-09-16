@@ -1,5 +1,5 @@
 {
- "fetchedAt": "2026-09-16T00:47:26.595Z",
+ "fetchedAt": "2026-09-16T01:08:59.856Z",
  "source": {
   "name": "ICAO USOAP CMA · iSTARS",
   "url": "https://www.icao.int/safety/Pages/USOAP-Results.aspx"
@@ -32,153 +32,970 @@
  },
  "rank": 43,
  "states": 187,
+ "all": {
+  "GBR": [
+   "United Kingdom of Great Britain and Northern Ireland",
+   94.79,
+   2022
+  ],
+  "NLD": [
+   "Netherlands",
+   74.7,
+   2025
+  ],
+  "ZWE": [
+   "Zimbabwe",
+   68.75,
+   2023
+  ],
+  "ZMB": [
+   "Zambia",
+   73.17,
+   2024
+  ],
+  "VNM": [
+   "Viet Nam",
+   78.16,
+   2024
+  ],
+  "VEN": [
+   "Venezuela (Bolivarian Republic of)",
+   92.38,
+   2013
+  ],
+  "VUT": [
+   "Vanuatu",
+   43.36,
+   2016
+  ],
+  "UZB": [
+   "Uzbekistan",
+   63.05,
+   2023
+  ],
+  "URY": [
+   "Uruguay",
+   80.46,
+   2019
+  ],
+  "USA": [
+   "United States of America",
+   88.9,
+   2024
+  ],
+  "TZA": [
+   "United Republic of Tanzania",
+   67.42,
+   2025
+  ],
+  "ARE": [
+   "United Arab Emirates",
+   98.77,
+   2015
+  ],
+  "UKR": [
+   "Ukraine",
+   75.75,
+   2020
+  ],
+  "UGA": [
+   "Uganda",
+   72.64,
+   2023
+  ],
+  "TKM": [
+   "Turkmenistan",
+   62.48,
+   2019
+  ],
+  "TUR": [
+   "Türkiye",
+   55.28,
+   2026
+  ],
+  "TUN": [
+   "Tunisia",
+   56.74,
+   2020
+  ],
+  "TTO": [
+   "Trinidad and Tobago",
+   80.36,
+   2017
+  ],
+  "TON": [
+   "Tonga",
+   36.16,
+   2019
+  ],
+  "TGO": [
+   "Togo",
+   84.6,
+   2016
+  ],
+  "TLS": [
+   "Timor-Leste",
+   50.75,
+   2010
+  ],
+  "MKD": [
+   "The Republic of North Macedonia",
+   78.52,
+   2016
+  ],
+  "THA": [
+   "Thailand",
+   88.03,
+   2025
+  ],
+  "TJK": [
+   "Tajikistan",
+   27.36,
+   2026
+  ],
+  "SYR": [
+   "Syrian Arab Republic",
+   57.5,
+   2008
+  ],
+  "CHE": [
+   "Switzerland",
+   93.53,
+   2021
+  ],
+  "SWE": [
+   "Sweden",
+   90.77,
+   2016
+  ],
+  "SWZ": [
+   "Eswatini",
+   34.89,
+   2019
+  ],
+  "SUR": [
+   "Suriname",
+   59.11,
+   2012
+  ],
+  "SDN": [
+   "Sudan",
+   74.03,
+   2014
+  ],
+  "LKA": [
+   "Sri Lanka",
+   88.49,
+   2020
+  ],
+  "ESP": [
+   "Spain",
+   89.57,
+   2021
+  ],
+  "ZAF": [
+   "South Africa",
+   94.99,
+   2026
+  ],
+  "SLB": [
+   "Solomon Islands",
+   32.34,
+   2014
+  ],
+  "SVN": [
+   "Slovenia",
+   81.15,
+   2022
+  ],
+  "SVK": [
+   "Slovakia",
+   72.73,
+   2009
+  ],
+  "SGP": [
+   "Singapore",
+   99.68,
+   2022
+  ],
+  "SLE": [
+   "Sierra Leone",
+   72.28,
+   2026
+  ],
+  "SYC": [
+   "Seychelles",
+   42.17,
+   2022
+  ],
+  "SRB": [
+   "Serbia",
+   92.77,
+   2019
+  ],
+  "SEN": [
+   "Senegal",
+   88.98,
+   2025
+  ],
+  "SAU": [
+   "Saudi Arabia",
+   89.61,
+   2014
+  ],
+  "STP": [
+   "Sao Tome and Principe",
+   17.16,
+   2014
+  ],
+  "SMR": [
+   "San Marino",
+   89.33,
+   2020
+  ],
+  "WSM": [
+   "Samoa",
+   46.31,
+   2010
+  ],
+  "VCT": [
+   "Saint Vincent and the Grenadines",
+   48.54,
+   2023
+  ],
+  "LCA": [
+   "Saint Lucia",
+   48.54,
+   2023
+  ],
+  "KNA": [
+   "Saint Kitts and Nevis",
+   48.54,
+   2023
+  ],
+  "RWA": [
+   "Rwanda",
+   77.92,
+   2024
+  ],
+  "RUS": [
+   "Russian Federation",
+   68.42,
+   2022
+  ],
+  "ROU": [
+   "Romania",
+   91.28,
+   2017
+  ],
+  "MDA": [
+   "Republic of Moldova",
+   73.71,
+   2022
+  ],
+  "KOR": [
+   "Republic of Korea",
+   98.21,
+   2008
+  ],
+  "QAT": [
+   "Qatar",
+   90.09,
+   2018
+  ],
+  "PRT": [
+   "Portugal",
+   86,
+   2019
+  ],
+  "POL": [
+   "Poland",
+   82.11,
+   2020
+  ],
+  "PHL": [
+   "Philippines",
+   68.92,
+   2022
+  ],
+  "PER": [
+   "Peru",
+   88.89,
+   2018
+  ],
+  "PRY": [
+   "Paraguay",
+   69.29,
+   2022
+  ],
+  "PNG": [
+   "Papua New Guinea",
+   80.55,
+   2025
+  ],
+  "PAN": [
+   "Panama",
+   52.37,
+   2024
+  ],
+  "PLW": [
+   "Palau",
+   19.27,
+   2010
+  ],
+  "PAK": [
+   "Pakistan",
+   84.59,
+   2024
+  ],
+  "OMN": [
+   "Oman",
+   95.88,
+   2024
+  ],
+  "NOR": [
+   "Norway",
+   90.94,
+   2018
+  ],
+  "NGA": [
+   "Nigeria",
+   91.3,
+   2026
+  ],
+  "NER": [
+   "Niger",
+   63.77,
+   2015
+  ],
+  "NIC": [
+   "Nicaragua",
+   93.5,
+   2017
+  ],
+  "NZL": [
+   "New Zealand",
+   69.95,
+   2025
+  ],
+  "NPL": [
+   "Nepal",
+   69.97,
+   2022
+  ],
+  "NRU": [
+   "the Republic of Naoero",
+   24.1,
+   2008
+  ],
+  "NAM": [
+   "Namibia",
+   73,
+   2024
+  ],
+  "MMR": [
+   "Myanmar",
+   68.69,
+   2022
+  ],
+  "MOZ": [
+   "Mozambique",
+   64.71,
+   2018
+  ],
+  "MAR": [
+   "Morocco",
+   87.52,
+   2024
+  ],
+  "MNE": [
+   "Montenegro",
+   87.1,
+   2019
+  ],
+  "MNG": [
+   "Mongolia",
+   88.39,
+   2017
+  ],
+  "MCO": [
+   "Monaco",
+   52.28,
+   2007
+  ],
+  "FSM": [
+   "Micronesia (Federated States of)",
+   16.47,
+   2010
+  ],
+  "MEX": [
+   "Mexico",
+   54.75,
+   2024
+  ],
+  "MUS": [
+   "Mauritius",
+   57.89,
+   2025
+  ],
+  "MRT": [
+   "Mauritania",
+   78.27,
+   2018
+  ],
+  "MHL": [
+   "Marshall Islands",
+   41.44,
+   2010
+  ],
+  "MLT": [
+   "Malta",
+   76.59,
+   2025
+  ],
+  "MLI": [
+   "Mali",
+   72.66,
+   2015
+  ],
+  "MDV": [
+   "Maldives",
+   78.78,
+   2025
+  ],
+  "MYS": [
+   "Malaysia",
+   74.1,
+   2020
+  ],
+  "MWI": [
+   "Malawi",
+   40.25,
+   2018
+  ],
+  "MDG": [
+   "Madagascar",
+   76.95,
+   2018
+  ],
+  "LUX": [
+   "Luxembourg",
+   68.99,
+   2022
+  ],
+  "LTU": [
+   "Lithuania",
+   71.08,
+   2018
+  ],
+  "LBY": [
+   "Libya",
+   16.14,
+   2020
+  ],
+  "LBR": [
+   "Liberia",
+   28.04,
+   2022
+  ],
+  "LSO": [
+   "Lesotho",
+   21.01,
+   2007
+  ],
+  "LBN": [
+   "Lebanon",
+   58.51,
+   2017
+  ],
+  "LVA": [
+   "Latvia",
+   84.83,
+   2015
+  ],
+  "LAO": [
+   "Lao People's Democratic Republic",
+   71.35,
+   2015
+  ],
+  "KGZ": [
+   "Kyrgyzstan",
+   59.45,
+   2023
+  ],
+  "KWT": [
+   "Kuwait",
+   85.06,
+   2025
+  ],
+  "KEN": [
+   "Kenya",
+   75.5,
+   2018
+  ],
+  "KAZ": [
+   "Kazakhstan",
+   81.77,
+   2021
+  ],
+  "JOR": [
+   "Jordan",
+   79.22,
+   2017
+  ],
+  "JPN": [
+   "Japan",
+   88.98,
+   2010
+  ],
+  "JAM": [
+   "Jamaica",
+   81.53,
+   2016
+  ],
+  "ITA": [
+   "Italy",
+   89.84,
+   2022
+  ],
+  "ISR": [
+   "Israel",
+   84.91,
+   2016
+  ],
+  "IRL": [
+   "Ireland",
+   94.5,
+   2016
+  ],
+  "IRQ": [
+   "Iraq",
+   18.99,
+   2020
+  ],
+  "IRN": [
+   "Iran (Islamic Republic of)",
+   73.17,
+   2022
+  ],
+  "IDN": [
+   "Indonesia",
+   78.83,
+   2017
+  ],
+  "IND": [
+   "India",
+   85.42,
+   2022
+  ],
+  "ISL": [
+   "Iceland",
+   95.65,
+   2021
+  ],
+  "HUN": [
+   "Hungary",
+   71.55,
+   2024
+  ],
+  "HND": [
+   "Honduras",
+   88.65,
+   2019
+  ],
+  "HTI": [
+   "Haiti",
+   4.69,
+   2019
+  ],
+  "GUY": [
+   "Guyana",
+   63.45,
+   2024
+  ],
+  "GNB": [
+   "Guinea-Bissau",
+   9.47,
+   2013
+  ],
+  "GIN": [
+   "Guinea",
+   41.72,
+   2025
+  ],
+  "GTM": [
+   "Guatemala",
+   85.69,
+   2018
+  ],
+  "GRD": [
+   "Grenada",
+   48.54,
+   2023
+  ],
+  "GRC": [
+   "Greece",
+   76.44,
+   2025
+  ],
+  "GHA": [
+   "Ghana",
+   88.95,
+   2019
+  ],
+  "DEU": [
+   "Germany",
+   93.2,
+   2021
+  ],
+  "GEO": [
+   "Georgia",
+   85.39,
+   2018
+  ],
+  "GMB": [
+   "Gambia",
+   70.27,
+   2020
+  ],
+  "GAB": [
+   "Gabon",
+   70.23,
+   2019
+  ],
+  "FRA": [
+   "France",
+   91.84,
+   2025
+  ],
+  "FIN": [
+   "Finland",
+   92.53,
+   2018
+  ],
+  "FJI": [
+   "Fiji",
+   76.01,
+   2019
+  ],
+  "ETH": [
+   "Ethiopia",
+   88.75,
+   2020
+  ],
+  "EST": [
+   "Estonia",
+   60.52,
+   2018
+  ],
+  "ERI": [
+   "Eritrea",
+   19.93,
+   2022
+  ],
+  "GNQ": [
+   "Equatorial Guinea",
+   59.96,
+   2017
+  ],
+  "SLV": [
+   "El Salvador",
+   81.61,
+   2025
+  ],
+  "EGY": [
+   "Egypt",
+   82.73,
+   2023
+  ],
+  "ECU": [
+   "Ecuador",
+   42.36,
+   2023
+  ],
+  "DOM": [
+   "Dominican Republic",
+   90.53,
+   2017
+  ],
+  "DJI": [
+   "Djibouti",
+   51.13,
+   2022
+  ],
+  "DNK": [
+   "Denmark",
+   83.9,
+   2019
+  ],
+  "COD": [
+   "Democratic Republic of the Congo",
+   64.12,
+   2022
+  ],
+  "PRK": [
+   "Democratic People's Republic of Korea",
+   75.96,
+   2008
+  ],
+  "CZE": [
+   "Czech Republic",
+   84.73,
+   2023
+  ],
+  "CYP": [
+   "Cyprus",
+   81.36,
+   2019
+  ],
+  "CUB": [
+   "Cuba",
+   92.76,
+   2019
+  ],
+  "HRV": [
+   "Croatia",
+   79.76,
+   2020
+  ],
+  "CIV": [
+   "Cote d'Ivoire",
+   93.78,
+   2024
+  ],
+  "CRI": [
+   "Costa Rica",
+   63.8,
+   2025
+  ],
+  "COK": [
+   "Cook Islands",
+   3.75,
+   2013
+  ],
+  "COG": [
+   "Congo",
+   53.74,
+   2025
+  ],
+  "COM": [
+   "Comoros",
+   33.39,
+   2019
+  ],
+  "COL": [
+   "Colombia",
+   81.71,
+   2022
+  ],
+  "CHN": [
+   "China",
+   89.9,
+   2024
+  ],
+  "CHL": [
+   "Chile",
+   93.79,
+   2017
+  ],
+  "TCD": [
+   "Chad",
+   44.17,
+   2017
+  ],
+  "CAF": [
+   "Central African Republic",
+   7.84,
+   2007
+  ],
+  "CPV": [
+   "Cabo Verde",
+   82.8,
+   2018
+  ],
+  "CAN": [
+   "Canada",
+   65.3,
+   2023
+  ],
+  "CMR": [
+   "Cameroon",
+   57.5,
+   2015
+  ],
+  "KHM": [
+   "Cambodia",
+   67.79,
+   2025
+  ],
+  "BDI": [
+   "Burundi",
+   44.18,
+   2019
+  ],
+  "BFA": [
+   "Burkina Faso",
+   72.85,
+   2017
+  ],
+  "BGR": [
+   "Bulgaria",
+   70.27,
+   2018
+  ],
+  "BRN": [
+   "Brunei Darussalam",
+   64.98,
+   2007
+  ],
+  "BRA": [
+   "Brazil",
+   95.45,
+   2024
+  ],
+  "BWA": [
+   "Botswana",
+   85.85,
+   2024
+  ],
+  "BIH": [
+   "Bosnia and Herzegovina",
+   73.52,
+   2019
+  ],
+  "BOL": [
+   "Bolivia (Plurinational State of)",
+   90.14,
+   2021
+  ],
+  "BTN": [
+   "Bhutan",
+   55.87,
+   2026
+  ],
+  "BEN": [
+   "Benin",
+   62.93,
+   2024
+  ],
+  "BLZ": [
+   "Belize",
+   48.17,
+   2023
+  ],
+  "BEL": [
+   "Belgium",
+   86.57,
+   2016
+  ],
+  "BLR": [
+   "Belarus",
+   77.34,
+   2026
+  ],
+  "BRB": [
+   "Barbados",
+   51,
+   2013
+  ],
+  "BGD": [
+   "Bangladesh",
+   72.06,
+   2017
+  ],
+  "BHR": [
+   "Bahrain",
+   83.04,
+   2018
+  ],
+  "BHS": [
+   "Bahamas",
+   62.12,
+   2021
+  ],
+  "AZE": [
+   "Azerbaijan",
+   79.78,
+   2022
+  ],
+  "AUT": [
+   "Austria",
+   92.59,
+   2019
+  ],
+  "AUS": [
+   "Australia",
+   89.76,
+   2023
+  ],
+  "ARM": [
+   "Armenia",
+   51.84,
+   2024
+  ],
+  "ARG": [
+   "Argentina",
+   85.82,
+   2025
+  ],
+  "ATG": [
+   "Antigua and Barbuda",
+   48.54,
+   2023
+  ],
+  "AGO": [
+   "Angola",
+   62.35,
+   2022
+  ],
+  "AND": [
+   "Andorra",
+   23.85,
+   2007
+  ],
+  "DZA": [
+   "Algeria",
+   56.66,
+   2025
+  ],
+  "ALB": [
+   "Albania",
+   88.94,
+   2024
+  ],
+  "AFG": [
+   "Afghanistan",
+   6.91,
+   2019
+  ]
+ },
  "top": [
-  {
-   "state": "SGP",
-   "name": "Singapore",
-   "year": 2022,
-   "overall": 99.68
-  },
-  {
-   "state": "ARE",
-   "name": "United Arab Emirates",
-   "year": 2015,
-   "overall": 98.77
-  },
-  {
-   "state": "KOR",
-   "name": "Republic of Korea",
-   "year": 2008,
-   "overall": 98.21
-  },
-  {
-   "state": "OMN",
-   "name": "Oman",
-   "year": 2024,
-   "overall": 95.88
-  },
-  {
-   "state": "ISL",
-   "name": "Iceland",
-   "year": 2021,
-   "overall": 95.65
-  },
-  {
-   "state": "BRA",
-   "name": "Brazil",
-   "year": 2024,
-   "overall": 95.45
-  },
-  {
-   "state": "ZAF",
-   "name": "South Africa",
-   "year": 2026,
-   "overall": 94.99
-  },
-  {
-   "state": "GBR",
-   "name": "United Kingdom of Great Britain and Northern Ireland",
-   "year": 2022,
-   "overall": 94.79
-  },
-  {
-   "state": "IRL",
-   "name": "Ireland",
-   "year": 2016,
-   "overall": 94.5
-  },
-  {
-   "state": "CHL",
-   "name": "Chile",
-   "year": 2017,
-   "overall": 93.79
-  }
+  "SGP",
+  "ARE",
+  "KOR",
+  "OMN",
+  "ISL",
+  "BRA",
+  "ZAF",
+  "GBR",
+  "IRL",
+  "CHL"
  ],
  "peers": [
-  {
-   "state": "SGP",
-   "name": "Singapore",
-   "year": 2022,
-   "overall": 99.68
-  },
-  {
-   "state": "KOR",
-   "name": "Republic of Korea",
-   "year": 2008,
-   "overall": 98.21
-  },
-  {
-   "state": "DEU",
-   "name": "Germany",
-   "year": 2021,
-   "overall": 93.2
-  },
-  {
-   "state": "CHN",
-   "name": "China",
-   "year": 2024,
-   "overall": 89.9
-  },
-  {
-   "state": "JPN",
-   "name": "Japan",
-   "year": 2010,
-   "overall": 88.98
-  },
-  {
-   "state": "USA",
-   "name": "United States of America",
-   "year": 2024,
-   "overall": 88.9
-  },
-  {
-   "state": "THA",
-   "name": "Thailand",
-   "year": 2025,
-   "overall": 88.03
-  },
-  {
-   "state": "IND",
-   "name": "India",
-   "year": 2022,
-   "overall": 85.42
-  },
-  {
-   "state": "KAZ",
-   "name": "Kazakhstan",
-   "year": 2021,
-   "overall": 81.77
-  },
-  {
-   "state": "VNM",
-   "name": "Viet Nam",
-   "year": 2024,
-   "overall": 78.16
-  },
-  {
-   "state": "RUS",
-   "name": "Russian Federation",
-   "year": 2022,
-   "overall": 68.42
-  },
-  {
-   "state": "UZB",
-   "name": "Uzbekistan",
-   "year": 2023,
-   "overall": 63.05
-  },
-  {
-   "state": "KGZ",
-   "name": "Kyrgyzstan",
-   "year": 2023,
-   "overall": 59.45
-  },
-  {
-   "state": "TUR",
-   "name": "Türkiye",
-   "year": 2026,
-   "overall": 55.28
-  }
+  "SGP",
+  "KOR",
+  "DEU",
+  "CHN",
+  "JPN",
+  "USA",
+  "THA",
+  "IND",
+  "KAZ",
+  "VNM",
+  "RUS",
+  "UZB",
+  "KGZ",
+  "TUR"
  ],
  "regions": [
   {
