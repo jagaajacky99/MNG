@@ -464,6 +464,7 @@ const VIEW_DEFS = [
   {id:"regs",   t:"Дүрэм, журмын шинэчлэлт"},
   {id:"actions",t:"Хэрэгжүүлэх арга хэмжээ"},
   {id:"report", t:"Тайлан 2026-H1"},
+  {id:"intl",   t:"Олон улс"},
   {id:"cfg",    t:"Тохиргоо"},
 ];
 const DASH_TILES = [
@@ -502,7 +503,7 @@ const DEFAULTS = {
 /* ============================================================ төлөв */
 const state = {db:null, ready:false, canWrite:false,
   orgs:[], findings:[], inspections:[], certs:[], plan:[], regs:[], actions:[], aircraft:[], settings:null,
-  view:"dash", exportRows:null, modal:null, filter:{}, authOpen:false, dashDraft:null};
+  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
@@ -528,7 +529,18 @@ function normDash(defs, saved){
     seen.add(d.id);
     out.push({id:d.id, title:String(it.title||"").trim()||d.t, on:it.on!==false});
   });
-  defs.forEach(d=>{ if(!seen.has(d.id)) out.push({id:d.id, title:d.t, on:true}); });
+  // Шинээр нэмэгдсэн хэсгийг сүүлд биш, анхны жагсаалт дахь байрандаа оруулна:
+  // өмнөх хөршөө хадгалсан дараалалаас олоод түүний ард тавина.
+  defs.forEach((d,i)=>{
+    if(seen.has(d.id)) return;
+    let at = 0;
+    for(let k=i-1; k>=0; k--){
+      const p = out.findIndex(x=>x.id===defs[k].id);
+      if(p>=0){ at = p+1; break; }
+    }
+    out.splice(at, 0, {id:d.id, title:d.t, on:true});
+    seen.add(d.id);
+  });
   return out;
 }
 function dashCfg(){
@@ -763,7 +775,7 @@ function render(){
     return;
   }
   if(!state.ready){ el.innerHTML=`<div class="panel"><div class="body muted">Мэдээллийн санг ачаалж байна…</div></div>`; return; }
-  const offline = !state.db && state.view!=="report" ? `<div class="banner warn" style="margin-bottom:14px">
+  const offline = !state.db && !(state.view==="report"||state.view==="intl") ? `<div class="banner warn" style="margin-bottom:14px">
     <div><b>${INEG_DB.configured
       ? "Мэдээллийн санд холбогдож чадсангүй."
       : "Мэдээллийн сан хараахан тохируулагдаагүй байна."}</b>
@@ -774,7 +786,7 @@ function render(){
     “Тайлан 2026-H1” хэсэг нь сангаас хамааралгүй тул тэндээс тайлангийн үзүүлэлтийг харна.</div></div>` : "";
   el.innerHTML = offline + ({dash:viewDash, orgs:viewOrgs, cap:viewCap, insp:viewInsp,
                    certs:viewCerts, aircraft:viewAircraft, plan:viewPlan, regs:viewRegs, actions:viewActions,
-                   report:viewReport, cfg:viewCfg}[state.view])();
+                   report:viewReport, intl:viewIntl, cfg:viewCfg}[state.view])();
   wire();
   drawModal();
   $("#exportBtn").hidden = !state.exportRows;
@@ -1756,6 +1768,284 @@ function viewActions(){
 }
 
 /* ---------- 9. Тайлан ---------- */
+/* ---------- олон улсын үзүүлэлт (ICAO USOAP CMA) ----------
+   Өгөгдөл нь /api/intl прокси (Cloudflare Pages Function)-оор ICAO iSTARS-аас
+   шууд ирнэ. Прокси ажиллахгүй үед санд хадгалсан агшингийн хуулбар руу шилжинэ. */
+const INTL_AREAS = [
+  ["leg","LEG","Нисэхийн хууль тогтоомж"],
+  ["org","ORG","Иргэний нисэхийн байгууллага"],
+  ["pel","PEL","Мэргэжлийн үнэмлэх, сургалт"],
+  ["ops","OPS","Нислэгийн үйл ажиллагаа"],
+  ["air","AIR","Нислэгт тэнцэх чадвар"],
+  ["aig","AIG","Осол, зөрчлийн судалгаа"],
+  ["ans","ANS","Агаарын навигацийн үйлчилгээ"],
+  ["aga","AGA","Аэродром, газрын туслах хэрэгсэл"],
+];
+const INTL_REGIONS = {
+  "World":"Дэлхийн дундаж", "APAC":"Ази, Номхон далайн бүс",
+  "EUR/NAT":"Европ, Хойд Атлантик", "MID":"Ойрхи Дорнод",
+  "NACC":"Хойд Америк, Карибын", "SAM":"Өмнөд Америк",
+  "ESAF":"Зүүн ба өмнөд Африк", "WACAF":"Баруун ба төв Африк",
+};
+const INTL_SSC_AREA = Object.fromEntries(INTL_AREAS.map(a=>[a[1], a[2]]));
+
+/* ICAO-гийн зөвлөмжөөр эрсдэлд суурилсан хяналтын босго 60% */
+const intlLvl = v => v==null ? "neutral" : v>=80 ? "good" : v>=60 ? "warn" : "crit";
+const intlPct = v => v==null ? "—" : v.toFixed(2)+"%";
+const intlWhen = iso => { const d=new Date(iso); if(isNaN(d)) return "";
+  const p=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+
+async function loadIntl(){
+  if(state.intl.status!=="idle") return;
+  state.intl = {...state.intl, status:"loading"}; render();
+  const grab = async (url) => {
+    const r = await fetch(url, {headers:{accept:"application/json"}});
+    if(!r.ok) throw new Error(url+" → "+r.status);
+    return r.json();
+  };
+  try{
+    state.intl = {status:"ready", live:true, data:await grab("/api/intl"), msg:null};
+  }catch(e){
+    try{
+      state.intl = {status:"ready", live:false, data:await grab("intl-snapshot.json"), msg:String(e.message||e)};
+    }catch(e2){
+      state.intl = {status:"error", live:false, data:null, msg:String(e2.message||e2)};
+    }
+  }
+  render();
+}
+
+/* Жижиг шугаман график — гадны сан ашиглахгүй, SVG-ээр шууд зурна. */
+function intlSpark(series, mark){
+  const W=680, H=170, P={t:12,r:10,b:22,l:34};
+  const all = series.flatMap(s=>s.pts).filter(p=>p[1]!=null);
+  if(!all.length) return "";
+  const xs = all.map(p=>p[0]), ys = all.map(p=>p[1]);
+  const x0=Math.min(...xs), x1=Math.max(...xs);
+  const y0=Math.max(0, Math.floor((Math.min(...ys)-6)/10)*10), y1=Math.min(100, Math.ceil((Math.max(...ys)+6)/10)*10);
+  const px = x => P.l + (x-x0)/(x1-x0||1) * (W-P.l-P.r);
+  const py = y => H-P.b - (y-y0)/(y1-y0||1) * (H-P.t-P.b);
+  const grid = [y0, (y0+y1)/2, y1].map(y=>
+    `<line x1="${P.l}" x2="${W-P.r}" y1="${py(y).toFixed(1)}" y2="${py(y).toFixed(1)}"
+       stroke="var(--line)" stroke-width="1"/>
+     <text x="${P.l-6}" y="${(py(y)+3.5).toFixed(1)}" text-anchor="end"
+       font-size="10" fill="var(--ink-3)">${y.toFixed(0)}</text>`).join("");
+  const lines = series.map(s=>{
+    const d = s.pts.filter(p=>p[1]!=null).map((p,i)=>(i?"L":"M")+px(p[0]).toFixed(1)+" "+py(p[1]).toFixed(1)).join(" ");
+    return `<path d="${d}" fill="none" stroke="${s.c}" stroke-width="2"
+              stroke-linejoin="round" stroke-linecap="round"/>`;
+  }).join("");
+  const dot = mark && mark.y>=y0 ? `<circle cx="${px(mark.x).toFixed(1)}" cy="${py(mark.y).toFixed(1)}" r="4.5"
+      fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+    <text x="${(px(mark.x)+8).toFixed(1)}" y="${(py(mark.y)-7).toFixed(1)}" font-size="11"
+      font-weight="700" fill="var(--accent-ink)">${esc(mark.t)}</text>` : "";
+  const ticks = [x0, Math.round((x0+x1)/2), x1].map(x=>
+    `<text x="${px(x).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${x}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" role="img"
+    aria-label="Үр дүнтэй хэрэгжилтийн олон жилийн чиг хандлага">
+    ${grid}${lines}${dot}${ticks}</svg>
+    <div class="legend">${series.map(s=>`<span><i style="background:${s.c}"></i>${esc(s.n)}</span>`).join("")}
+      ${mark?`<span><i style="background:var(--accent)"></i>${esc(mark.n||mark.t)}</span>`:""}</div>`;
+}
+
+/* Хүснэгтэд тавих нимгэн хувийн зурвас */
+function intlBar(v){
+  return `<div class="prog-track" title="${v==null?"—":v.toFixed(2)+"%"}">
+    <span style="width:${Math.max(0,Math.min(100,v||0)).toFixed(1)}%;background:var(--${
+      intlLvl(v)==="good"?"good":intlLvl(v)==="warn"?"warn":"crit"})"></span></div>`;
+}
+
+function viewIntl(){
+  const S = state.intl;
+  if(S.status==="idle"){ loadIntl(); }
+  if(S.status==="idle" || S.status==="loading"){
+    return `<div class="panel"><div class="body muted">Олон улсын үзүүлэлтийг ICAO-гийн сангаас татаж байна…</div></div>`;
+  }
+  if(S.status==="error" || !S.data){
+    return `<div class="banner warn"><div><b>Олон улсын үзүүлэлтийг татаж чадсангүй.</b>
+      ${esc(S.msg||"")} Хуудсыг дахин ачаалж үзнэ үү.</div></div>`;
+  }
+  const d = S.data;
+  const world = d.regions.find(r=>r.region==="World");
+  const apac  = d.regions.find(r=>r.region==="APAC");
+  const mn = d.mn;
+  const diff = (a,b) => (a==null||b==null) ? "—"
+    : `<span class="chip ${a-b>=0?"good":"crit"}"><span class="dot"></span>${a-b>=0?"+":""}${(a-b).toFixed(2)}</span>`;
+
+  /* Хөрш, түнш орны жагсаалтад Монгол Улсыг нэмж эрэмбэлнэ */
+  const peers = [...d.peers, {state:"MNG", name:"Mongolia", year:mn.year, overall:mn.overall}]
+    .sort((a,b)=> b.overall - a.overall);
+
+  return `
+  <div class="grid">
+    <div class="banner info"><div>Энэ хэсгийн бүх тоо <b>ICAO-гийн USOAP CMA (iSTARS)</b> нээлттэй сангаас
+      автоматаар татагдана. Дотоодын тайлангийн хэсгээс хамааралгүй, бие даасан лавлагаа.
+      ${d.fetchedAt?`Сүүлд татсан: <b>${esc(intlWhen(d.fetchedAt))}</b>.`:""}
+      ${S.live ? `<span class="chip good" style="margin-left:6px"><span class="dot"></span>шууд холболт</span>`
+               : `<span class="chip warn" style="margin-left:6px"><span class="dot"></span>хадгалсан хуулбар</span>`}</div></div>
+
+    <section class="panel">
+      <header><h2>Монгол Улсын байр суурь</h2>
+        <span class="hint">USOAP CMA · үр дүнтэй хэрэгжилт (EI)</span></header>
+      <div class="body">
+        <div class="tiles">
+          <div class="tile ${mn.overall>=80?"goodv":"warnv"}"><div class="k">Монгол Улс · EI</div>
+            <div class="v">${intlPct(mn.overall)}</div>
+            <div class="n">ICAO-д бүртгэлтэй сүүлийн дүн, ${mn.year} он</div></div>
+          <div class="tile"><div class="k">Дэлхийн эрэмбэ</div>
+            <div class="v">${d.rank}</div><div class="n">${d.states} улсаас</div></div>
+          <div class="tile"><div class="k">${esc(INTL_REGIONS["APAC"])}</div>
+            <div class="v">${intlPct(apac&&apac.overall)}</div>
+            <div class="n">бүсийн дундаж, ${apac?apac.year:"—"} он</div></div>
+          <div class="tile"><div class="k">Дэлхийн дундаж</div>
+            <div class="v">${intlPct(world&&world.overall)}</div>
+            <div class="n">187 гишүүн улсын дундаж</div></div>
+        </div>
+        <div class="banner warn" style="margin-top:14px"><div>ICAO-гийн нээлттэй санд Монгол Улсын хамгийн сүүлд
+          нийтлэгдсэн EI нь <b>${mn.year} оны</b> дүн (${intlPct(mn.overall)}). Дотоод тайланд дурдсан
+          <b>2026.04.22 – 05.04-ний AGA аудитын 83.06</b> оноо болон ${REPORT.usoap.icvm.year} оны ICVM-ийн
+          ${REPORT.usoap.icvm.ei}% нь ICAO-гийн нийтийн санд хараахан шинэчлэгдээгүй байна — хоёр эх сурвалжийн
+          зөрүүг тайлбарлахдаа үүнийг анхаарна уу.</div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Найман чухал элемент (CE) — харьцуулалт</h2>
+        <span class="hint">Монгол Улс vs дэлхий, бүс нутаг</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Элемент</th><th>Агуулга</th><th class="num">Монгол</th><th style="width:150px">Түвшин</th>
+          <th class="num">Дэлхий</th><th class="num">APAC</th><th>Зөрүү (дэлхийтэй)</th></tr></thead>
+        <tbody>${REPORT.ce.map((c,i)=>{
+          const k="ce"+(i+1), v=mn.ce[k], w=world&&world.ce[k], a=apac&&apac.ce[k];
+          return `<tr><td><span class="code">${esc(c[0])}</span></td>
+            <td class="small">${esc(c[1])}</td>
+            <td class="num"><b>${intlPct(v)}</b></td>
+            <td>${intlBar(v)}</td>
+            <td class="num muted">${intlPct(w)}</td>
+            <td class="num muted">${intlPct(a)}</td>
+            <td>${diff(v,w)}</td></tr>`;}).join("")}</tbody>
+        <tfoot><tr><td colspan="2">НЭГДСЭН EI</td><td class="num">${intlPct(mn.overall)}</td><td></td>
+          <td class="num">${intlPct(world&&world.overall)}</td><td class="num">${intlPct(apac&&apac.overall)}</td>
+          <td>${diff(mn.overall, world&&world.overall)}</td></tr></tfoot>
+      </table></div></div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Аудитын найман чиглэл</h2>
+        <span class="hint">USOAP-ийн шалгалтын хамрах хүрээ</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Чиглэл</th><th>Агуулга</th><th class="num">Монгол</th><th style="width:150px">Түвшин</th>
+          <th class="num">Дэлхий</th><th class="num">APAC</th><th>Зөрүү (дэлхийтэй)</th></tr></thead>
+        <tbody>${INTL_AREAS.map(([k,code,name])=>{
+          const v=mn.areas[k], w=world&&world.areas[k], a=apac&&apac.areas[k];
+          return `<tr><td><span class="code">${esc(code)}</span></td>
+            <td class="small">${esc(name)}</td>
+            <td class="num"><b>${intlPct(v)}</b></td>
+            <td>${intlBar(v)}</td>
+            <td class="num muted">${intlPct(w)}</td>
+            <td class="num muted">${intlPct(a)}</td>
+            <td>${diff(v,w)}</td></tr>`;}).join("")}</tbody>
+      </table></div></div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Үр дүнтэй хэрэгжилтийн чиг хандлага</h2>
+        <span class="hint">${world?world.trend[0][0]:""} – ${world?world.trend[world.trend.length-1][0]:""}</span></header>
+      <div class="body">
+        ${intlSpark([
+          {n:"Дэлхийн дундаж", c:"var(--ink-3)",  pts: world?world.trend:[]},
+          {n:"Ази, Номхон далайн бүс", c:"var(--warn)", pts: apac?apac.trend:[]},
+        ], {x:mn.year, y:mn.overall, t:intlPct(mn.overall), n:"Монгол Улс ("+mn.year+")"})}
+        <div class="banner info" style="margin-top:12px"><div>ICAO-гийн зөвлөмжөөр эрсдэлд суурилсан хяналтад
+          шилжихээс өмнө суурь стандартын үр дүнтэй хэрэгжилт <b>60-аас доошгүй хувь</b> байх ёстой.
+          Монгол Улс энэ босгыг бүх чухал элементээр давсан.</div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Бүс нутгийн харьцуулалт</h2>
+        <span class="hint">ICAO-гийн бүсүүдийн нэгдсэн EI</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th>Бүс</th><th class="num">EI</th><th style="width:220px">Түвшин</th><th class="num">Он</th>
+          <th class="num">Монголтой харьцуулбал</th></tr></thead>
+        <tbody>${d.regions.map(r=>`<tr>
+          <td>${esc(INTL_REGIONS[r.region]||r.region)} <span class="code">${esc(r.region)}</span></td>
+          <td class="num"><b>${intlPct(r.overall)}</b></td>
+          <td>${intlBar(r.overall)}</td>
+          <td class="num muted">${r.year}</td>
+          <td>${diff(mn.overall, r.overall)}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Хөрш ба түнш орнууд</h2>
+        <span class="hint">ИНД-129-өөр гэрчилгээ авсан гадаадын тээвэрлэгчийн харьяа улсууд багтсан</span></header>
+      <div class="body" style="padding:0"><div class="tblwrap"><table>
+        <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th style="width:200px">Түвшин</th>
+          <th class="num">Аудитын он</th></tr></thead>
+        <tbody>${peers.map((p,i)=>`<tr${p.state==="MNG"?' style="background:var(--accent-soft)"':""}>
+          <td class="num muted">${i+1}</td>
+          <td>${p.state==="MNG"?"<b>Монгол Улс</b>":esc(p.name)} <span class="code">${esc(p.state)}</span></td>
+          <td class="num"><b>${intlPct(p.overall)}</b></td>
+          <td>${intlBar(p.overall)}</td>
+          <td class="num muted">${p.year}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+    </section>
+
+    <div class="split">
+      <section class="panel">
+        <header><h2>Дэлхийн тэргүүлэх 10 улс</h2></header>
+        <div class="body" style="padding:0"><div class="tblwrap"><table>
+          <thead><tr><th class="num">#</th><th>Улс</th><th class="num">EI</th><th class="num">Он</th></tr></thead>
+          <tbody>${d.top.map((p,i)=>`<tr><td class="num muted">${i+1}</td>
+            <td class="small">${esc(p.name)} <span class="code">${esc(p.state)}</span></td>
+            <td class="num"><b>${intlPct(p.overall)}</b></td>
+            <td class="num muted">${p.year}</td></tr>`).join("")}</tbody>
+        </table></div></div>
+      </section>
+
+      <section class="panel">
+        <header><h2>Ноцтой аюулгүй байдлын асуудал (SSC)</h2>
+          <span class="hint">одоо хүчинтэй</span></header>
+        <div class="body" style="padding:0">
+          ${d.ssc.length ? `<div class="tblwrap"><table>
+            <thead><tr><th>Улс</th><th>Чиглэл</th><th class="num">Тогтоосон он</th></tr></thead>
+            <tbody>${d.ssc.map(s=>`<tr><td class="small">${esc(s.name)} <span class="code">${esc(s.state)}</span></td>
+              <td class="small">${esc(INTL_SSC_AREA[s.area]||s.area)} <span class="code">${esc(s.area)}</span></td>
+              <td class="num">${s.year}</td></tr>`).join("")}</tbody>
+          </table></div>` : `<div class="body muted">Одоогоор бүртгэлтэй SSC байхгүй.</div>`}
+          <div class="banner ${d.ssc.some(x=>x.state==="MNG")?"warn":"info"}" style="margin:12px"><div>
+            ${d.ssc.some(x=>x.state==="MNG")
+              ? "<b>Монгол Улсад SSC тогтоогдсон байна</b> — дээрх жагсаалтыг харна уу."
+              : "Монгол Улсад тогтоосон SSC байхгүй."}
+            SSC нь тухайн улсын хяналтын тогтолцоо аюулгүй ажиллагааны ноцтой эрсдэлийг арилгаж
+            чадаагүйг илэрхийлдэг бөгөөд ICAO-гийн цахим хуудсаар нийтэд зарлагддаг.</div></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <header><h2>Эх сурвалж</h2></header>
+      <div class="body">
+        <ul class="notes" style="margin:0;padding-left:18px">
+          <li><b>ICAO USOAP CMA</b> — үр дүнтэй хэрэгжилт, чухал элемент, SSC.
+            Автоматаар татагдана (<span class="code">/api/intl</span> → iSTARS).
+            <a href="${esc(d.source&&d.source.url||"https://www.icao.int/safety/Pages/USOAP-Results.aspx")}"
+               target="_blank" rel="noopener noreferrer">icao.int</a></li>
+          <li><b>ЕХ-ны нисэхийн аюулгүй байдлын жагсаалт</b> (ЕХ-нд нисэхийг хориглосон тээвэрлэгчид) —
+            Европын комисс зөвхөн PDF хэлбэрээр нийтэлдэг тул автоматаар уншуулах боломжгүй.
+            ИНД-129-ийн хяналтад ашиглахдаа албан ёсны эх хувийг шалгана уу.
+            <a href="https://transport.ec.europa.eu/transport-themes/eu-air-safety-list_en"
+               target="_blank" rel="noopener noreferrer">transport.ec.europa.eu</a></li>
+          <li class="muted">Прокси ажиллахгүй үед хуудас <span class="code">hyanalt/intl-snapshot.json</span>
+            дахь хадгалсан хуулбарыг харуулна — тэр үед дээр «хадгалсан хуулбар» гэсэн тэмдэг гарна.</li>
+        </ul>
+      </div>
+    </section>
+  </div>`;
+}
+
 function viewReport(){
   const it=REPORT.inspections, tp=it.reduce((a,d)=>a+d.planned,0),
         tu=it.reduce((a,d)=>a+d.unplanned,0), td=it.reduce((a,d)=>a+d.docs,0);
