@@ -37,7 +37,7 @@
   --on-accent:#ffffff;
 
   /* --- алтлаг өргөлт (тэмдэг, тууз) --- */
-  --gold:#8a6b1f;
+  --gold:#e0a526;          --gold-ink:#8a6b1f;
   --gold-soft:#f5edda;
 
   /* --- эрх зүйн лавлагаа (гарын авлага) --- */
@@ -98,7 +98,7 @@
     --accent-2:#6fb4e9;
     --accent-soft:#0b2c4e;
   --on-accent:#0c1f33;
-    --gold:#d6ad55;        --gold-soft:#2e2413;
+    --gold:#e8b84d;        --gold-ink:#d6ad55;  --gold-soft:#2e2413;
     --air:#4a9ee2;         --air-soft:#0f2c46;
     --good:#46b585;        --good-soft:#0d2c1f;
     --ok:#46b585;          --ok-soft:#0d2c1f;
@@ -132,7 +132,7 @@
   --accent-2:#6fb4e9;
   --accent-soft:#0b2c4e;
     --on-accent:#0c1f33;
-  --gold:#d6ad55;          --gold-soft:#2e2413;
+  --gold:#e8b84d;          --gold-ink:#d6ad55;  --gold-soft:#2e2413;
   --air:#4a9ee2;           --air-soft:#0f2c46;
   --good:#46b585;          --good-soft:#0d2c1f;
   --ok:#46b585;            --ok-soft:#0d2c1f;
