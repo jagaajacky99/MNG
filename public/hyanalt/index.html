@@ -1859,6 +1859,20 @@ function intlBar(v){
       intlLvl(v)==="good"?"good":intlLvl(v)==="warn"?"warn":"crit"})"></span></div>`;
 }
 
+/* Монгол Улсын USOAP-ийн үйл ажиллагааны түүх.
+   2010, 2017 оны тоо нь ИНЕГ-ын цахим хуудсанд байршуулсан ICAO-гийн албан ёсны
+   эцсийн тайлангаас (mcaa.gov.mn); 2026 оны мөр нь дотоод тайлангийн (0616.xlsx)
+   мэдээлэл бөгөөд ICAO-гийн нээлттэй санд хараахан ороогүй. */
+const MN_AUDITS = [
+  {year:2010, what:"USOAP CSA иж бүрэн аудит", dates:"06.28 – 07.07", ei:87.92,
+   src:"ICAO эцсийн тайлан (2011.05)", note:"Найман чухал элементийн суурь үнэлгээ"},
+  {year:2017, what:"ICVM зохицуулалтын баталгаажуулалт", dates:"08.29 – 09.04", ei:89.55,
+   src:"ICAO ICVM эцсийн тайлан (2017.12)",
+   note:"LEG, PEL, OPS, ANS чиглэлийн 55 PQ-г хянаж 12-ыг нь хангалттай болгов"},
+  {year:2026, what:"USOAP CMA аудит · AGA", dates:"04.22 – 05.04", ei:null,
+   src:"Дотоод тайлан 2026-H1", note:"AGA чиглэлийн 153 PQ · 83.06 оноо. ICAO-д хараахан ороогүй"},
+];
+
 /* ИНД-129-өөр гэрчилгээ авсан гадаадын тээвэрлэгчийн харьяа улс.
    Гэрчилгээний бүртгэлд улсын талбар байхгүй тул тээвэрлэгчийн нэрээр тогтоов —
    энэ бол ИНЕГ-ын эх сурвалжийн биш, энэ сангийн ангилал. */
@@ -1936,9 +1950,12 @@ function viewIntl(){
         <span class="hint">USOAP CMA · үр дүнтэй хэрэгжилт (EI)</span></header>
       <div class="body">
         <div class="tiles">
-          <div class="tile ${mn.overall>=80?"goodv":"warnv"}"><div class="k">Монгол Улс · EI</div>
+          <div class="tile"><div class="k">Сүүлийн аудит</div>
+            <div class="v">${MN_AUDITS[MN_AUDITS.length-1].year}</div>
+            <div class="n">${esc(MN_AUDITS[MN_AUDITS.length-1].what)}</div></div>
+          <div class="tile ${mn.overall>=80?"goodv":"warnv"}"><div class="k">ICAO-д нийтлэгдсэн EI</div>
             <div class="v">${intlPct(mn.overall)}</div>
-            <div class="n">ICAO-д бүртгэлтэй сүүлийн дүн, ${mn.year} он</div></div>
+            <div class="n">${mn.year} оны үйл ажиллагаанд холбогдсон · хараахан шинэчлэгдээгүй</div></div>
           <div class="tile"><div class="k">Дэлхийн эрэмбэ</div>
             <div class="v">${d.rank}</div><div class="n">${d.states} улсаас</div></div>
           <div class="tile"><div class="k">${esc(INTL_REGIONS["APAC"])}</div>
@@ -1948,44 +1965,59 @@ function viewIntl(){
             <div class="v">${intlPct(world&&world.overall)}</div>
             <div class="n">${d.states} гишүүн улсын дундаж</div></div>
         </div>
+        <div class="banner warn" style="margin-top:14px"><div><b>Яагаад ${mn.year} он гэж гарч байна вэ?</b>
+          Монгол Улс <b>2026.04.22 – 05.04-нд USOAP CMA аудитад орсон</b> боловч ICAO тэр үр дүнг
+          нийтийн сандаа <b>хараахан оруулаагүй</b> байна — ICAO-гийн өөрийн нээлттэй жагсаалтад
+          Монгол Улс өнөөдрийн байдлаар «${mn.year}» гэж бичигдсэн хэвээр (шалгасан:
+          ${esc(intlWhen(d.fetchedAt))}). Аудитын үр дүн PQ-гийн статус ICAO-гийн төв байгууллагад
+          баталгаажсаны дараа нийтлэгддэг тул хэдэн сарын хоцролт үүсдэг. ICAO шинэчилмэгц энэ хуудас
+          <b>дараагийн ачаалалтаа өөрөө татна</b> — гараар засах шаардлагагүй.</div></div>
       </div>
     </section>
 
     <section class="panel">
-      <header><h2>Олон улсын аудит — дотоод тайлан ба ICAO-гийн сан</h2>
-        <span class="hint">хоёр эх сурвалжийн зэрэгцүүлэлт</span></header>
+      <header><h2>USOAP-ийн үйл ажиллагааны түүх</h2>
+        <span class="hint">2010 оноос хойш · EI-ийн өөрчлөлт</span></header>
       <div class="body" style="padding:0"><div class="tblwrap"><table>
-        <thead><tr><th>Үзүүлэлт</th><th class="num">Утга</th><th>Эх сурвалж</th><th>Тэмдэглэл</th></tr></thead>
+        <thead><tr><th class="num">Он</th><th>Үйл ажиллагаа</th><th class="num">Хугацаа</th>
+          <th class="num">EI</th><th>Эх сурвалж</th><th>Тэмдэглэл</th></tr></thead>
         <tbody>
-          <tr><td>USOAP-CMA аудит · ${esc(u.area)}</td>
-            <td class="num"><b>${u.score}</b></td>
-            <td class="small">Дотоод тайлан 2026-H1</td>
-            <td class="small muted">${esc(u.dates)} · ${u.pq} протокол асуулга. ${esc(u.note||"")}</td></tr>
-          <tr><td>ICVM ${u.icvm.year} · нэгдсэн EI</td>
-            <td class="num"><b>${u.icvm.ei}%</b></td>
-            <td class="small">Дотоод тайлан 2026-H1</td>
-            <td class="small muted">Улсын хэмжээнд хэмжсэн үр дүнтэй хэрэгжилт</td></tr>
-          <tr><td>ICAO-д нийтлэгдсэн EI (${mn.year})</td>
+          ${MN_AUDITS.map(a=>`<tr${a.ei==null?' style="background:var(--warn-soft)"':""}>
+            <td class="num"><b>${a.year}</b></td>
+            <td class="small">${esc(a.what)}</td>
+            <td class="num muted">${esc(a.dates)}</td>
+            <td class="num">${a.ei!=null?`<b>${a.ei}%</b>`:`<span class="chip warn"><span class="dot"></span>ICAO-д алга</span>`}</td>
+            <td class="small muted">${esc(a.src)}</td>
+            <td class="small muted">${esc(a.note||"")}</td></tr>`).join("")}
+          <tr style="background:var(--accent-soft)">
+            <td class="num"><b>${mn.year}</b></td>
+            <td class="small"><b>ICAO-гийн нээлттэй санд яг одоо</b></td>
+            <td class="num muted">—</td>
             <td class="num"><b>${intlPct(mn.overall)}</b></td>
-            <td class="small">ICAO iSTARS</td>
-            <td class="small muted">Зөрүү: ${(u.icvm.ei - mn.overall).toFixed(2)} нэгж</td></tr>
-          ${u.icvm.weak.map(w=>{
-            const k = "ce" + w[0].replace(/\D/g,"");
-            return `<tr><td>${esc(w[0])} · ${esc(w[1])}</td>
-              <td class="num"><b>${w[2]}%</b></td>
-              <td class="small">Дотоод тайлан 2026-H1</td>
-              <td class="small muted">ICAO-гийн санд ${intlPct(mn.ce[k])} — зөрүү ${(w[2]-(mn.ce[k]||0)).toFixed(2)} нэгж</td></tr>`;
-          }).join("")}
-          <tr><td>CAP байршуулах хугацаа</td>
-            <td class="num"><b>${u.icvm.capDays}</b></td>
-            <td class="small">ICAO USOAP CMA Online Framework</td>
-            <td class="small muted">Тайлан хүлээн авснаас хойш хоногоор</td></tr>
+            <td class="small muted">ICAO iSTARS</td>
+            <td class="small muted">${mn.year} оны үйл ажиллагаанд холбогдсон. ICVM-ийн эцсийн
+              тайлангийн ${u.icvm.ei}%-иас ${Math.abs(u.icvm.ei-mn.overall).toFixed(2)} нэгжээр зөрүүтэй —
+              PQ-гийн статус хойшид шинэчлэгдсэнээс</td></tr>
         </tbody>
       </table></div></div>
-      <div class="body" style="padding-top:0"><div class="banner warn"><div>Дотоод тайлангийн тоо ICAO-гийн
-        нийтийн сангийнхаас зөрж байна. ICAO-гийн санд Монгол Улсын хамгийн сүүлд нийтлэгдсэн дүн нь
-        <b>${mn.year} оных</b> бөгөөд <b>2026.04-ний AGA аудитын үр дүн хараахан ороогүй</b>.
-        Олон улсын хэмжүүрээр тайлагнахдаа аль эх сурвалжийг ашигласнаа заавал тэмдэглэнэ үү.</div></div></div>
+      <div class="body" style="padding-top:0">
+        <div class="eyebrow" style="margin-bottom:6px">Хамгийн сул чухал элемент · ICVM ${u.icvm.year}</div>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Элемент</th><th>Агуулга</th><th class="num">ICVM эцсийн тайлан</th>
+            <th class="num">ICAO-гийн санд одоо</th><th>Зөрүү</th></tr></thead>
+          <tbody>${u.icvm.weak.map(w=>{
+            const k="ce"+w[0].replace(/\D/g,""), v=mn.ce[k];
+            return `<tr><td><span class="code">${esc(w[0])}</span></td>
+              <td class="small">${esc(w[1])}</td>
+              <td class="num"><b>${w[2]}%</b></td>
+              <td class="num">${intlPct(v)}</td>
+              <td>${diff(v, w[2])}</td></tr>`;}).join("")}
+          </tbody>
+        </table></div>
+        <div class="banner info" style="margin-top:12px"><div>Гишүүн улс залруулах төлөвлөгөө (CAP)-өө
+          USOAP CMA Online Framework-д тайлан хүлээн авснаас хойш <b>${u.icvm.capDays} хоногийн дотор</b>
+          шинэчлэн байршуулах үүрэгтэй. 2026 оны AGA аудитын CAP-ийн хугацааг мөн энэ журмаар тооцно.</div></div>
+      </div>
     </section>
 
     <section class="panel">
