@@ -2063,10 +2063,12 @@ function viewIntl(){
             <div class="k">${last.year} оны аудитын үнэлгээ</div>
             <div class="v">${last.ei}</div>
             <div class="n">${esc(last.dates)} · ${MN_2026_AREAS.length} чиглэл, ${last.pq} протокол асуулга</div></div>
-          <div class="tile"><div class="k">Дэлхийн дунджаас</div>
+          <div class="tile ${last.ei>=(world?world.overall:0)?"goodv":"alert"}">
+            <div class="k">Дэлхийн дунджаас</div>
             <div class="v">${gap(world&&world.overall)}</div>
             <div class="n">дэлхийн дундаж ${intlPct(world&&world.overall)}</div></div>
-          <div class="tile"><div class="k">APAC дунджаас</div>
+          <div class="tile ${last.ei>=(apac?apac.overall:0)?"goodv":"alert"}">
+            <div class="k">APAC дунджаас</div>
             <div class="v">${gap(apac&&apac.overall)}</div>
             <div class="n">бүсийн дундаж ${intlPct(apac&&apac.overall)}</div></div>
           <div class="tile ghost"><div class="k">ICAO-гийн нээлттэй санд</div>
@@ -2385,6 +2387,8 @@ function viewReport(){
   const it=REPORT.inspections, tp=it.reduce((a,d)=>a+d.planned,0),
         tu=it.reduce((a,d)=>a+d.unplanned,0), td=it.reduce((a,d)=>a+d.docs,0);
   const f=REPORT.findings;
+  // Хэлтсийн бүтэн нэр — товчлолыг задлахад хэрэглэнэ
+  const deptName = code => (REPORT.inspections.find(x=>x.dept===code)||{}).name || code;
   const org=REPORT.certs.filter(c=>!["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+c[5],0);
   const per=REPORT.certs.filter(c=>["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+c[5],0);
   return `
@@ -2410,7 +2414,7 @@ function viewReport(){
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Хэлтэс</th><th class="num">Нэгдсэн тайлан</th><th class="num">Дүгнэлт</th>
           <th class="num">Үл нийцэл</th><th class="num">Шаардлага</th><th>Тэмдэглэл</th></tr></thead>
-        <tbody>${f.map(d=>`<tr><td><span class="code">${esc(d.dept)}</span></td>
+        <tbody>${f.map(d=>`<tr><td>${esc(deptName(d.dept))} <span class="code">${esc(d.dept)}</span></td>
           <td class="num">${d.reports}</td><td class="num">${d.conclusions}</td>
           <td class="num">${d.nonconf}</td><td class="num">${d.reqs}</td>
           <td class="small muted">${esc(d.note||"")}</td></tr>`).join("")}</tbody>

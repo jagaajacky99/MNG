@@ -44,8 +44,8 @@
   --air:#0475c5;           --air-soft:#d2e7fa;
 
   /* --- ноцтой байдал --- */
-  --good:#14653f;          --good-soft:#dceee5;
-  --ok:#14653f;            --ok-soft:#dceee5;
+  --good:#0f7a46;          --good-soft:#ddf3e7;
+  --ok:#0f7a46;            --ok-soft:#ddf3e7;
   --warn:#8a5a00;          --warn-soft:#f7ecd3;
   --caut:#8a5a00;          --caut-soft:#f7ecd3;
   --serious:#a8480f;       --serious-soft:#fae2d2;
@@ -100,8 +100,8 @@
   --on-accent:#0c1f33;
     --gold:#e8b84d;        --gold-ink:#d6ad55;  --gold-soft:#2e2413;
     --air:#4a9ee2;         --air-soft:#0f2c46;
-    --good:#46b585;        --good-soft:#0d2c1f;
-    --ok:#46b585;          --ok-soft:#0d2c1f;
+    --good:#4cc38f;        --good-soft:#0c3324;
+    --ok:#4cc38f;          --ok-soft:#0c3324;
     --warn:#d6a13f;        --warn-soft:#302410;
     --caut:#d6a13f;        --caut-soft:#302410;
     --serious:#e08a55;     --serious-soft:#341e0e;
@@ -134,8 +134,8 @@
     --on-accent:#0c1f33;
   --gold:#e8b84d;          --gold-ink:#d6ad55;  --gold-soft:#2e2413;
   --air:#4a9ee2;           --air-soft:#0f2c46;
-  --good:#46b585;          --good-soft:#0d2c1f;
-  --ok:#46b585;            --ok-soft:#0d2c1f;
+  --good:#4cc38f;          --good-soft:#0c3324;
+  --ok:#4cc38f;            --ok-soft:#0c3324;
   --warn:#d6a13f;          --warn-soft:#302410;
   --caut:#d6a13f;          --caut-soft:#302410;
   --serious:#e08a55;       --serious-soft:#341e0e;
