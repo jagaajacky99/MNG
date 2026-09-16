@@ -14,32 +14,32 @@
   color-scheme: light;
 
   /* --- үндсэн гадаргуу --- */
-  --bg:#e9eef4;            --ground:#e9eef4;
+  --bg:#e7edf6;            --ground:#e7edf6;
   --surface:#ffffff;
-  --surface-2:#f4f8fc;
-  --surface-3:#e2eaf3;
+  --surface-2:#f2f6fc;
+  --surface-3:#dde7f6;
 
   /* --- шугам --- */
-  --line:#d0dae6;          --line-soft:#e0e7ef;
-  --line-strong:#adbccd;
+  --line:#ccd9ec;          --line-soft:#dde6f2;
+  --line-strong:#a6b9d6;
 
   /* --- бичвэр --- */
-  --ink:#0d1a28;
-  --ink-2:#3a4b5e;
-  --ink-3:#69798c;
+  --ink:#171d2b;
+  --ink-2:#3c4a63;
+  --ink-3:#5c6b84;
 
   /* --- албан ёсны гүн цэнхэр --- */
-  --accent:#0b3d6b;
-  --accent-ink:#072a4b;
-  --accent-2:#12558f;
-  --accent-soft:#dbe7f4;
+  --accent:#074580;
+  --accent-ink:#05335f;
+  --accent-2:#0475c5;
+  --accent-soft:#dde8f8;
 
   /* --- алтлаг өргөлт (тэмдэг, тууз) --- */
   --gold:#8a6b1f;
   --gold-soft:#f5edda;
 
   /* --- эрх зүйн лавлагаа (гарын авлага) --- */
-  --air:#0b5c93;           --air-soft:#dceaf5;
+  --air:#0475c5;           --air-soft:#dcebf9;
 
   /* --- ноцтой байдал --- */
   --good:#14653f;          --good-soft:#dceee5;
@@ -50,9 +50,9 @@
   --crit:#a31d23;          --crit-soft:#f8dcdd;
 
   /* --- диаграмын цуваа --- */
-  --s1:#0b3d6b; --s2:#b06a12; --s3:#1a7a55;
+  --s1:#0475c5; --s2:#b06a12; --s3:#2c454c;
 
-  --shadow:0 1px 2px rgba(13,26,40,.07), 0 6px 18px -8px rgba(13,26,40,.14);
+  --shadow:0 1px 2px rgba(21,29,45,.07), 0 6px 18px -8px rgba(21,29,45,.15);
   --r:6px;
 
   /* --- үсгийн хэв ---
@@ -73,8 +73,8 @@
      цахим хуудасны жишиг. */
   --page-photo:url("/assets/bg-earth.jpg");
   --page-bg:
-    radial-gradient(1100px 460px at 50% -180px, rgba(11,61,107,.10), transparent 70%),
-    linear-gradient(180deg, #eef3f8 0%, var(--bg) 420px);
+    radial-gradient(1100px 460px at 50% -180px, rgba(7,69,128,.10), transparent 70%),
+    linear-gradient(180deg, #edf2f9 0%, var(--bg) 420px);
   --page-bg-size:auto, auto;
   --page-bg-pos:center, center;
 }
@@ -82,32 +82,32 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --bg:#0a141d;          --ground:#0a141d;
-    --surface:#111e2a;
-    --surface-2:#162534;
-    --surface-3:#1d3040;
-    --line:#26394a;        --line-soft:#1d2d3b;
-    --line-strong:#37506a;
-    --ink:#e6eef6;
-    --ink-2:#a5b8c9;
-    --ink-3:#76899d;
-    --accent:#5aa7e0;
-    --accent-ink:#8cc6f2;
-    --accent-2:#7cbdec;
-    --accent-soft:#11304a;
+    --bg:#161b28;          --ground:#161b28;
+    --surface:#252c3f;
+    --surface-2:#2d3548;
+    --surface-3:#374056;
+    --line:#38415a;        --line-soft:#2b3346;
+    --line-strong:#4d5876;
+    --ink:#e8eef8;
+    --ink-2:#a9b7cf;
+    --ink-3:#919eb8;
+    --accent:#4a9ee2;
+    --accent-ink:#8fc4ef;
+    --accent-2:#6fb4e9;
+    --accent-soft:#0d3357;
     --gold:#d6ad55;        --gold-soft:#2e2413;
-    --air:#5aa7e0;         --air-soft:#10293c;
+    --air:#4a9ee2;         --air-soft:#0f2c46;
     --good:#46b585;        --good-soft:#0d2c1f;
     --ok:#46b585;          --ok-soft:#0d2c1f;
     --warn:#d6a13f;        --warn-soft:#302410;
     --caut:#d6a13f;        --caut-soft:#302410;
     --serious:#e08a55;     --serious-soft:#341e0e;
     --crit:#e8726d;        --crit-soft:#371718;
-    --s1:#5aa7e0; --s2:#e0954a; --s3:#46b585;
+    --s1:#4a9ee2; --s2:#e0954a; --s3:#5f9aa6;
     --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 18px -8px rgba(0,0,0,.65);
     --page-bg:
-      radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-      linear-gradient(180deg, #0c1822 0%, var(--bg) 420px);
+      radial-gradient(1100px 460px at 50% -180px, rgba(74,158,226,.10), transparent 70%),
+      linear-gradient(180deg, #1b2130 0%, var(--bg) 420px);
     --page-bg-size:auto, auto;
     --page-bg-pos:center, center;
   }
@@ -115,32 +115,32 @@
 
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --bg:#0a141d;            --ground:#0a141d;
-  --surface:#111e2a;
-  --surface-2:#162534;
-  --surface-3:#1d3040;
-  --line:#26394a;          --line-soft:#1d2d3b;
-  --line-strong:#37506a;
-  --ink:#e6eef6;
-  --ink-2:#a5b8c9;
-  --ink-3:#76899d;
-  --accent:#5aa7e0;
-  --accent-ink:#8cc6f2;
-  --accent-2:#7cbdec;
-  --accent-soft:#11304a;
+  --bg:#161b28;            --ground:#161b28;
+  --surface:#252c3f;
+  --surface-2:#2d3548;
+  --surface-3:#374056;
+  --line:#38415a;          --line-soft:#2b3346;
+  --line-strong:#4d5876;
+  --ink:#e8eef8;
+  --ink-2:#a9b7cf;
+  --ink-3:#919eb8;
+  --accent:#4a9ee2;
+  --accent-ink:#8fc4ef;
+  --accent-2:#6fb4e9;
+  --accent-soft:#0d3357;
   --gold:#d6ad55;          --gold-soft:#2e2413;
-  --air:#5aa7e0;           --air-soft:#10293c;
+  --air:#4a9ee2;           --air-soft:#0f2c46;
   --good:#46b585;          --good-soft:#0d2c1f;
   --ok:#46b585;            --ok-soft:#0d2c1f;
   --warn:#d6a13f;          --warn-soft:#302410;
   --caut:#d6a13f;          --caut-soft:#302410;
   --serious:#e08a55;       --serious-soft:#341e0e;
   --crit:#e8726d;          --crit-soft:#371718;
-  --s1:#5aa7e0; --s2:#e0954a; --s3:#46b585;
+  --s1:#4a9ee2; --s2:#e0954a; --s3:#5f9aa6;
   --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 18px -8px rgba(0,0,0,.65);
   --page-bg:
-    radial-gradient(1100px 460px at 50% -180px, rgba(90,167,224,.10), transparent 70%),
-    linear-gradient(180deg, #0c1822 0%, var(--bg) 420px);
+    radial-gradient(1100px 460px at 50% -180px, rgba(74,158,226,.10), transparent 70%),
+    linear-gradient(180deg, #1b2130 0%, var(--bg) 420px);
   --page-bg-size:auto, auto;
   --page-bg-pos:center, center;
 }
@@ -151,12 +151,12 @@
    агуулгын ард биш, тусгаарласан туузанд хэрэглэнэ. Дээр нь байгууллагын
    хөх өнгийн хөшиг тавьсан тул цагаан бичвэрийн тодорол хангагдана.
    ============================================================ */
-.photoband{ position:relative; overflow:hidden; background-color:#0b2136; color:#eaf2fb; }
+.photoband{ position:relative; overflow:hidden; background-color:#081a2e; color:#eaf2fb; }
 .photoband::before{ content:""; position:absolute; inset:0;
   background:var(--page-photo) center 42% / cover no-repeat; }
 .photoband::after{ content:""; position:absolute; inset:0;
-  background:linear-gradient(100deg, rgba(8,26,45,.95) 0%, rgba(8,26,45,.86) 38%,
-                             rgba(8,26,45,.66) 78%, rgba(8,26,45,.54) 100%); }
+  background:linear-gradient(100deg, rgba(7,24,44,.95) 0%, rgba(7,24,44,.86) 38%,
+                             rgba(7,24,44,.66) 78%, rgba(7,24,44,.54) 100%); }
 .photoband > *{ position:relative; z-index:1 }
 .photoband .edge{ position:absolute; left:0; right:0; bottom:0; height:3px;
   background:var(--gold); z-index:2 }
@@ -178,7 +178,7 @@
   border-bottom:3px solid var(--gold);
 }
 :root[data-theme="dark"] .gov-bar,
-:root:not([data-theme="light"]) .gov-bar{ background:#08203a; }
+:root:not([data-theme="light"]) .gov-bar{ background:#0a1b30; }
 .gov-bar .in{
   max-width:1180px; margin:0 auto; padding:7px 20px;
   display:flex; align-items:center; gap:12px; flex-wrap:wrap;

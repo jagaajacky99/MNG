@@ -72,10 +72,10 @@
       '<style>' +
       '#gateHost{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:20px;' +
       // Нэвтрэх дэлгэц нь зургийн туузан дэвсгэртэй — картын доор хөх хөшиг
-      'background:#0b2136 var(--page-photo) center 42%/cover no-repeat;' +
+      'background:#081a2e var(--page-photo) center 42%/cover no-repeat;' +
       'font-family:var(--f-body,system-ui);overflow:auto}' +
       '#gateHost::before{content:"";position:fixed;inset:0;' +
-      'background:linear-gradient(160deg,rgba(8,26,45,.90),rgba(8,26,45,.72) 55%,rgba(8,26,45,.86));}' +
+      'background:linear-gradient(160deg,rgba(7,24,44,.90),rgba(7,24,44,.72) 55%,rgba(7,24,44,.86));}' +
       '#gateHost>*{position:relative;z-index:1}' +
       '#gateHost .gc{width:min(420px,100%);background:var(--surface);border:1px solid var(--line);' +
       'border-top:4px solid var(--accent);border-radius:7px;box-shadow:var(--shadow);overflow:hidden}' +
