@@ -41,6 +41,8 @@
   /* Гуравдагч өнгө — хүрээний тууз, зургийн хөшгийн гүн тал.
      Утга илэрхийлэхгүй, зөвхөн загварын өнгө. */
   --deep:#14533f;          --deep-2:#0e3b2e;
+  /* Цайвар ногоон гадаргуу (самбарын толгой, тэмдэглэл) ба түүн дээрх бичвэр */
+  --deep-soft:#e1efe8;     --deep-ink:#14533f;
   --gold-soft:#f5edda;
 
   /* --- эрх зүйн лавлагаа (гарын авлага) --- */
@@ -103,6 +105,7 @@
   --on-accent:#0c1f33;
     --gold:#e8b84d;        --gold-ink:#d6ad55;  --gold-soft:#2e2413;
     --deep:#16604a;        --deep-2:#0d3628;
+    --deep-soft:#173a2f;   --deep-ink:#86d4ae;
     --air:#4a9ee2;         --air-soft:#0f2c46;
     --good:#4cc38f;        --good-soft:#0c3324;
     --ok:#4cc38f;          --ok-soft:#0c3324;
@@ -138,6 +141,7 @@
     --on-accent:#0c1f33;
   --gold:#e8b84d;          --gold-ink:#d6ad55;  --gold-soft:#2e2413;
   --deep:#16604a;          --deep-2:#0d3628;
+  --deep-soft:#173a2f;     --deep-ink:#86d4ae;
   --air:#4a9ee2;           --air-soft:#0f2c46;
   --good:#4cc38f;          --good-soft:#0c3324;
   --ok:#4cc38f;            --ok-soft:#0c3324;
@@ -186,8 +190,10 @@
   letter-spacing:.03em;
   border-bottom:3px solid var(--gold);
 }
-:root[data-theme="dark"] .gov-bar,
-:root:not([data-theme="light"]) .gov-bar{ background:var(--deep-2); }
+:root[data-theme="dark"] .gov-bar{ background:var(--deep-2); }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .gov-bar{ background:var(--deep-2); }
+}
 .gov-bar .in{
   max-width:1180px; margin:0 auto; padding:7px 20px;
   display:flex; align-items:center; gap:12px; flex-wrap:wrap;
@@ -200,19 +206,24 @@
 .gov-bar a:hover{ color:#fff; text-decoration:underline }
 
 .gov-foot{
-  border-top:3px solid var(--deep);
-  background:var(--surface);
-  color:var(--ink-3);
+  /* Хөл нь дээд туузтай хос — бүхэлдээ гүн ногоон, дээрээ алтлаг зураастай */
+  border-top:3px solid var(--gold);
+  background:var(--deep);
+  color:#c3dccf;
   font-family:var(--fb);
   font-size:12.5px;
   line-height:1.65;
 }
+:root[data-theme="dark"] .gov-foot{ background:var(--deep-2); }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .gov-foot{ background:var(--deep-2); }
+}
 .gov-foot .in{ max-width:1180px; margin:0 auto; padding:26px 20px 34px }
 .gov-foot .rule{ height:3px; background:var(--gold); width:46px; margin-bottom:16px }
-.gov-foot b{ color:var(--ink-2) }
+.gov-foot b{ color:#eef7f2 }
 .gov-foot .cols{ display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)) }
 .gov-foot h4{ font-family:var(--fd); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--ink-2); margin:0 0 7px }
-.gov-foot a{ color:var(--accent); text-decoration:none }
-.gov-foot a:hover{ text-decoration:underline }
-.gov-foot .base{ margin-top:22px; padding-top:14px; border-top:1px solid var(--line-soft); font-size:11.5px }
+  color:#eef7f2; margin:0 0 7px }
+.gov-foot a{ color:#f0cf7a; text-decoration:none }
+.gov-foot a:hover{ color:#fff; text-decoration:underline }
+.gov-foot .base{ margin-top:22px; padding-top:14px; border-top:1px solid rgba(255,255,255,.16); font-size:11.5px }
