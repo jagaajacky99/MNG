@@ -57,6 +57,10 @@ section.blk{padding:30px 0}
 .sec-h h3{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);
   border-left:3px solid var(--gold);padding-left:9px}
 .sec-h p{margin:5px 0 0;font-size:13px;color:var(--ink-3);padding-left:12px}
+/* Шөнийн дэвсгэр дээр шууд байрлах гарчиг цайвар */
+body.night .sec-h h3{color:#eaf4f8}
+body.night .sec-h p{color:#d3e6ee}
+body.night .sec-h{text-shadow:0 1px 2px rgba(0,0,0,.35)}
 
 .entry{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--deep);
   border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
@@ -109,7 +113,7 @@ section.blk{padding:30px 0}
 .fig dd small{display:block;font-size:11.5px;font-weight:400;color:var(--ink-3);margin-top:6px;line-height:1.45}
 </style>
 </head>
-<body>
+<body class="night">
 
 <div class="gov-bar">
   <div class="in">
