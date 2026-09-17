@@ -93,6 +93,19 @@ section.blk{padding:30px 0}
 .fig{background:var(--surface);padding:17px 19px;border-left:4px solid var(--gold)}
 .fig dt{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .fig dd{margin:8px 0 0;font-size:26px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
+/* ---------- хөдөлгөөн ---------- */
+.hero .in>*{animation:ineg-up .8s cubic-bezier(.22,1,.36,1) both}
+.hero .in>*:nth-child(2){animation-delay:.08s} .hero .in>*:nth-child(3){animation-delay:.16s}
+.hero .in>*:nth-child(4){animation-delay:.24s} .hero .in>*:nth-child(5){animation-delay:.32s}
+.hero .rule{transform-origin:left;animation:ineg-grow .9s cubic-bezier(.22,1,.36,1) .3s both}
+.masthead .emblem{animation:ineg-fade .6s ease both}
+.entry,.locked{transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease}
+.entry:hover,.locked:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(21,29,45,.08), 0 18px 36px -14px rgba(21,29,45,.30)}
+.btn{transition:background .2s, border-color .2s, transform .2s}
+.btn.pri:hover{transform:translateY(-1px)}
+.fig{transition:background .25s ease, border-color .25s ease}
+.fig:hover{background:var(--deep-soft);border-left-color:var(--deep)}
+@media (prefers-reduced-motion:reduce){ .hero .in>*,.hero .rule,.masthead .emblem{animation:none} }
 .fig dd small{display:block;font-size:11.5px;font-weight:400;color:var(--ink-3);margin-top:6px;line-height:1.45}
 </style>
 </head>
@@ -218,6 +231,11 @@ section.blk{padding:30px 0}
 </footer>
 
 <script src="hyanalt/config.js"></script>
+<script src="assets/motion.js"></script>
+<script>
+document.querySelectorAll(".fig dd").forEach(function(d){ d.setAttribute("data-count",""); });
+inegReveal(".sec-h, .entry, .locked, .figs");
+</script>
 <script>
 (function(){
   "use strict";
