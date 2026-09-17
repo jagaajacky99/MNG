@@ -40,9 +40,9 @@
   --gold:#e0a526;          --gold-ink:#8a6b1f;
   /* Гуравдагч өнгө — хүрээний тууз, зургийн хөшгийн гүн тал.
      Утга илэрхийлэхгүй, зөвхөн загварын өнгө. */
-  --deep:#14533f;          --deep-2:#0e3b2e;
+  --deep:#0e4a4f;          --deep-2:#0a353b;
   /* Цайвар ногоон гадаргуу (самбарын толгой, тэмдэглэл) ба түүн дээрх бичвэр */
-  --deep-soft:#e1efe8;     --deep-ink:#14533f;
+  --deep-soft:#dcedee;     --deep-ink:#0e4a4f;
   --gold-soft:#f5edda;
 
   /* --- эрх зүйн лавлагаа (гарын авлага) --- */
@@ -104,8 +104,8 @@
     --accent-soft:#0b2c4e;
   --on-accent:#0c1f33;
     --gold:#e8b84d;        --gold-ink:#d6ad55;  --gold-soft:#2e2413;
-    --deep:#16604a;        --deep-2:#0d3628;
-    --deep-soft:#173a2f;   --deep-ink:#86d4ae;
+    --deep:#125a5f;        --deep-2:#0b3238;
+    --deep-soft:#153a40;   --deep-ink:#86d0d2;
     --air:#4a9ee2;         --air-soft:#0f2c46;
     --good:#4cc38f;        --good-soft:#0c3324;
     --ok:#4cc38f;          --ok-soft:#0c3324;
@@ -140,8 +140,8 @@
   --accent-soft:#0b2c4e;
     --on-accent:#0c1f33;
   --gold:#e8b84d;          --gold-ink:#d6ad55;  --gold-soft:#2e2413;
-  --deep:#16604a;          --deep-2:#0d3628;
-  --deep-soft:#173a2f;     --deep-ink:#86d4ae;
+  --deep:#125a5f;          --deep-2:#0b3238;
+  --deep-soft:#153a40;     --deep-ink:#86d0d2;
   --air:#4a9ee2;           --air-soft:#0f2c46;
   --good:#4cc38f;          --good-soft:#0c3324;
   --ok:#4cc38f;            --ok-soft:#0c3324;
@@ -168,7 +168,7 @@
 .photoband::before{ content:""; position:absolute; inset:0;
   background:var(--page-photo) center 42% / cover no-repeat; }
 .photoband::after{ content:""; position:absolute; inset:0;
-  background:linear-gradient(100deg, rgba(9,34,28,.95) 0%, rgba(7,26,46,.86) 40%,
+  background:linear-gradient(100deg, rgba(7,36,44,.95) 0%, rgba(7,26,46,.86) 40%,
                              rgba(7,24,44,.66) 78%, rgba(7,24,44,.52) 100%); }
 .photoband > *{ position:relative; z-index:1 }
 .photoband .edge{ position:absolute; left:0; right:0; bottom:0; height:3px;
@@ -184,7 +184,7 @@
    ============================================================ */
 .gov-bar{
   background:var(--deep);
-  color:#e2f0e8;
+  color:#e1eff1;
   font-family:var(--fb);
   font-size:11.5px;
   letter-spacing:.03em;
@@ -200,16 +200,16 @@
 }
 .gov-bar .org{ font-weight:600; text-transform:uppercase; letter-spacing:.13em; white-space:nowrap }
 .gov-bar .dot{ width:4px;height:4px;border-radius:50%;background:var(--gold);flex:none }
-.gov-bar .sub{ color:#a8ccb9 }
+.gov-bar .sub{ color:#a6cbd0 }
 .gov-bar .sp{ flex:1 }
-.gov-bar a{ color:#c6e3d3; text-decoration:none }
+.gov-bar a{ color:#c5e2e5; text-decoration:none }
 .gov-bar a:hover{ color:#fff; text-decoration:underline }
 
 .gov-foot{
   /* Хөл нь дээд туузтай хос — бүхэлдээ гүн ногоон, дээрээ алтлаг зураастай */
   border-top:3px solid var(--gold);
   background:var(--deep);
-  color:#c3dccf;
+  color:#c2dcdf;
   font-family:var(--fb);
   font-size:12.5px;
   line-height:1.65;
@@ -220,10 +220,10 @@
 }
 .gov-foot .in{ max-width:1180px; margin:0 auto; padding:26px 20px 34px }
 .gov-foot .rule{ height:3px; background:var(--gold); width:46px; margin-bottom:16px }
-.gov-foot b{ color:#eef7f2 }
+.gov-foot b{ color:#eef7f8 }
 .gov-foot .cols{ display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)) }
 .gov-foot h4{ font-family:var(--fd); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-  color:#eef7f2; margin:0 0 7px }
+  color:#eef7f8; margin:0 0 7px }
 .gov-foot a{ color:#f0cf7a; text-decoration:none }
 .gov-foot a:hover{ color:#fff; text-decoration:underline }
 .gov-foot .base{ margin-top:22px; padding-top:14px; border-top:1px solid rgba(255,255,255,.16); font-size:11.5px }
