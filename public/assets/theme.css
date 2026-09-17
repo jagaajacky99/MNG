@@ -327,16 +327,17 @@ body.night{ --shadow:0 1px 2px rgba(0,0,0,.25), 0 10px 26px -10px rgba(0,0,0,.55
    гэрэл; хулгана очиход гэрэл тодорч өргөгдөнө. */
 body.night :is(.panel, .entry, .locked, .figs){
   box-shadow:
-    0 0 0 1px rgba(110,215,225,.38),
-    0 0 22px -4px rgba(40,190,210,.45),
+    0 0 0 1.5px rgba(120,225,235,.60),
+    0 0 30px 0 rgba(40,200,220,.60),
+    0 0 60px -8px rgba(60,150,255,.35),
     0 12px 28px -12px rgba(0,0,0,.60);
   transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
 }
 body.night :is(.panel, .entry, .locked, .figs):hover{
   box-shadow:
-    0 0 0 1px rgba(140,235,245,.75),
-    0 0 34px 0 rgba(50,205,235,.55),
-    0 0 70px -10px rgba(60,140,255,.40),
+    0 0 0 2px rgba(160,245,250,.95),
+    0 0 46px 4px rgba(50,215,240,.80),
+    0 0 100px 0 rgba(60,150,255,.55),
     0 16px 34px -12px rgba(0,0,0,.65);
 }
 @media (prefers-reduced-motion:reduce){ body.night :is(.panel, .entry, .locked, .figs){ transition:none } }
