@@ -103,12 +103,8 @@ body.night .sec-h{text-shadow:0 1px 2px rgba(0,0,0,.35)}
 .hero .in>*:nth-child(4){animation-delay:.24s} .hero .in>*:nth-child(5){animation-delay:.32s}
 .hero .rule{transform-origin:left;animation:ineg-grow .9s cubic-bezier(.22,1,.36,1) .3s both}
 .masthead .emblem{animation:ineg-fade .6s ease both}
-.entry,.locked{transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease}
-.entry:hover,.locked:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(21,29,45,.08), 0 18px 36px -14px rgba(21,29,45,.30)}
-.btn{transition:background .2s, border-color .2s, transform .2s}
-.btn.pri:hover{transform:translateY(-1px)}
-.fig{transition:background .25s ease, border-color .25s ease}
-.fig:hover{background:var(--deep-soft);border-left-color:var(--deep)}
+/* .entry, .locked, .figs, .fig hover — assets/theme.css дахь нэгдсэн дүрэм */
+.btn{transition:background .2s, border-color .2s}
 @media (prefers-reduced-motion:reduce){ .hero .in>*,.hero .rule,.masthead .emblem{animation:none} }
 .fig dd small{display:block;font-size:11.5px;font-weight:400;color:var(--ink-3);margin-top:6px;line-height:1.45}
 </style>

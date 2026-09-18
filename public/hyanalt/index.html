@@ -109,10 +109,7 @@ button,input,select,textarea{font:inherit;color:inherit}
   animation:ineg-grow 1s cubic-bezier(.22,1,.36,1) .25s both}
 .enter path.draw{stroke-dasharray:1;animation:ineg-draw 1.6s cubic-bezier(.45,0,.2,1) .3s both}
 .enter svg circle,.enter svg .lbl-t{animation:ineg-fade .5s ease 1.6s both}
-.panel{transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease}
-.panel:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(21,29,45,.08), 0 14px 30px -12px rgba(21,29,45,.28)}
-.tile{transition:background .25s ease, border-color .25s ease}
-.tile:hover{background:var(--deep-soft);border-left-color:var(--deep)}
+/* .panel, .tile hover — assets/theme.css дахь нэгдсэн дүрэм */
 
 /* ---------- primitives ---------- */
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
@@ -190,12 +187,8 @@ table{border-collapse:collapse;width:100%;font-size:13px}
 th{font-family:var(--fd);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-ink);text-align:left;padding:8px 10px;
   background:var(--accent-soft);border-bottom:1px solid var(--line-strong);white-space:nowrap;font-weight:700}
 td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-/* Мөр дээр очиход зүүн талаас ногоон зураас гарч, мөр баруун тийш бага зэрэг гулсана */
-tbody tr{transition:background .25s ease, box-shadow .3s cubic-bezier(.22,1,.36,1)}
-tbody td:first-child{transition:padding-left .3s cubic-bezier(.22,1,.36,1)}
-tbody tr:hover{background:var(--deep-soft);box-shadow:inset 4px 0 0 var(--deep)}
-tbody tr:hover td:first-child{padding-left:20px}
-tbody tr:hover td{color:var(--ink)}
+/* Мөрийн hover (зүүн зураас, дэвсгэр тодрох) — assets/theme.css дахь нэгдсэн дүрэм.
+   Мөр хажуу тийш гулсахаа больсон: хайрцаг л хөдөлнө, дотрын мөр тодорно. */
 td.num,th.num{text-align:right;font-family:var(--fm);font-variant-numeric:tabular-nums}
 tfoot td{font-weight:700;border-top:1px solid var(--line-strong);border-bottom:0;background:var(--surface-2)}
 

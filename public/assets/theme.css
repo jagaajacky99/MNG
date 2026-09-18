@@ -300,6 +300,45 @@ body::after{ inset:-12%; background:var(--glow); animation:ineg-drift 22s ease-i
 }
 
 /* ============================================================
+   Нэгдсэн hover хөдөлгөөн
+   ------------------------------------------------------------
+   Хулгана хүрэхэд ГАДНЫ хайрцаг (самбар, карт, хэмжүүрийн тууз)
+   бүгд ижил зайд, ижил хугацаанд, ижил хэмнэлээр өргөгдөнө.
+   Хайрцаг ДОТРЫН мөр (хэмжүүр, жагсаалт, хүснэгтийн мөр) хэзээ ч
+   хөдлөхгүй — зөвхөн дэвсгэрээ тодруулна. Хуудас тус бүрт өөр
+   утга бичихгүй: доорх хувьсагчийг л өөрчилнө.
+   ============================================================ */
+:root{
+  --lift:-2px;                 /* өргөгдөх зай — бүх хайрцагт ижил */
+  --lift-dur:.3s;
+  --lift-ease:cubic-bezier(.22,1,.36,1);
+  --shadow-hover:0 2px 4px rgba(21,29,45,.08), 0 16px 32px -12px rgba(21,29,45,.28);
+  --hi-dur:.25s;               /* тодрох (дэвсгэр солигдох) хугацаа */
+}
+
+/* --- гадны хайрцаг: өргөгдөнө --- */
+:is(.panel, .entry, .locked, .figs, .card){
+  transition:transform var(--lift-dur) var(--lift-ease), box-shadow var(--lift-dur) ease;
+}
+:is(.panel, .entry, .locked, .figs, .card):hover{
+  transform:translateY(var(--lift));
+  box-shadow:var(--shadow-hover);
+}
+
+/* --- дотрын мөр: зөвхөн тодорно, хөдлөхгүй --- */
+:is(.fig, .tile, tbody tr){
+  transition:background var(--hi-dur) ease, border-color var(--hi-dur) ease, box-shadow var(--hi-dur) ease;
+}
+:is(.fig, .tile):hover{ background:var(--deep-soft); border-left-color:var(--deep) }
+tbody tr:hover{ background:var(--deep-soft); box-shadow:inset 4px 0 0 var(--deep) }
+tbody tr:hover td{ color:var(--ink) }
+
+@media (prefers-reduced-motion:reduce){
+  :is(.panel, .entry, .locked, .figs, .card){ transition:none }
+  :is(.panel, .entry, .locked, .figs, .card):hover{ transform:none }
+}
+
+/* ============================================================
    «Шөнийн нислэг» дэвсгэр — нүүр хуудас ба хяналтын сан (body.night)
    Гүн хөх суурь дээр teal, хөх, алтлаг, ногоон туяа. Самбарууд цагаан
    хэвээр тул тод ялгарна. Гарын авлага нь дэвсгэр дээр шууд бичигдсэн
@@ -329,7 +368,7 @@ body.night :is(.panel, .entry, .locked, .figs){
   box-shadow:
     0 0 0 2px #06303a,
     0 12px 28px -12px rgba(0,0,0,.60);
-  transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
+  transition:transform var(--lift-dur) var(--lift-ease), box-shadow var(--lift-dur) ease;
 }
 body.night :is(.panel, .entry, .locked, .figs):hover{
   box-shadow:
