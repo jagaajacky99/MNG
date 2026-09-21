@@ -31,6 +31,31 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand .mark{color:#bcd9f5}
 .brand .nm{color:#f7fbff}
 .brand .sub{color:#b9cde0}
+/* Цэсний толгой нь нүүр хуудас руу очих холбоос — байгууллагын тэмдэг, нэр дээр
+   дарж эхлэл рүү буцах нь цахим хуудасны олон улсын жишиг. Дүрс, бичвэрээр
+   давхар тодотгосон тул таамаглах шаардлагагүй. */
+a.brand{display:block;text-decoration:none;cursor:pointer}
+a.brand .home{display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  padding:4px 9px 4px 7px;border-radius:99px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(240,200,110,.55);color:#f3cf81;
+  font-family:var(--fd);font-weight:700;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;
+  transition:background .22s ease,color .22s ease,gap .22s ease,opacity .25s ease,transform .25s ease}
+a.brand .home .ico{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+a.brand:hover .home{background:var(--gold);border-color:var(--gold);color:#22180a;gap:9px}
+a.brand:hover .nm{color:#fff}
+/* Доод алтлаг зураас нь хулгана хүрэхэд зузаарч гэрэлтэнэ — самбар бүхэлдээ
+   дарагдах боломжтой гэдгийг илэрхийлнэ. */
+a.brand .edge{transition:height .22s ease,box-shadow .22s ease}
+a.brand:hover .edge{height:5px;box-shadow:0 0 18px rgba(224,165,38,.95)}
+a.brand:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Нүүр хуудас руу буцах товч — Шинэчлэх, Нэвтрэх зэрэг хэрэгслийн товчнуудаас
+   өнгө, дүрсээрээ ялгарч, хаанаас буцахаа эрж хайх шаардлагагүй болгоно. */
+.home-btn{color:var(--on-accent);font-weight:700;text-decoration:none;padding-left:9px}
+.home-btn .ico{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .nav{display:flex;flex-direction:column;gap:1px}
 .nav button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;padding:8px 9px;border-radius:var(--r);cursor:pointer;color:#cfe4e6;font-size:13.5px}
 .nav button:hover{background:rgba(255,255,255,.10);color:#fff}
@@ -78,7 +103,7 @@ button,input,select,textarea{font:inherit;color:inherit}
     opacity:.75;animation:rail-pulse 3.2s ease-in-out infinite;transition:opacity .3s}
   @keyframes rail-pulse{0%,100%{opacity:.25}50%{opacity:.85}}
 
-  .brand .mark,.brand .nm,.brand .sub,.nav .lbl,.nav .ct,.railfoot{
+  .brand .mark,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot{
     opacity:0;transform:translate3d(-8px,0,0);
     transition:opacity .25s ease, transform .25s ease}
 
@@ -87,13 +112,16 @@ button,input,select,textarea{font:inherit;color:inherit}
   .rail:hover::after,.rail:focus-within::after{opacity:0;animation:none}
   .rail:hover .nav,.rail:focus-within .nav{padding-left:10px}
   .rail:hover .nav button,.rail:focus-within .nav button{padding-left:9px}
-  .rail:hover :is(.brand .mark,.brand .nm,.brand .sub,.nav .lbl,.nav .ct,.railfoot),
-  .rail:focus-within :is(.brand .mark,.brand .nm,.brand .sub,.nav .lbl,.nav .ct,.railfoot){
+  .rail:hover :is(.brand .mark,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot),
+  .rail:focus-within :is(.brand .mark,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot){
     opacity:1;transform:none;
-    transition:opacity .45s ease, transform .5s cubic-bezier(.22,1,.36,1);
-    transition-delay:calc(120ms + var(--i,0) * 35ms)}
+    transition:opacity .45s ease, transform .5s cubic-bezier(.22,1,.36,1),
+               background .22s ease, color .22s ease, gap .22s ease;
+    /* Гарч ирэх хөдөлгөөн зэрэгцүүлсэн сааталтай, харин hover-ийн өнгө шууд солигдоно */
+    transition-delay:calc(120ms + var(--i,0) * 35ms), calc(120ms + var(--i,0) * 35ms), 0s, 0s, 0s}
   .rail:hover .brand .nm,.rail:focus-within .brand .nm{--i:1}
   .rail:hover .brand .sub,.rail:focus-within .brand .sub{--i:2}
+  .rail:hover .brand .home,.rail:focus-within .brand .home{--i:3}
   .rail:hover .railfoot,.rail:focus-within .railfoot{--i:8}
   .nav button[aria-current="true"] .ico{color:#074580}
 }
@@ -268,12 +296,17 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
 
 <div class="shell">
   <aside class="rail">
-    <div class="brand photoband">
+    <a class="brand photoband" href="../" aria-label="Нүүр хуудас руу буцах"
+       title="Нүүр хуудас руу буцах">
       <div class="mark">Зам, тээврийн яам</div>
       <div class="nm">Хяналтын сан</div>
       <div class="sub">Иргэний нисэхийн хяналт шалгалтын мэдээллийн сан</div>
+      <div class="home">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/>
+        </svg>Нүүр хуудас</div>
       <span class="edge"></span>
-    </div>
+    </a>
     <nav class="nav" id="nav"></nav>
     <div class="railfoot" id="railfoot">Ачаалж байна…</div>
   </aside>
@@ -281,7 +314,10 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
     <div class="topbar">
       <h1 id="viewTitle">Хяналтын самбар</h1>
       <span class="spacer"></span>
-      <a class="btn sm" href="../" style="text-decoration:none">← Нүүр</a>
+      <a class="btn sm primary home-btn" href="../" title="Нүүр хуудас руу буцах">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/>
+        </svg>Нүүр хуудас</a>
       <a class="btn sm" id="bookLink" href="../garyn-avlaga/" style="text-decoration:none" hidden>Гарын авлага</a>
       <span id="modeChip" class="chip neutral"><span class="dot"></span>Холбогдож байна</span>
       <button class="btn sm" id="refreshBtn" title="Сангаас дахин татах">↻ Шинэчлэх</button>
@@ -467,7 +503,7 @@ const REPORT = {
         "3. Шинэчлэгдэн батлагдсан ИНД138 “Эрэн хайх, авран туслах үйл ажиллагаа” дүрэм болон ИНҮТ ТӨХХК-д шинээр байгуулагдсан “Эрэн хайх, авран туслах ажиллагааны мэдээлэл зохицуулах төв”-ийн үйл ажиллагаатай холбогдуулан \"Эрэн хайх, авран туслах ажиллагааны мэдээлэл төвийн үйл ажиллагааны заавар\", Эрэн хайх, авран туслах ажиллагааны мэдээлэл зохицуулах төв болон Нислэгийн хөдөлгөөний үйлчилгээний алба хоорондын харилцан ажиллагааны зохицуулалтын журам\" зэргийг хянан байцаагчийн дүгнэлт гаргасан.",
         "ААХХХ: 1. ИНЕГ-ын даргын 2026 оны 01 дүгээр сарын 21-ний өдрийн А/25 дугаар тушаалаар “Аэродром аюулгүйн хамгаалалтын хяналтын хэлтсийн үйл ажиллагааны заавар” шинэчлэгдэн батлагдсан.",
         "2. ИНЕГ-ын даргын 2026 оны 03 дугаар сарын 20-ны өдрийн А/91 дүгээр тушаалаар Зөвлөмжийн цуврал АС-139-8 Аэродромын Төлөвлөлт: Хэлипорт, АС-139-13 Аэродромын засвар, үйлчилгээ - Хөөрч буух зурвасын гадаргуугийн барьцалтын үзүүлэлт болон хэмжилт, АС-139-18 Хөөрч буух зурвасын аюулгүй байдлын баг, AC139-19 Аэродром дээрх гадны биет, хаягдал (FOD)-аас сэргийлэх журам, АС-139-20 Перроны удирдлага зохицуулалт, АС-139-21 Хөдлөх чадвараа алдсан агаарын хөлгийг холдуулах төлөвлөгөө, АС-139-22 Аэродромын хучилтын даацыг тодорхойлох нь, АС-139-23 Газар дээрх хөдөлгөөний удирдлага, хяналтын систем SMGCS тус тус шинэчлэгдэн батлагдсан;",
-        "3. 2026 оны 4 дүгээр сарын 22-ны өдрөөс 5 дугаар сарын 4-ний өдрүүдэд Олон улсын иргэний нисэхийн байгууллага (ICAO) -аас зохион байгуулсан Олон улсын иргэний нисэхийн аюулгүй байдлын аудит хөтөлбөр – байнгын хяналтын аргачлал ( USOAP-CMA ) бүрэн хэмжээний аудитад салбар “Аэродром, газрын туслах хэрэгсэл чиглэл”-ийн нийт 153 протокол асуулгадхаиулж, 83.06 оноо авч 2010 онд үзүүлсэн гүйцэтгэлийн түвшнөө тогтвортой хадгалж, амжилттай шалгуулсан.",
+        "3. 2026 оны 4 дүгээр сарын 22-ны өдрөөс 5 дугаар сарын 4-ний өдрүүдэд Олон улсын иргэний нисэхийн байгууллага (ICAO) -аас зохион байгуулсан Олон улсын иргэний нисэхийн аюулгүй байдлын аудит хөтөлбөр – байнгын хяналтын аргачлал ( USOAP-CMA ) бүрэн хэмжээний аудитад салбар “Аэродром, газрын туслах хэрэгсэл чиглэл”-ийн нийт 153 протокол асуулгад хамрагдаж, 83.06 оноо авч 2010 онд үзүүлсэн гүйцэтгэлийн түвшнөө тогтвортой хадгалж, амжилттай шалгуулсан.",
         "4. ИНД-139 Аэродромын үйл ажиллагаа, гэрчилгээжүүлэлт (нэмэлт өөрчлөлт) Зам, тээврийн сайдын 2026 он 04 дүгээр сарын 28-ны өдрийн А/127 дугаар тушаалаар шинэчлэн батлуулсан;"
       ]
     },
@@ -576,11 +612,13 @@ const DASH_BLOCKS = [
    Доорх буржгар хаалттай түлхүүрүүд нь амьд утгаар солигдоно. */
 const INTL_BLOCKS = [
   {id:"stand", t:"Монгол Улсын байр суурь", text:
-`!{АУДИТ_ОН} оны үнэлгээг {ОН} оны үзүүлэлттэй шууд харьцуулах үндэслэлгүй болно. USOAP CMA-гийн аргачлал, протокол асуулга 2024 онд бүрэн шинэчлэгдсэн бөгөөд Монгол Улс шинэчилсэн аргачлалаар 2010 оноос хойш анх удаа хамрагдсан. Харьцуулах үндэслэл нь дэлхийн ({ДЭЛХИЙ}) болон Ази, Номхон далайн бүсийн ({АЗИ}) дундаж үзүүлэлт бөгөөд Монгол Улс хоёуланг нь давсан байна.
+`!{АУДИТ_ОН} оны үнэлгээг {ОН} оны үзүүлэлттэй шууд харьцуулах үндэслэлгүй болно. USOAP CMA-гийн аргачлал, протокол асуулга 2024 онд бүрэн шинэчлэгдсэн бөгөөд Монгол Улс шинэчилсэн аргачлалаар 2010 оноос хойш анх удаа хамрагдсан. Харьцуулах үндэслэл нь дэлхийн ({ДЭЛХИЙ}) болон Ази, Номхон далайн бүсийн ({АЗИ}) дундаж үзүүлэлт бөгөөд Монгол Улс хоёуланг нь давсан байна. {АУДИТ_ОН} оны {АУДИТ} хувь нь **урьдчилсан үнэлгээ** тул ICAO-гийн эцсийн тайлангаар өөрчлөгдөж болно.
 
 ICAO-гийн нээлттэй санд Монгол Улсын үзүүлэлт {ОН} оны үйл ажиллагаагаар тусгагдсан хэвээр байна (шалгасан: {ТАТСАН}). Аудитын үр дүн нь протокол асуулгын статус ICAO-гийн төв байгууллагад баталгаажсаны дараа нээлттэй санд тусгагддаг журамтай. ICAO шинэчилсэн даруйд энэ хуудас дараагийн ачаалалтаар автоматаар шинэчлэгдэнэ. Дэлхийн эрэмбэ болон улс хоорондын доорх харьцуулалт нь ICAO-гийн нийтэлсэн {ОН} оны үзүүлэлтэд суурилсан болно.`},
   {id:"scope", t:"Аудитын хамрах хүрээ", text:
-`Аудит {ХУГАЦАА}-ны хооронд Иргэний нисэхийн ерөнхий газар, Агаарын хөлгийн осол, зөрчлийг шинжлэн шалгах албыг хамран явагдаж, {АСУУЛГА} протокол асуулгаар шалгагдсан. ИНЕГ 2026.05.06-ны мэдээгээр урьдчилсан үнэлгээг 74.96 хувь гэж мэдээлсэн бөгөөд чиглэл тус бүрийн үзүүлэлт ICAO-гийн эцсийн тайлангаар тодорхойлогдож, нээлттэй санд тусгагдмагц энэ хуудсанд автоматаар нэмэгдэнэ.`},
+`Аудит {ХУГАЦАА}-ны хооронд Иргэний нисэхийн ерөнхий газар, Агаарын хөлгийн осол, зөрчлийг шинжлэн шалгах албыг хамран явагдаж, {АСУУЛГА} протокол асуулгаар шалгагдсан. Дээрх {АУДИТ} хувь нь ИНЕГ-ын 2026.05.06-ны мэдээгээр зарлагдсан **урьдчилсан нийт үнэлгээ** бөгөөд бусад чиглэлийн үзүүлэлт ICAO-гийн эцсийн тайлангаар тодорхойлогдож, нээлттэй санд тусгагдмагц энэ хуудсанд автоматаар нэмэгдэнэ.
+
+Аэродром, газрын туслах хэрэгсэл (AGA) чиглэлээр 153 протокол асуулгад хамрагдаж **83.06 оноо** авснаа ИНЕГ мэдээлсэн. Энэ нь нэг чиглэлийн үзүүлэлт тул найман чиглэлийн нэгдсэн үнэлгээ, эсхүл дэлхий, бүсийн нэгдсэн дундажтай шууд харьцуулах хэмжигдэхүүн болохгүй.`},
   {id:"history", t:"USOAP-ийн үйл ажиллагааны түүх", text:
 `Гишүүн улс залруулах төлөвлөгөө (CAP)-өө USOAP CMA Online Framework-д эцсийн тайлан хүлээн авснаас хойш **{CAP} хоногийн дотор** шинэчлэн байршуулах үүрэгтэй. {АУДИТ_ОН} оны аудитын залруулах төлөвлөгөөний хугацааг мөн энэ журмаар тооцно.`},
   {id:"ce",      t:"Найман чухал элемент (CE)"},
@@ -2008,7 +2046,13 @@ function intlBar(v){
 
 /* Монгол Улсын USOAP-ийн үйл ажиллагааны түүх.
    2010, 2017 оны үзүүлэлт нь ИНЕГ-ын цахим хуудсанд байршуулсан ICAO-гийн албан ёсны
-   эцсийн тайлангаас; 2026 оны үзүүлэлт нь «Тайлан 2026-H1» (0616.xlsx)-аас. */
+   эцсийн тайлангаас.
+   2026 оны мөрийн `ei` нь НИЙТ үнэлгээ бөгөөд ИНЕГ-ын 2026.05.06-ны мэдээгээр
+   зарлагдсан урьдчилсан 74.96 хувь. «Тайлан 2026-H1»-ийн 83.06 нь Аэродром, газрын
+   туслах хэрэгсэл (AGA) ЧИГЛЭЛИЙН 153 протокол асуулгын үнэлгээ тул нийт EI-ийн
+   оронд тавихгүй — эс бөгөөс ICAO-гийн дэлхий, APAC-ийн нэгдсэн дунджаас өөр
+   хэмжигдэхүүнтэй харьцуулагдаж, зөрүү хэт өндөр гарна. AGA-ийн үзүүлэлт нь
+   REPORT.usoap (area/pq/score) дээр тусад нь тусгагдсан. */
 const MN_AUDITS = [
   {year:2010, what:"USOAP CSA иж бүрэн аудит", dates:"06.28 – 07.07", ei:87.92, pq:null,
    src:"ICAO-гийн эцсийн тайлан, 2011.05",
@@ -2016,9 +2060,10 @@ const MN_AUDITS = [
   {year:2017, what:"ICVM зохицуулалтын баталгаажуулалт", dates:"08.29 – 09.04", ei:89.55, pq:55,
    src:"ICAO-гийн ICVM эцсийн тайлан, 2017.12",
    note:"LEG, PEL, OPS, ANS чиглэлийн 55 протокол асуулгыг хянаж, 12-ыг хангалттай гэж дүгнэсэн"},
-  {year:2026, what:"USOAP CMA бүрэн хэмжээний аудит", dates:"04.22 – 05.04", ei:83.06, pq:835,
-   current:true, src:"Тайлан 2026-H1",
-   note:"8 чиглэл, 835 протокол асуулгаар хамрагдсан. 2024 онд шинэчилсэн аргачлалаар"},
+  {year:2026, what:"USOAP CMA бүрэн хэмжээний аудит", dates:"04.22 – 05.04", ei:74.96, pq:835,
+   current:true, prelim:true, src:"ИНЕГ · mcaa.gov.mn, 2026.05.06",
+   note:"8 чиглэл, 835 протокол асуулгаар хамрагдсан · урьдчилсан үнэлгээ. 2024 онд "
+      + "шинэчилсэн аргачлалаар. Аэродром (AGA) чиглэлийн 153 асуулгын үнэлгээ 83.06"},
 ];
 
 /* 2026 оны аудитын хамрах хүрээ — ИНЕГ-ын мэдээлсэн дараалал. */
@@ -2147,9 +2192,12 @@ function viewIntl(){
       <div class="body">
         <div class="tiles">
           <div class="tile ${last.ei>=(world?world.overall:60)?"goodv":"warnv"}">
-            <div class="k">${last.year} оны аудитын үнэлгээ</div>
+            <div class="k">${last.year} оны аудитын үнэлгээ${last.prelim?" · урьдчилсан":""}</div>
             <div class="v">${last.ei}</div>
             <div class="n">${esc(last.dates)} · ${MN_2026_AREAS.length} чиглэл, ${last.pq} протокол асуулга</div></div>
+          <div class="tile"><div class="k">${esc(u.area)}</div>
+            <div class="v">${u.score}</div>
+            <div class="n">${u.pq} протокол асуулга · чиглэлийн үзүүлэлт</div></div>
           <div class="tile ${last.ei>=(world?world.overall:0)?"goodv":"alert"}">
             <div class="k">Дэлхийн дунджаас</div>
             <div class="v">${gap(world&&world.overall)}</div>
@@ -2174,8 +2222,11 @@ function viewIntl(){
         <tbody>${MN_2026_AREAS.map(([code,name])=>`<tr>
           <td><span class="code">${esc(code)}</span></td>
           <td class="small">${esc(name)}</td>
-          <td class="num muted small">ICAO-гийн эцсийн тайлангаар тодорхойлогдоно</td></tr>`).join("")}</tbody>
-        <tfoot><tr><td colspan="2">НИЙТ ҮНЭЛГЭЭ · ${last.pq} протокол асуулга</td>
+          ${code==="AGA"
+            ? `<td class="num"><b>${u.score}</b> <span class="muted small">· ${u.pq} асуулга</span></td>`
+            : `<td class="num muted small">ICAO-гийн эцсийн тайлангаар тодорхойлогдоно</td>`}</tr>`).join("")}</tbody>
+        <tfoot><tr><td colspan="2">НИЙТ ҮНЭЛГЭЭ · ${last.pq} протокол асуулга${
+            last.prelim?" · урьдчилсан":""}</td>
           <td class="num">${last.ei}</td></tr></tfoot>
       </table></div></div>
       ${note(it)?`<div class="body" style="padding-top:0">${note(it)}</div>`:""}`},
@@ -2189,7 +2240,8 @@ function viewIntl(){
             <td class="num"><b>${a.year}</b></td>
             <td class="small">${esc(a.what)}</td>
             <td class="num muted">${esc(a.dates)}</td>
-            <td class="num"><b>${a.ei}</b></td>
+            <td class="num"><b>${a.ei}</b>${a.prelim
+              ?` <span class="chip neutral"><span class="dot"></span>урьдчилсан</span>`:""}</td>
             <td class="small muted">${esc(a.src)}</td>
             <td class="small muted">${esc(a.note||"")}</td></tr>`).join("")}
           <tr style="background:var(--surface-2)">
