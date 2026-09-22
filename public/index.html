@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Зам, тээврийн яам · Нисэхийн аюулгүй ажиллагааны хяналт</title>
-<meta name="description" content="Зам, тээврийн яам — иргэний нисэхийн хяналт шалгалтын мэдээллийн сан">
+<meta name="description" content="Зам, тээврийн яам — иргэний нисэхийн аюулгүй ажиллагааны хяналт шалгалтын нэгдсэн мэдээллийн сан">
 <link rel="icon" type="image/png" href="assets/ztya-mark.png">
 <link rel="apple-touch-icon" href="assets/ztya-mark.png">
 <meta name="theme-color" content="#024591">
@@ -12,7 +12,7 @@
 <meta property="og:locale" content="mn_MN">
 <meta property="og:site_name" content="Зам, тээврийн яам">
 <meta property="og:title" content="Иргэний нисэхийн хяналт шалгалтын мэдээллийн систем">
-<meta property="og:description" content="Гэрчилгээ эзэмшигч байгууллагын эрсдэлийн профайл, илэрсэн үл нийцэл ба залруулах арга хэмжээний хэрэгжилт, хяналт шалгалтын төлөвлөлт.">
+<meta property="og:description" content="Гэрчилгээ эзэмшигч байгууллагын эрсдэлийн үнэлгээ, хяналт шалгалтаар илэрсэн үл нийцэл, залруулах арга хэмжээний хэрэгжилт, хяналт шалгалтын төлөвлөгөөний биелэлтийн нэгдсэн бүртгэл.">
 <meta property="og:image" content="assets/ztya-logo.png">
 <link rel="stylesheet" href="assets/theme.css">
 <style>
@@ -28,7 +28,7 @@ a{color:var(--accent)}
 
 /* ---------- толгой ---------- */
 .masthead{background:var(--surface);border-bottom:1px solid var(--line)}
-.masthead .in{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.masthead .in{max-width:1080px;margin:0 auto;padding:8px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 /* Яамны БҮТЭН лого — сүлд тэмдэг ба нэрийн хамт, тайрахгүй.
    Гэрэл, бараан горимд өөр файл (бичвэрийн өнгө ялгаатай). */
 .emblem{flex:none;display:block;line-height:0}
@@ -57,28 +57,55 @@ a{color:var(--accent)}
 /* ---------- hero ---------- */
 /* Баннер — бүтэн өргөнтэй зургийн тууз. Агуулга нь .wrap-ийн өргөнд таарна. */
 .hero{padding:0}
-.hero .in{max-width:1080px;margin:0 auto;padding:54px 22px 50px}
-@media(max-width:640px){.hero .in{padding:38px 20px 34px}}
+/* Хоёр багана: зүүнд бичвэр, баруунд гол үзүүлэлтийн самбар.
+   Өмнө нь бичвэр зөвхөн зүүн талдаа шахагдаж, баруун тал хоосон
+   хоцордог байв. */
+.hero .in{max-width:1080px;margin:0 auto;padding:44px 22px 30px;
+  display:grid;gap:44px;align-items:center;
+  grid-template-columns:minmax(0,1fr) minmax(190px,232px)}
+@media(max-width:940px){.hero .in{grid-template-columns:1fr;gap:26px}}
+@media(max-width:640px){.hero .in{padding:32px 20px 22px}}
 .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
   color:var(--accent);background:var(--accent-soft);padding:7px 13px;border-radius:3px}
-.hero h2{margin-top:20px;font-size:clamp(26px,4.2vw,38px);font-weight:700;letter-spacing:-.01em;max-width:20ch;line-height:1.22}
+.hero h2{margin-top:18px;font-size:clamp(26px,3.5vw,37px);font-weight:700;letter-spacing:-.01em;
+  max-width:26ch;line-height:1.18;text-wrap:balance}
 .hero .rule{height:3px;width:52px;background:var(--gold);margin:20px 0}
-.hero p{margin:0;font-size:16px;color:var(--ink-2);max-width:62ch}
-.hero dl{margin:26px 0 0;display:flex;gap:30px;flex-wrap:wrap}
-.hero dt{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.hero dd{margin:5px 0 0;font-size:14px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.hero p{margin:0;font-size:15.5px;line-height:1.66;color:var(--ink-2);max-width:52ch}
+/* ---------- туузны баруун талын тэмдэг ----------
+   Дугуй хэлбэрийн нисэхийн тэмдэг — хуудасны алт, цэнхэр өнгөнд
+   тохирсон. Хэмжигдэхүүний зураас нь маш удаан эргэнэ. */
+.hemblem{width:100%;max-width:210px;height:auto;justify-self:center;
+  filter:drop-shadow(0 6px 22px rgba(0,0,0,.45))}
+.hemblem .he-ring{fill:none;stroke:var(--gold);stroke-opacity:.5;stroke-width:1.3}
+.hemblem .he-thin{fill:none;stroke:#fff;stroke-opacity:.16;stroke-width:1}
+.hemblem .he-ticks{fill:none;stroke:var(--gold);stroke-opacity:.5;stroke-width:1.2;
+  stroke-linecap:round;transform-origin:100px 100px;
+  animation:ineg-spin 90s linear infinite}
+.hemblem .he-globe{fill:none;stroke:#9fd4f2;stroke-opacity:.6;stroke-width:1.1}
+.hemblem .he-arc{fill:none;stroke:var(--gold);stroke-width:1.6;
+  stroke-dasharray:2.5 6;stroke-linecap:round;opacity:.9}
+.hemblem .he-dot{fill:var(--gold)}
+.hemblem .he-plane{fill:none;stroke:var(--gold);stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+@keyframes ineg-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){ .hemblem .he-ticks{animation:none} }
+@media(max-width:940px){ .hemblem{display:none} }
 /* Тууз дээрх бичвэр — хөх хөшиг дээр гэрэл өнгөөр. Эдгээр нь дээрх үндсэн
    дүрмүүдийн дараа байх ёстой, эс бөгөөс бараан өнгө нь дарна. */
-.hero .eyebrow{color:#e2eefc;background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.28)}
-.hero h2{color:#f7fbff}
-.hero p{color:#d3e2f2}
-.hero .rule{background:var(--gold)}
-.hero dt{color:#a8c6e2}
-.hero dd{color:#eef5fd}
+.hero .eyebrow{color:#eaf3ff;background:rgba(5,24,40,.62);
+  border:1px solid rgba(255,255,255,.26);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+/* Гэрэлтсэн дэлхий дээр бичвэр уншигдахын тулд нэг өнгөтэй, сүүдэртэй.
+   Олон өнгийн шилжилт үсэг бүрийг өөр өнгөтэй болгож самуун харагдуулсан
+   тул авав — өнгийг зөвхөн ЖИЖИГ шошгонд (dt, eyebrow) үлдээв. */
+.hero h2{color:#ffffff;text-shadow:0 2px 14px rgba(2,14,26,.75),0 1px 3px rgba(2,14,26,.9)}
+.hero p{color:#dfeaf6;text-shadow:0 1px 6px rgba(2,14,26,.85)}
+.hero .rule{background:var(--gold);box-shadow:0 0 14px rgba(224,165,38,.6)}
+.hero .eyebrow{color:#eaf3ff}
 
 /* ---------- орц ---------- */
 section.blk{padding:30px 0}
+main>section.blk:first-child{padding-top:16px}
 /* Хэсгийн гарчиг — шөнийн дэвсгэр дээр шууд байрлах цорын гангүй бичвэр тул
    томруулж, алтлаг тэмдэглэгээ ба зөөлөн гэрэлтэлт нэмэв. */
 .sec-h{margin:0 0 22px}
@@ -111,7 +138,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .entry .note{padding:13px 26px;border-top:1px solid var(--line);background:var(--deep-soft);
   font-size:12.5px;color:var(--ink-2)}
 
-/* ---------- хаалттай модуль ---------- */
+/* ---------- хаалттай хэсэг ---------- */
 .locked{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);
   border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow)}
 .locked .lt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px}
@@ -128,14 +155,14 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .fig dt{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .fig dd{margin:8px 0 0;font-size:26px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
 /* ---------- хөдөлгөөн ---------- */
-.hero .in>*{animation:ineg-up .8s cubic-bezier(.22,1,.36,1) both}
-.hero .in>*:nth-child(2){animation-delay:.08s} .hero .in>*:nth-child(3){animation-delay:.16s}
-.hero .in>*:nth-child(4){animation-delay:.24s} .hero .in>*:nth-child(5){animation-delay:.32s}
+.hero .htxt>*,.hemblem{animation:ineg-up .8s cubic-bezier(.22,1,.36,1) both}
+.hero .htxt>*:nth-child(2){animation-delay:.08s} .hero .htxt>*:nth-child(3){animation-delay:.16s}
+.hero .htxt>*:nth-child(4){animation-delay:.24s} .hemblem{animation-delay:.3s}
 .hero .rule{transform-origin:left;animation:ineg-grow .9s cubic-bezier(.22,1,.36,1) .3s both}
 .masthead .emblem{animation:ineg-fade .6s ease both}
 /* .entry, .locked, .figs, .fig hover — assets/theme.css дахь нэгдсэн дүрэм */
 .btn{transition:background .2s, border-color .2s}
-@media (prefers-reduced-motion:reduce){ .hero .in>*,.hero .rule,.masthead .emblem{animation:none} }
+@media (prefers-reduced-motion:reduce){ .hero .htxt>*,.hemblem,.hero .rule,.masthead .emblem{animation:none} }
 .fig dd small{display:block;font-size:11.5px;font-weight:400;color:var(--ink-3);margin-top:6px;line-height:1.45}
 
 /* ---------- нисэхийн статистик ---------- */
@@ -206,27 +233,59 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .av-tbl td:last-child{width:1%}
 
 /* ---------- гүйлгэхэд эргэх дэлхий ----------
-   Зургийн дэлхийн хөвөө нь (60%, 200%) цэгийг төвлөсөн тойрог тул
-   яг тэр цэгийг тойруулж эргүүлэхэд хөвөө хөдөлгөөнгүй хэвээр,
-   гадаргуу нь гулсаж — жинхэнэ эргэлт мэт харагдана.
-   Булан цоорохгүйн тулд давхаргыг хүрээнээсээ 26% том авав —
-   геометрээр шалгахад 320×560 (утас) -аас 2560×600 (хэт өргөн)
-   хүртэлх бүх харьцаанд ±3° эргэлтийг бүрэн бүрхэнэ. Эргэлтийн төв
-   туузнаас хол доор байдаг тул өнцөг томрох тусам шаардагдах нөөц
-   хурдан өснө — ±3° нь зургийн томролтой тэнцвэртэй цэг.
-   background-position нь "top" — ингэснээр зургийн дээд тал дахь
-   сансрын зай харагдаж, дэлхий туузан дотор ДООШ буудаг. */
-.hero.photoband::before{
-  inset:-26%;
-  background-position:center top;
-  transform-origin:60% 200%;
+   Дэлхий нь туузаар хязгаарлагдахгүй, доор нь --drop зайгаар
+   үргэлжилж, агуулгын ард бүдгэрч арилна. Тиймээс зургийг
+   туузны ::before дээр биш, тусдаа .earthwrap дотор байрлуулав.
+
+   Эргэлтийн төв (зургийн дэлхийн бөмбөрцгийн төв) нь давхаргын
+   хэмжээнээс хамаарч өөр өөр хувь дээр тохиох тул assets/motion.js
+   биш, доорх скрипт JS-ээр тооцож --earth-ox/--earth-oy болгож өгнө. */
+/* Тохируулж болох утгууд — дэлхийн томрол, эргэлт, тодрол энд байна */
+.hero.photoband{--drop:320px;--earth-zoom:.93;
+  overflow:visible;background-color:transparent}
+@media(max-width:760px){.hero.photoband{--drop:150px}}
+.hero.photoband::before,.hero.photoband::after{display:none}
+
+.earthwrap{position:absolute;left:0;right:0;top:0;
+  height:calc(100% + var(--drop));overflow:hidden;z-index:0;pointer-events:none;
+  /* доошоо аажим бүдгэрч хуудасны дэвсгэртэй уусна */
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 56%,rgba(0,0,0,.5) 80%,transparent 96%);
+  mask-image:linear-gradient(180deg,#000 0,#000 56%,rgba(0,0,0,.5) 80%,transparent 96%)}
+/* Хоёр давхар: ГАДНА .earth зөвхөн ТОМРОЛ (өөрийн төвөөр), ДОТОР .globe
+   зөвхөн ЭРГЭЛТ (бөмбөрцгийн төвөөр). Нэг элемент дээр хоёуланг нь хийвэл
+   transform-origin хуваалцаж, алслагдсан төвөөр томруулахад давхарга
+   хэт хол шилжинэ. */
+.earthwrap .earth{position:absolute;left:-26%;right:-26%;
+  /* Нөөц утга — скрипт ажиллаагүй ч тууз хоосон үлдэхгүй. */
+  top:-14%;height:150%;
+  transform:scale(var(--earth-zoom,1));transform-origin:50% 50%}
+.earthwrap .globe{position:absolute;inset:0;
+  background:var(--page-photo) center top/cover no-repeat;
   transform:rotate(var(--earth-rot,0deg));
-  animation:none;
+  transform-origin:var(--earth-ox,60%) var(--earth-oy,215%);
   will-change:transform;
-}
+  /* дэлхийг илүү тод, өнгөлөг болгоно */
+  filter:saturate(var(--earth-sat,1.34)) contrast(var(--earth-con,1.07))
+         brightness(var(--earth-bri,1.16))}
+
+/* Хотуудын гэрэл анивчина. viewBox нь эх зурагтай ижил, xMidYMin slice нь
+   background-ийн "cover + center top"-той яг давхцана. */
+.earthwrap .lights{position:absolute;inset:0;width:100%;height:100%;
+  mix-blend-mode:screen;pointer-events:none}
+.earthwrap .lights circle{fill:#ffe6a8;opacity:.2;
+  animation:ineg-twinkle var(--d,4s) ease-in-out var(--t,0s) infinite alternate}
+@keyframes ineg-twinkle{from{opacity:.12}to{opacity:.95}}
+
+.earthwrap .veil{position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(6,28,44,.93) 0%,rgba(6,24,42,.84) 34%,
+             rgba(7,24,44,.55) 68%,rgba(7,24,44,.30) 100%)}
 @media (prefers-reduced-motion:reduce){
-  .hero.photoband::before{ transform:none }
+  .earthwrap .globe{transform:none}
+  .earthwrap .lights circle{animation:none;opacity:.5}
 }
+
+/* Агуулга дэлхийн дээр байрлана */
+main{position:relative;z-index:1}
 
 /* ---------- нисэхийн тэмдэглэгээ ----------
    Самбарын толгой дахь алтлаг зураасны оронд сэдэвт тохирсон
@@ -234,20 +293,6 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .pico{width:20px;height:20px;flex:none;fill:none;stroke:var(--gold);
   stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 #nisleg .panel>header h2::before{display:none}
-
-/* ---------- туузан дээрх нислэгийн зам ---------- */
-.heroplane{position:absolute;right:3%;top:13%;width:min(42%,460px);height:auto;
-  z-index:1;pointer-events:none;opacity:.55}
-.heroplane .hp-arc{fill:none;stroke:var(--gold);stroke-width:2;
-  stroke-dasharray:3 9;stroke-linecap:round}
-.heroplane .hp-orig{fill:var(--gold);stroke:none}
-.heroplane .hp-plane{fill:none;stroke:var(--gold);stroke-width:1.5;
-  stroke-linecap:round;stroke-linejoin:round}
-@media(max-width:900px){.heroplane{display:none}}
-@media (prefers-reduced-motion:no-preference){
-  .heroplane .hp-arc{stroke-dasharray:3 9;animation:hp-dash 22s linear infinite}
-}
-@keyframes hp-dash{to{stroke-dashoffset:-240}}
 
 /* ---------- гар утсаар шилжих алгасах холбоос ---------- */
 .skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--gold);
@@ -325,25 +370,60 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 </header>
 
 <section class="hero photoband">
-  <div class="in">
-    <span class="eyebrow">Албан ёсны мэдээллийн систем</span>
-    <h2>Эрсдэлд суурилсан хяналтын мэдээллийн сан</h2>
-    <div class="rule"></div>
-    <p>Гэрчилгээ эзэмшигч байгууллагын эрсдэлийн профайл, илэрсэн үл нийцэл ба залруулах
-      арга хэмжээний хэрэгжилт, хяналт шалгалтын төлөвлөлтийн мэдээлэл.</p>
-    <dl>
-      <div><dt>Тайлант хугацаа</dt><dd>2026.01.01 – 06.30</dd></div>
-      <div><dt>Эрсдэлийн загвар</dt><dd>EASA RBO · 3 хүчин зүйл</dd></div>
-      <div><dt>Хамрах хэлтэс</dt><dd>5</dd></div>
-    </dl>
+  <div class="earthwrap" aria-hidden="true">
+    <div class="earth"><div class="globe">
+      <svg class="lights" viewBox="0 0 1366 769" preserveAspectRatio="xMidYMin slice" focusable="false">
+      <circle cx="250" cy="292" r="1.40" style="--d:2.60s;--t:0.00s"/><circle cx="302" cy="251" r="1.66" style="--d:6.38s;--t:0.62s"/><circle cx="346" cy="272" r="1.92" style="--d:5.54s;--t:1.24s"/>
+      <circle cx="391" cy="300" r="2.18" style="--d:4.70s;--t:1.86s"/><circle cx="421" cy="256" r="2.44" style="--d:3.86s;--t:2.48s"/><circle cx="456" cy="291" r="2.70" style="--d:3.02s;--t:3.10s"/>
+      <circle cx="481" cy="331" r="2.96" style="--d:6.80s;--t:3.72s"/><circle cx="520" cy="332" r="3.22" style="--d:5.96s;--t:4.34s"/><circle cx="561" cy="301" r="3.48" style="--d:5.12s;--t:4.96s"/>
+      <circle cx="601" cy="216" r="1.40" style="--d:4.28s;--t:5.58s"/><circle cx="617" cy="264" r="1.66" style="--d:3.44s;--t:6.20s"/><circle cx="655" cy="240" r="1.92" style="--d:2.60s;--t:6.82s"/>
+      <circle cx="415" cy="456" r="2.18" style="--d:6.38s;--t:0.31s"/><circle cx="471" cy="501" r="2.44" style="--d:5.54s;--t:0.93s"/><circle cx="546" cy="481" r="2.70" style="--d:4.70s;--t:1.55s"/>
+      <circle cx="601" cy="521" r="2.96" style="--d:3.86s;--t:2.17s"/><circle cx="641" cy="471" r="3.22" style="--d:3.02s;--t:2.79s"/><circle cx="691" cy="501" r="3.48" style="--d:6.80s;--t:3.41s"/>
+      <circle cx="721" cy="546" r="1.40" style="--d:5.96s;--t:4.03s"/><circle cx="668" cy="436" r="1.66" style="--d:5.12s;--t:4.65s"/><circle cx="761" cy="301" r="1.92" style="--d:4.28s;--t:5.27s"/>
+      <circle cx="831" cy="271" r="2.18" style="--d:3.44s;--t:5.89s"/><circle cx="901" cy="302" r="2.44" style="--d:2.60s;--t:6.51s"/><circle cx="951" cy="252" r="2.70" style="--d:6.38s;--t:0.00s"/>
+      <circle cx="786" cy="381" r="2.96" style="--d:5.54s;--t:0.62s"/><circle cx="1021" cy="561" r="3.22" style="--d:4.70s;--t:1.24s"/><circle cx="1071" cy="601" r="3.48" style="--d:3.86s;--t:1.86s"/>
+      <circle cx="1121" cy="556" r="1.40" style="--d:3.02s;--t:2.48s"/><circle cx="1161" cy="621" r="1.66" style="--d:6.80s;--t:3.10s"/><circle cx="1201" cy="581" r="1.92" style="--d:5.96s;--t:3.72s"/>
+      <circle cx="1241" cy="641" r="2.18" style="--d:5.12s;--t:4.34s"/><circle cx="1101" cy="651" r="2.44" style="--d:4.28s;--t:4.96s"/><circle cx="1021" cy="431" r="2.70" style="--d:3.44s;--t:5.58s"/>
+      <circle cx="1081" cy="391" r="2.96" style="--d:2.60s;--t:6.20s"/><circle cx="1141" cy="431" r="3.22" style="--d:6.38s;--t:6.82s"/><circle cx="1201" cy="471" r="3.48" style="--d:5.54s;--t:0.31s"/>
+      <circle cx="1261" cy="421" r="1.40" style="--d:4.70s;--t:0.93s"/><circle cx="1151" cy="341" r="1.66" style="--d:3.86s;--t:1.55s"/><circle cx="181" cy="421" r="1.92" style="--d:3.02s;--t:2.17s"/>
+      <circle cx="241" cy="471" r="2.18" style="--d:6.80s;--t:2.79s"/><circle cx="301" cy="521" r="2.44" style="--d:5.96s;--t:3.41s"/><circle cx="211" cy="357" r="2.70" style="--d:5.12s;--t:4.03s"/>
+      <circle cx="741" cy="181" r="2.96" style="--d:4.28s;--t:4.65s"/><circle cx="1021" cy="241" r="3.22" style="--d:3.44s;--t:5.27s"/><circle cx="881" cy="201" r="3.48" style="--d:2.60s;--t:5.89s"/>
+      <circle cx="1281" cy="301" r="1.40" style="--d:6.38s;--t:6.51s"/>
+      </svg>
+    </div></div>
+    <i class="veil"></i>
   </div>
-  <svg class="heroplane" viewBox="0 0 520 260" aria-hidden="true" focusable="false">
-    <path class="hp-arc" d="M10 242C148 214 300 152 428 44"/>
-    <circle class="hp-orig" cx="10" cy="242" r="4"/>
-    <use class="hp-plane" href="#i-plane" width="36" height="36"
-         transform="translate(410 26) rotate(40 18 18)"/>
-  </svg>
-  <span class="edge"></span>
+  <div class="in">
+    <div class="htxt">
+      <span class="eyebrow">Албан ёсны мэдээллийн систем</span>
+      <h2>Эрсдэлд суурилсан хяналтын мэдээллийн сан</h2>
+      <div class="rule"></div>
+      <p>Гэрчилгээ эзэмшигч байгууллагын эрсдэлийн үнэлгээ, хяналт шалгалтаар
+        илэрсэн үл нийцэл, залруулах арга хэмжээний хэрэгжилт, хяналт шалгалтын
+        төлөвлөгөөний биелэлтийг нэгтгэн бүртгэнэ.</p>
+    </div>
+    <svg class="hemblem" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+      <circle class="he-ring" cx="100" cy="100" r="92"/>
+      <circle class="he-thin" cx="100" cy="100" r="84"/>
+      <path class="he-ticks" d="
+        M100.0 24.0L100.0 12.0M114.1 20.2L115.3 13.3M127.7 23.9L130.1 17.3M140.5 29.9L144.0 23.8M152.1 38.0L156.6 32.6M162.0 47.9L167.4 43.4
+        M170.1 59.5L176.2 56.0M176.1 72.3L182.7 69.9M179.8 85.9L186.7 84.7M176.0 100.0L188.0 100.0M179.8 114.1L186.7 115.3M176.1 127.7L182.7 130.1
+        M170.1 140.5L176.2 144.0M162.0 152.1L167.4 156.6M152.1 162.0L156.6 167.4M140.5 170.1L144.0 176.2M127.7 176.1L130.1 182.7M114.1 179.8L115.3 186.7
+        M100.0 176.0L100.0 188.0M85.9 179.8L84.7 186.7M72.3 176.1L69.9 182.7M59.5 170.1L56.0 176.2M47.9 162.0L43.4 167.4M38.0 152.1L32.6 156.6
+        M29.9 140.5L23.8 144.0M23.9 127.7L17.3 130.1M20.2 114.1L13.3 115.3M24.0 100.0L12.0 100.0M20.2 85.9L13.3 84.7M23.9 72.3L17.3 69.9
+        M29.9 59.5L23.8 56.0M38.0 47.9L32.6 43.4M47.9 38.0L43.4 32.6M59.5 29.9L56.0 23.8M72.3 23.9L69.9 17.3M85.9 20.2L84.7 13.3"/>
+      <g class="he-globe">
+        <circle cx="100" cy="100" r="46"/>
+        <ellipse cx="100" cy="100" rx="16" ry="46"/>
+        <ellipse cx="100" cy="100" rx="32" ry="46"/>
+        <path d="M57 83h86M57 117h86M54 100h92"/>
+      </g>
+      <path class="he-arc" d="M38 140C74 152 134 128 162 62"/>
+      <circle class="he-dot" cx="38" cy="140" r="3.4"/>
+      <use class="he-plane" href="#i-plane" width="32" height="32"
+           transform="translate(148 46) rotate(42 16 16)"/>
+    </svg>
+  </div>
 </section>
 
 <main class="wrap" id="main">
@@ -351,22 +431,23 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
   <section class="blk">
     <div class="sec-h">
       <h3>Мэдээллийн сан</h3>
-      <p>Мэдээллийг нэвтрэхгүйгээр үзэх боломжтой. Бүртгэл хөтлөх, өөрчлөх эрхийг нэвтэрсэн ажилтан эдэлнэ.</p>
+      <p>Хяналт шалгалтын үйл ажиллагааны нэгдсэн бүртгэл, эрсдэлийн үнэлгээ,
+        гэрчилгээжүүлэлтийн мэдээллийг агуулна.</p>
     </div>
 
     <div class="entry">
       <div class="eb">
         <div>
           <h4>Хяналт шалгалтын мэдээллийн сан</h4>
-          <p>Байгууллагын бүртгэл, эрсдэлийн үнэлгээ, илэрсэн үл нийцэл ба залруулах
-             төлөвлөгөөний хэрэгжилт, гэрчилгээжүүлэлт, хяналт шалгалтын төлөвлөлт.</p>
+          <p>Гэрчилгээ эзэмшигч байгууллагын бүртгэл, эрсдэлийн үнэлгээ, илэрсэн үл
+             нийцэл, залруулах төлөвлөгөөний хэрэгжилт, гэрчилгээжүүлэлт болон хяналт
+             шалгалтын төлөвлөгөөг нэгтгэсэн бүртгэл.</p>
         </div>
         <div class="acts">
           <a class="btn pri" href="hyanalt/">Мэдээллийн санг үзэх</a>
           <a class="btn sec" href="hyanalt/?admin=1">Нэвтрэх</a>
         </div>
       </div>
-      <div class="note">Нэвтрээгүй тохиолдолд мэдээлэл зөвхөн харагдана. Өгөгдөл өөрчлөгдөхгүй.</div>
     </div>
 
     <!-- Зөвхөн нэвтэрсэн үед харагдана -->
@@ -375,9 +456,9 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
         <h4>Байцаагчийн гарын авлага</h4>
         <span class="tag">Нээлттэй</span>
       </div>
-      <p>Чикагогийн конвенц, аюулгүй ажиллагааны менежмент, гэрчилгээжүүлэлт, хяналт
-         шалгалтын арга зүйн 12 модуль бүхий сургалтын хөтөлбөр.</p>
-      <div class="meta">12 модуль · 48 цээжлэх карт · 20 асуултын тест</div>
+      <p>Чикагогийн конвенц, аюулгүй ажиллагааны удирдлагын тогтолцоо, гэрчилгээжүүлэлт,
+         хяналт шалгалтын арга зүйн 12 бүлэг бүхий сургалтын хөтөлбөр.</p>
+      <div class="meta">12 бүлэг · 48 давтлагын карт · 20 асуулт бүхий сорил</div>
       <div style="margin-top:15px"><a class="btn pri" style="width:auto;display:inline-flex" href="garyn-avlaga/">Гарын авлага нээх</a></div>
     </div>
   </section>
@@ -885,8 +966,8 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
     <div class="foot-logo">
       <img src="assets/ztya-logo-light.png" width="96" height="102"
            alt="Монгол Улсын Засгийн газар, Зам, тээврийн яам">
-      <p class="ft">Иргэний нисэхийн аюулгүй ажиллагааны хяналт шалгалтын нэгдсэн
-        бүртгэл — Зам, тээврийн яамны албан ёсны мэдээллийн систем</p>
+      <p class="ft">Иргэний нисэхийн аюулгүй ажиллагааны хяналт шалгалтын нэгдсэн бүртгэл.
+        Зам, тээврийн яамны албан ёсны мэдээллийн систем.</p>
     </div>
     <div class="cols">
       <div>
@@ -896,9 +977,9 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
            <a href="#nisleg">Салбарын статистик үзүүлэлт</a></p>
       </div>
       <div>
-        <h4>Эрх хандалт</h4>
-        <p>Мэдээллийг нэвтрэхгүйгээр <b>үзэх</b> боломжтой.
-           Бүртгэл нэмэх, засах, устгах эрхийг зөвхөн нэвтэрсэн ажилтан эдэлнэ.</p>
+        <h4>Бүртгэлийн агуулга</h4>
+        <p>Байгууллагын бүртгэл, эрсдэлийн үнэлгээ, илэрсэн үл нийцэл,
+           залруулах арга хэмжээ, гэрчилгээжүүлэлт, хяналт шалгалтын төлөвлөгөө.</p>
       </div>
       <div>
         <h4>Тайлант хугацаа</h4>
@@ -921,22 +1002,79 @@ inegReveal(".sec-h, .entry, .locked, .figs, .panel");
   var hero=document.querySelector(".hero.photoband");
   if(!hero||!window.matchMedia) return;
   if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  /* ±3° — давхарга хүрээнээсээ 26% том үед бүх дэлгэцийн харьцаанд
-     булан цоорохгүй. Өөрчлөх бол хоёуланг нь хамт тааруулна. */
-  var MAX=3, queued=false, last=null, span=0;
+  var earth=hero.querySelector(".earth"), globe=hero.querySelector(".globe"),
+      wrap=hero.querySelector(".earthwrap");
+  if(!earth||!globe||!wrap) return;
+  /* Зургийн хэмжээ ба дэлхийн бөмбөрцгийн төв (эх зураг 1366×769) */
+  var IW=1366, IH=769, CX=816, CY=1653;   /* CY нь зургийн доод ирмэгээс доош */
+  var K=0.26;                              /* давхаргын нөөц, CSS-тэй ижил */
+  function setOrigin(){
+    var hh=hero.offsetHeight, w=earth.offsetWidth;
+    if(!hh||!w){ setTimeout(setOrigin,400); return; }   /* хэмжих боломжгүй — дахин оролдоно */
+    /* Өргөн дэлгэцэд: өндрийг зурагтай яг тэнцүү авбал cover нь ӨРГӨНӨӨР
+       тодорхойлогдож, масштаб туузны өргөнөөс л хамаарна — хөвөө байрандаа
+       үлдэнэ. Нарийн, өндөр дэлгэцэд (утас) энэ нь хэтэрхий богино болох
+       тул шаардагдах өндрийг авч, cover нь ӨНДРӨӨР тодорхойлогдоно.
+       Эргэлтэд доод ирмэг өргөгдөх тул туузны 10%-ийн нөөц нэмэв. */
+    /* Томролыг тооцож нөөцийг нь урьдчилан нэмнэ — жижигрүүлсэн үед ч
+       давхарга туузыг бүрэн бүрхэх ёстой. */
+    var zoom=parseFloat(getComputedStyle(earth).getPropertyValue("--earth-zoom"))||1;
+    var need=(wrap.offsetHeight+K*hh+hh*0.22)/zoom;
+    var h=Math.max(w*IH/IW, need);
+    earth.style.top=(-K*hh)+"px";
+    earth.style.height=h+"px";
+    /* Эргэлтийн төв: зургийн дэлхийн бөмбөрцгийн төв (CX,CY) */
+    globe.style.transformOrigin=(CX/IW*100).toFixed(2)+"% "+(CY/IH*100).toFixed(2)+"%";
+  }
+  /* Хүссэн дээд өнцөг. Бодит хэрэглэгдэх утгыг доорх safeMax() нь
+     давхаргын жинхэнэ хэмжээнээс тооцож, булан цоорохгүй хэмжээгээр
+     хязгаарлана — ингэснээр дэлгэц бүрт тусад нь тохируулах шаардлагагүй. */
+  var WANT=5, MAX=0, queued=false, last=null, span=0;
+
+  /* Эргүүлж, томруулсан давхарга туузыг бүрэн бүрхэж байна уу? */
+  function coversAt(deg){
+    var wW=wrap.offsetWidth, wH=wrap.offsetHeight;
+    var ew=earth.offsetWidth, eh=earth.offsetHeight;
+    var ex=-K*wW, ey=parseFloat(earth.style.top)||0;
+    if(!wW||!wH||!ew||!eh) return true;
+    var z=parseFloat(getComputedStyle(earth).getPropertyValue("--earth-zoom"))||1;
+    var ccx=ex+ew/2, ccy=ey+eh/2;                      /* томролын төв */
+    var ox=ex+(CX/IW)*ew, oy=ey+(CY/IH)*eh;            /* эргэлтийн төв */
+    var t=deg*Math.PI/180, c=Math.cos(t), sn=Math.sin(t);
+    var P=[[ex,ey],[ex+ew,ey],[ex+ew,ey+eh],[ex,ey+eh]].map(function(q){
+      var dx=q[0]-ox, dy=q[1]-oy;                      /* 1. эргүүлнэ */
+      var x=ox+dx*c-dy*sn, y=oy+dx*sn+dy*c;
+      return [ccx+(x-ccx)*z, ccy+(y-ccy)*z];           /* 2. томруулна */
+    });
+    return [[0,0],[wW,0],[wW,wH],[0,wH]].every(function(pt){
+      return P.every(function(a,i){
+        var b=P[(i+1)%4];
+        return (b[0]-a[0])*(pt[1]-a[1])-(b[1]-a[1])*(pt[0]-a[0]) >= -0.5;
+      });
+    });
+  }
+  function safeMax(){
+    if(coversAt(WANT)&&coversAt(-WANT)) return WANT;
+    var lo=0, hi=WANT;
+    for(var i=0;i<18;i++){
+      var m=(lo+hi)/2;
+      if(coversAt(m)&&coversAt(-m)) lo=m; else hi=m;
+    }
+    return lo*0.96;                                    /* бага зэрэг нөөцтэй */
+  }
   /* Тууз дэлгэцийн дээгүүр бүрэн өнгөрөх зам. Байрлал хэмжихэд
      нягтруулалт хийгддэг тул гүйлгэх бүрт биш, зөвхөн хэмжээ
      өөрчлөгдөхөд дахин боддог. */
-  function measure(){ span=hero.offsetTop+hero.offsetHeight; }
+  function measure(){ span=hero.offsetTop+hero.offsetHeight; setOrigin(); MAX=safeMax(); }
   function paint(){
     queued=false;
-    if(span<=0) return;
+    if(span<=0||MAX<=0) return;
     var p=(window.pageYOffset||0)/span;
     p=p<0?0:p>1?1:p;
     var deg=((p*2-1)*MAX).toFixed(3);
     if(deg===last) return;                          /* өөрчлөгдөөгүй бол алгасна */
     last=deg;
-    hero.style.setProperty("--earth-rot",deg+"deg");
+    globe.style.setProperty("--earth-rot",deg+"deg");
   }
   function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(paint); } }
   function onResize(){ measure(); onScroll(); }
