@@ -10,3 +10,12 @@
 
 /assets/bg-earth.jpg
   Cache-Control: public, max-age=2592000
+
+/assets/ztya-mark.png
+  Cache-Control: public, max-age=2592000
+
+/assets/ztya-logo.png
+  Cache-Control: public, max-age=2592000
+
+/assets/ztya-logo-light.png
+  Cache-Control: public, max-age=2592000

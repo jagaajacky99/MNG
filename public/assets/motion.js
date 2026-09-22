@@ -25,8 +25,10 @@
   function reveal(selectors){
     if (reduce || !("IntersectionObserver" in window)) return;
     const els = [...document.querySelectorAll(selectors)];
+    let fired = false;
     const io = new IntersectionObserver(es => es.forEach(en => {
       if (!en.isIntersecting) return;
+      fired = true;
       en.target.classList.add("in");
       en.target.querySelectorAll("[data-count]").forEach(n => countUp(n));
       io.unobserve(en.target);
@@ -37,6 +39,20 @@
       el.style.setProperty("--rv-d", Math.min(i, 6) * 70 + "ms");
       el.classList.add("rv"); io.observe(el);
     });
+
+    /* Хамгаалалт: .rv нь агуулгыг НУУДАГ тул ажиглагч ямар нэг шалтгаанаар
+       (нуугдсан таб, урьдчилсан ачаалал, bfcache, хөтчийн алдаа) огт
+       ажиллахгүй бол хуудас хоосон харагдана. Хэрэв 1.6 секундын дотор
+       нэг ч удаа ажиллаагүй бол бүгдийг шууд гаргана. */
+    setTimeout(function(){
+      if (fired) return;
+      io.disconnect();
+      els.forEach(el => {
+        el.style.setProperty("--rv-d", "0ms");
+        el.classList.add("in");
+        el.querySelectorAll("[data-count]").forEach(n => countUp(n));
+      });
+    }, 1600);
   }
   window.inegReveal = reveal;
 })();

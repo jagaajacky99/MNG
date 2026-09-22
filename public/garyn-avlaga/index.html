@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Зам, тээврийн яам — нисэхийн байцаагчийн сургалтын гарын авлага: 12 модуль, цээжлэх карт, кэйс, тест">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128203;</text></svg>">
+<link rel="icon" type="image/png" href="../assets/ztya-mark.png">
+<link rel="apple-touch-icon" href="../assets/ztya-mark.png">
+<meta name="theme-color" content="#024591">
 <title>Нисэхийн Байцаагчийн Гарын Авлага</title>
 <link rel="stylesheet" href="../assets/theme.css">
 <script src="../hyanalt/config.js"></script>
@@ -23,7 +25,8 @@ a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
 /* ---------- command bar ---------- */
 .bar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:3px solid var(--deep);
   display:flex;align-items:center;gap:14px;padding:9px 18px;flex-wrap:wrap}
-.bar .brand{font-family:var(--f-disp);font-size:15px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.bar .brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-disp);font-size:15px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.bar .brand img{flex:none;width:24px;height:24px;border-radius:4px}
 .bar .brand b{color:var(--deep-ink);font-weight:600}
 .bar .sp{flex:1 1 40px}
 .search{display:flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:4px 9px;min-width:190px}
@@ -216,7 +219,7 @@ body.filtering .nores.show{display:block}
 <body>
 
 <header class="bar">
-  <span class="brand">Зам, тээврийн яам · <b>Байцаагчийн сургалт</b></span>
+  <span class="brand"><img src="../assets/ztya-mark.png" width="24" height="24" alt="">Зам, тээврийн яам · <b>Байцаагчийн сургалт</b></span>
   <a href="../" style="font:500 11.5px/1 var(--f-mono);color:var(--ink-3);text-decoration:none;white-space:nowrap">← Нүүр</a>
   <span class="sp"></span>
   <label class="search" aria-label="Хайх">

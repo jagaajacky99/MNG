@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Зам, тээврийн яам — иргэний нисэхийн хяналт шалгалтын мэдээллийн сан">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9992;</text></svg>">
+<link rel="icon" type="image/png" href="../assets/ztya-mark.png">
+<link rel="apple-touch-icon" href="../assets/ztya-mark.png">
+<meta name="theme-color" content="#024591">
 <title>Нисэхийн хяналтын сан</title>
 <link rel="stylesheet" href="../assets/theme.css">
 <style>
@@ -23,7 +25,8 @@ button,input,select,textarea{font:inherit;color:inherit}
   box-shadow:inset -3px 0 0 var(--deep-2)}
 .brand{position:relative;overflow:hidden;border-radius:var(--r);
   margin:-14px -10px 12px;padding:16px 14px 15px;border-bottom:0}
-.brand .mark{font-family:var(--fd);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.brand .mark{display:flex;align-items:center;gap:8px;font-family:var(--fd);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.brand .mark img{flex:none;width:24px;height:24px;border-radius:4px;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
 .brand .nm{font-family:var(--fd);font-weight:700;font-size:19px;line-height:1.15;margin-top:3px}
 .brand .sub{font-size:10.5px;color:var(--ink-3);margin-top:4px;line-height:1.35}
 /* Цэсний толгой нь зургийн тууз тул гэрэл өнгөтэй бичвэртэй.
@@ -298,7 +301,7 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
   <aside class="rail">
     <a class="brand photoband" href="../" aria-label="Нүүр хуудас руу буцах"
        title="Нүүр хуудас руу буцах">
-      <div class="mark">Зам, тээврийн яам</div>
+      <div class="mark"><img src="../assets/ztya-mark.png" width="24" height="24" alt="">Зам, тээврийн яам</div>
       <div class="nm">Хяналтын сан</div>
       <div class="sub">Иргэний нисэхийн хяналт шалгалтын мэдээллийн сан</div>
       <div class="home">

@@ -5,13 +5,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Зам, тээврийн яам · Нисэхийн аюулгүй ажиллагааны хяналт</title>
 <meta name="description" content="Зам, тээврийн яам — иргэний нисэхийн хяналт шалгалтын мэдээллийн сан">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%230e4a4f'/><text x='50' y='72' font-size='62' text-anchor='middle' fill='%23fff'>&#9992;</text></svg>">
+<link rel="icon" type="image/png" href="assets/ztya-mark.png">
+<link rel="apple-touch-icon" href="assets/ztya-mark.png">
+<meta name="theme-color" content="#024591">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="mn_MN">
+<meta property="og:site_name" content="Зам, тээврийн яам">
+<meta property="og:title" content="Иргэний нисэхийн хяналт шалгалтын мэдээллийн систем">
+<meta property="og:description" content="Гэрчилгээ эзэмшигч байгууллагын эрсдэлийн профайл, илэрсэн үл нийцэл ба залруулах арга хэмжээний хэрэгжилт, хяналт шалгалтын төлөвлөлт.">
+<meta property="og:image" content="assets/ztya-logo.png">
 <link rel="stylesheet" href="assets/theme.css">
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);background-image:var(--page-bg);background-attachment:fixed;background-size:var(--page-bg-size);background-position:var(--page-bg-pos);background-repeat:no-repeat;
   color:var(--ink);font-family:var(--ff);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--ff);margin:0;text-wrap:balance}
+/* Урсгал бичвэрт сүүлийн мөрөнд ганц үг үлдэхээс сэргийлнэ (өнчин мөр) */
+p,dd,li,figcaption,.hint,.note,.src,.meta,.bn{text-wrap:pretty}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
@@ -19,8 +29,23 @@ a{color:var(--accent)}
 /* ---------- толгой ---------- */
 .masthead{background:var(--surface);border-bottom:1px solid var(--line)}
 .masthead .in{max-width:1080px;margin:0 auto;padding:20px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.emblem{width:50px;height:50px;border-radius:7px;background:var(--deep);color:#fff;flex:none;
-  display:grid;place-items:center;font-size:25px;box-shadow:inset 0 -3px 0 var(--gold),var(--shadow)}
+/* Яамны БҮТЭН лого — сүлд тэмдэг ба нэрийн хамт, тайрахгүй.
+   Гэрэл, бараан горимд өөр файл (бичвэрийн өнгө ялгаатай). */
+.emblem{flex:none;display:block;line-height:0}
+.emblem img{display:block;height:78px;width:auto}
+.emblem .lg-dark{display:none}
+:root[data-theme="dark"] .emblem .lg-light{display:none}
+:root[data-theme="dark"] .emblem .lg-dark{display:block}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .emblem .lg-light{display:none}
+  :root:not([data-theme="light"]) .emblem .lg-dark{display:block}
+}
+/* Лого ба системийн нэрийг нимгэн зураасаар тусгаарлана */
+.masthead .mh-t{padding-left:17px;border-left:1px solid var(--line)}
+@media(max-width:620px){
+  .emblem img{height:58px}
+  .masthead .mh-t{padding-left:0;border-left:0}
+}
 .masthead h1{font-size:19px;font-weight:700;line-height:1.25;letter-spacing:.005em}
 .masthead p{margin:3px 0 0;font-size:12.5px;color:var(--ink-3)}
 .masthead .sp{flex:1}
@@ -61,7 +86,8 @@ section.blk{padding:30px 0}
   text-transform:uppercase;line-height:1.3}
 .sec-h h3::before{content:"";position:absolute;left:0;top:.16em;width:5px;height:1em;
   border-radius:3px;background:linear-gradient(180deg,var(--gold),#a8761a)}
-.sec-h p{margin:9px 0 0;font-size:13.5px;color:var(--ink-3);padding-left:19px;max-width:80ch}
+.sec-h p{margin:9px 0 0;font-size:13.5px;color:var(--ink-3);padding-left:19px;max-width:80ch;
+  text-wrap:balance}
 /* Шөнийн дэвсгэр дээр шууд байрлах гарчиг цайвар, гэрэлтсэн */
 body.night .sec-h h3{color:#f4fbff;
   text-shadow:0 0 26px rgba(95,215,240,.42),0 0 62px rgba(45,140,255,.26),0 2px 4px rgba(0,0,0,.5)}
@@ -178,12 +204,73 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .av-tbl .mono{font-variant-numeric:tabular-nums}
 .av-tbl td:last-child{width:1%}
 
+/* ---------- нисэхийн тэмдэглэгээ ----------
+   Самбарын толгой дахь алтлаг зураасны оронд сэдэвт тохирсон
+   нимгэн зурлагатай тэмдэг. Бүгд нэг өргөнтэй (1.7) тул нэг гэр бүл. */
+.pico{width:20px;height:20px;flex:none;fill:none;stroke:var(--gold);
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#nisleg .panel>header h2::before{display:none}
+
+/* ---------- туузан дээрх нислэгийн зам ---------- */
+.heroplane{position:absolute;right:3%;top:13%;width:min(42%,460px);height:auto;
+  z-index:1;pointer-events:none;opacity:.55}
+.heroplane .hp-arc{fill:none;stroke:var(--gold);stroke-width:2;
+  stroke-dasharray:3 9;stroke-linecap:round}
+.heroplane .hp-orig{fill:var(--gold);stroke:none}
+.heroplane .hp-plane{fill:none;stroke:var(--gold);stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){.heroplane{display:none}}
+@media (prefers-reduced-motion:no-preference){
+  .heroplane .hp-arc{stroke-dasharray:3 9;animation:hp-dash 22s linear infinite}
+}
+@keyframes hp-dash{to{stroke-dashoffset:-240}}
+
+/* ---------- гар утсаар шилжих алгасах холбоос ---------- */
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--gold);
+  color:#22180a;font-weight:700;font-size:13px;padding:10px 16px;border-radius:0 0 4px 0}
+.skip:focus{left:0}
+
+/* хөл дэх яамны лого */
+.foot-logo{display:flex;align-items:flex-start;gap:16px;margin:0 0 18px}
+.foot-logo img{display:block;width:96px;height:auto;flex:none}
+.foot-logo .ft{font-size:12.5px;line-height:1.55;color:#cfe4e6;max-width:46ch;align-self:center}
+@media(max-width:560px){.foot-logo{flex-direction:column;gap:11px}.foot-logo img{width:82px}}
+
 /* эх сурвалж — шөнийн дэвсгэр дээр шууд байрлана */
 #nisleg .src{margin:15px 0 0;font-size:11.5px;line-height:1.65;color:#cbe1ec;
-  text-shadow:0 1px 2px rgba(0,0,0,.35);max-width:88ch}
+  text-shadow:0 1px 2px rgba(0,0,0,.35);max-width:88ch;text-wrap:balance}
 </style>
 </head>
 <body class="night">
+
+<a class="skip" href="#main">Үндсэн агуулга руу шилжих</a>
+
+<!-- Нисэхийн тэмдгийн сан. Харагдахгүй, зөвхөн <use>-ээр иш татна. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-plane" viewBox="0 0 34 34">
+    <path d="M17 3.4c1.25 0 2.1 1.35 2.1 3v5.1L30 17.7v2.9l-10.9-3.2v5.9l3.2 2.4v2.2L17 27l-5.3.9v-2.2l3.2-2.4v-5.9L4 20.6v-2.9l10.9-6.2v-5.1c0-1.65.85-3 2.1-3z"/>
+  </symbol>
+  <symbol id="i-takeoff" viewBox="0 0 34 34">
+    <path d="M4 30h26"/>
+    <g transform="rotate(42 17 15)">
+      <path d="M17 1.8c1.15 0 1.95 1.25 1.95 2.8v4.7l10.1 5.75v2.7l-10.1-3v5.5l3 2.2v2L17 23.6l-4.95.85v-2l3-2.2v-5.5l-10.1 3v-2.7l10.1-5.75V4.6c0-1.55.8-2.8 1.95-2.8z"/>
+    </g>
+  </symbol>
+  <symbol id="i-globe" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="13.2"/>
+    <path d="M3.8 17h26.4"/>
+    <ellipse cx="17" cy="17" rx="5.6" ry="13.2"/>
+    <path d="M6.6 9.2h20.8M6.6 24.8h20.8"/>
+  </symbol>
+  <symbol id="i-pin" viewBox="0 0 34 34">
+    <path d="M17 3.2c-5.3 0-9.6 4.3-9.6 9.6 0 7.1 9.6 18 9.6 18s9.6-10.9 9.6-18c0-5.3-4.3-9.6-9.6-9.6z"/>
+    <circle cx="17" cy="12.8" r="3.9"/>
+  </symbol>
+  <symbol id="i-box" viewBox="0 0 34 34">
+    <path d="M17 3.4 30 10v14L17 30.6 4 24V10z"/>
+    <path d="M4 10l13 6.6L30 10M17 16.6V30.6"/>
+  </symbol>
+</svg>
 
 <div class="gov-bar">
   <div class="in">
@@ -197,8 +284,13 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
 <header class="masthead">
   <div class="in">
-    <div class="emblem" aria-hidden="true">✈</div>
-    <div>
+    <span class="emblem">
+      <img class="lg-light" src="assets/ztya-logo.png" width="360" height="384"
+           alt="Монгол Улсын Засгийн газар — Зам, тээврийн яам">
+      <img class="lg-dark" src="assets/ztya-logo-light.png" width="360" height="384"
+           alt="" aria-hidden="true">
+    </span>
+    <div class="mh-t">
       <h1>Хяналт шалгалтын мэдээллийн систем</h1>
       <p>Иргэний нисэхийн аюулгүй ажиллагааны хяналт шалгалтын нэгдсэн бүртгэл</p>
     </div>
@@ -221,10 +313,16 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
       <div><dt>Хамрах хэлтэс</dt><dd>5</dd></div>
     </dl>
   </div>
+  <svg class="heroplane" viewBox="0 0 520 260" aria-hidden="true" focusable="false">
+    <path class="hp-arc" d="M10 242C148 214 300 152 428 44"/>
+    <circle class="hp-orig" cx="10" cy="242" r="4"/>
+    <use class="hp-plane" href="#i-plane" width="36" height="36"
+         transform="translate(410 26) rotate(40 18 18)"/>
+  </svg>
   <span class="edge"></span>
 </section>
 
-<main class="wrap">
+<main class="wrap" id="main">
 
   <section class="blk">
     <div class="sec-h">
@@ -275,7 +373,8 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
   <section class="blk" id="nisleg">
     <div class="sec-h">
       <h3>Иргэний нисэхийн салбарын үзүүлэлт</h3>
-      <p>2026 оны эхний хагас жил · Зам, тээврийн яамны статистикийн мэдээ, 2026 оны 6 дугаар сар</p>
+      <p>2026 оны эхний хагас жил · Зам, тээврийн яамны статистикийн мэдээ,
+        2026 оны 6 дугаар сар</p>
     </div>
 
     <dl class="figs av-figs">
@@ -289,7 +388,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
     <div class="panel av">
       <header>
-        <h2>Зорчигч тээвэр, сараар</h2>
+        <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Зорчигч тээвэр, сараар</h2>
         <span class="hint">2023.01 – 2026.06 · мянган хүн</span>
       </header>
       <div class="body">
@@ -313,8 +412,8 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
     <div class="av2">
       <div class="panel av">
         <header>
-          <h2>Олон улсын чиглэл</h2>
-          <span class="hint">эхний хагас жилийн зорчигчийн тоо</span>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg>Олон улсын чиглэл</h2>
+          <span class="hint">эхний хагас жилийн зорчигчийн тоо · эрэмбэлсэн 19 чиглэл</span>
         </header>
         <div class="body">
           <div class="brow">
@@ -439,7 +538,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
       <div class="panel av">
         <header>
-          <h2>Олон улсын тээвэрлэгч</h2>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Олон улсын тээвэрлэгч</h2>
           <span class="hint">948.4 мянган зорчигчийн бүтэц</span>
         </header>
         <div class="body">
@@ -468,7 +567,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
             <div class="bd"><span class="sh">8.0%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">“Aero Mongolia” ХХК</div>
+            <div class="bn">“Аэро Монголиа” ХХК</div>
             <div class="bt"><span style="width:14.4%"></span></div>
             <div class="bv">59 355</div>
             <div class="bd"><span class="sh">6.3%</span></div>
@@ -541,18 +640,18 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
           </div>
           <div class="brow">
             <div class="bn">Бусад тээвэрлэгч</div>
-            <div class="bt"><span style="width:0.5%"></span></div>
-            <div class="bv">1 900</div>
-            <div class="bd"><span class="sh">0.2%</span></div>
+            <div class="bt"><span style="width:2.1%"></span></div>
+            <div class="bv">8 700</div>
+            <div class="bd"><span class="sh">0.9%</span></div>
           </div>
           <p class="note">Үндэсний тээвэрлэгч “МИАТ” ТӨХК олон улсын зорчигчийн 43.6%-ийг
-            тээвэрлэсэн. Дотоодын бусад тээвэрлэгч (Хүннү Эйр, Aero Mongolia) нийтдээ 18%-ийг эзэлж байна.</p>
+            тээвэрлэсэн. Дотоодын бусад тээвэрлэгч (Хүннү Эйр, Аэро Монголиа) нийтдээ 18.3%-ийг эзэлж байна.</p>
         </div>
       </div>
 
       <div class="panel av">
         <header>
-          <h2>Орон нутгийн чиглэл</h2>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>Орон нутгийн чиглэл</h2>
           <span class="hint">201.7 мянган зорчигч</span>
         </header>
         <div class="body">
@@ -617,7 +716,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
       <div class="panel av">
         <header>
-          <h2>Орон нутгийн тээвэрлэгч</h2>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Орон нутгийн тээвэрлэгч</h2>
           <span class="hint">зорчигчийн тоо ба эзлэх хувь</span>
         </header>
         <div class="body">
@@ -647,7 +746,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
       <div class="panel av">
         <header>
-          <h2>Нислэг гүйцэтгэл</h2>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-takeoff"/></svg>Нислэг гүйцэтгэл</h2>
           <span class="hint">нислэгийн тоо, ш</span>
         </header>
         <div class="body">
@@ -695,7 +794,7 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
       <div class="panel av">
         <header>
-          <h2>Ачаа, шуудан тээвэр</h2>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-box"/></svg>Ачаа, шуудан тээвэр</h2>
           <span class="hint">тонн</span>
         </header>
         <div class="body">
@@ -742,16 +841,16 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
               </tbody>
             </table>
           </div>
-          <p class="note">Нийт ачаа, шуудангийн 98%-ийг олон улсын тээвэр эзэлж байна.
-            Ачааны биет хэмжээ 1.4%-иар өссөн хэр нь ачаа эргэлт 26.7%-иар өссөн нь
+          <p class="note">Нийт ачаа, шуудангийн 99.5%-ийг олон улсын тээвэр эзэлж байна.
+            Ачааны биет хэмжээ 1.4%-иар өссөн боловч ачаа эргэлт 26.7%-иар өссөн нь
             тээврийн зай уртассаныг харуулж байна.</p>
         </div>
       </div>
     </div>
 
     <p class="src">Эх сурвалж: Зам, тээврийн яамны Бодлого, төлөвлөлтийн газар — Мэдээллийн технологи,
-      стандарт, статистикийн хэлтэс. “Зам, тээврийн салбарын статистикийн мэдээ”, 2026 оны 6 дугаар
-      сар (2026.07.20), Хүснэгт 6–10.</p>
+      стандарт, статистикийн хэлтэс. “Зам, тээврийн салбарын статистикийн мэдээ”, 2026 оны
+      6 дугаар сар (2026.07.20), Хүснэгт 6–10.</p>
   </section>
 
 </main>
@@ -759,6 +858,12 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 <footer class="gov-foot">
   <div class="in">
     <div class="rule"></div>
+    <div class="foot-logo">
+      <img src="assets/ztya-logo-light.png" width="96" height="102"
+           alt="Монгол Улсын Засгийн газар, Зам, тээврийн яам">
+      <p class="ft">Иргэний нисэхийн аюулгүй ажиллагааны хяналт шалгалтын нэгдсэн
+        бүртгэл — Зам, тээврийн яамны албан ёсны мэдээллийн систем</p>
+    </div>
     <div class="cols">
       <div>
         <h4>Систем</h4>
