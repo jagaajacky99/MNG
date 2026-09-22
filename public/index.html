@@ -28,11 +28,11 @@ a{color:var(--accent)}
 
 /* ---------- толгой ---------- */
 .masthead{background:var(--surface);border-bottom:1px solid var(--line)}
-.masthead .in{max-width:1080px;margin:0 auto;padding:20px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.masthead .in{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 /* Яамны БҮТЭН лого — сүлд тэмдэг ба нэрийн хамт, тайрахгүй.
    Гэрэл, бараан горимд өөр файл (бичвэрийн өнгө ялгаатай). */
 .emblem{flex:none;display:block;line-height:0}
-.emblem img{display:block;height:78px;width:auto}
+.emblem img{display:block;height:100px;width:auto}
 .emblem .lg-dark{display:none}
 :root[data-theme="dark"] .emblem .lg-light{display:none}
 :root[data-theme="dark"] .emblem .lg-dark{display:block}
@@ -42,8 +42,9 @@ a{color:var(--accent)}
 }
 /* Лого ба системийн нэрийг нимгэн зураасаар тусгаарлана */
 .masthead .mh-t{padding-left:17px;border-left:1px solid var(--line)}
+@media(max-width:860px){ .emblem img{height:82px} }
 @media(max-width:620px){
-  .emblem img{height:58px}
+  .emblem img{height:70px}
   .masthead .mh-t{padding-left:0;border-left:0}
 }
 .masthead h1{font-size:19px;font-weight:700;line-height:1.25;letter-spacing:.005em}
@@ -203,6 +204,24 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .av-tbl tr.sub th[scope=row]{padding-left:19px}
 .av-tbl .mono{font-variant-numeric:tabular-nums}
 .av-tbl td:last-child{width:1%}
+
+/* ---------- гүйлгэхэд эргэх дэлхий ----------
+   Зургийн дэлхийн хөвөө нь (60%, 200%) цэгийг төвлөсөн тойрог тул
+   яг тэр цэгийг тойруулж эргүүлэхэд хөвөө хөдөлгөөнгүй хэвээр,
+   гадаргуу нь гулсаж — жинхэнэ эргэлт мэт харагдана.
+   Эргэлтийн төв доор байгаа тул цэгүүд голдуу ХЭВТЭЭ чиглэлд шилжинэ —
+   тиймээс хажуу тийш илүү, дээш доош бага нөөц үлдээв (зургийн хэмжээ
+   бараг өөрчлөгдөхгүй, хөвөө байрандаа хэвээр). */
+.hero.photoband::before{
+  inset:-9%;
+  transform-origin:60% 200%;
+  transform:rotate(var(--earth-rot,0deg));
+  animation:none;
+  will-change:transform;
+}
+@media (prefers-reduced-motion:reduce){
+  .hero.photoband::before{ transform:none }
+}
 
 /* ---------- нисэхийн тэмдэглэгээ ----------
    Самбарын толгой дахь алтлаг зураасны оронд сэдэвт тохирсон
@@ -890,6 +909,37 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 <script>
 document.querySelectorAll(".fig dd").forEach(function(d){ d.setAttribute("data-count",""); });
 inegReveal(".sec-h, .entry, .locked, .figs, .panel");
+
+/* Гүйлгэхэд туузан дахь дэлхий тэнхлэгээ тойрон эргэнэ.
+   Тууз дэлгэцэд орж гарах явцад -2°-оос +2° хүртэл жигд эргэнэ. */
+(function(){
+  var hero=document.querySelector(".hero.photoband");
+  if(!hero||!window.matchMedia) return;
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  /* ±2° нь бүх дэлгэцийн харьцаанд булан цоорохгүй хамгийн том утга
+     (давхарга хүрээнээсээ 9% том — аюулгүй хязгаар нь ±2.25°). */
+  var MAX=2, queued=false, last=null, span=0;
+  /* Тууз дэлгэцийн дээгүүр бүрэн өнгөрөх зам. Байрлал хэмжихэд
+     нягтруулалт хийгддэг тул гүйлгэх бүрт биш, зөвхөн хэмжээ
+     өөрчлөгдөхөд дахин боддог. */
+  function measure(){ span=hero.offsetTop+hero.offsetHeight; }
+  function paint(){
+    queued=false;
+    if(span<=0) return;
+    var p=(window.pageYOffset||0)/span;
+    p=p<0?0:p>1?1:p;
+    var deg=((p*2-1)*MAX).toFixed(3);
+    if(deg===last) return;                          /* өөрчлөгдөөгүй бол алгасна */
+    last=deg;
+    hero.style.setProperty("--earth-rot",deg+"deg");
+  }
+  function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(paint); } }
+  function onResize(){ measure(); onScroll(); }
+  addEventListener("scroll",onScroll,{passive:true});
+  addEventListener("resize",onResize,{passive:true});
+  addEventListener("load",onResize);                /* зураг ачаалсны дараа өндөр өөрчлөгдөж болно */
+  measure(); paint();
+})();
 </script>
 <script>
 (function(){
