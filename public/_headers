@@ -11,6 +11,9 @@
 /assets/bg-earth.jpg
   Cache-Control: public, max-age=2592000
 
+/assets/bg-earth@2x.avif
+  Cache-Control: public, max-age=2592000
+
 /assets/ztya-mark.png
   Cache-Control: public, max-age=2592000
 

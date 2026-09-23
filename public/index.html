@@ -30,9 +30,12 @@ a{color:var(--accent)}
 .masthead{background:var(--surface);border-bottom:1px solid var(--line)}
 .masthead .in{max-width:1080px;margin:0 auto;padding:8px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 /* Яамны БҮТЭН лого — сүлд тэмдэг ба нэрийн хамт, тайрахгүй.
-   Гэрэл, бараан горимд өөр файл (бичвэрийн өнгө ялгаатай). */
+   Гэрэл, бараан горимд өөр файл (бичвэрийн өнгө ялгаатай).
+   Зургийн файлын хоосон зах тайрагдсан (360×384 → 306×288) тул
+   өндрийг 100 → 75px болгов: ЛОГО ЯГ ӨМНӨХ ХЭМЖЭЭТЭЙГЭЭРЭЭ харагдана,
+   зөвхөн үл үзэгдэх зах алга болсон тул толгой 25px намсана. */
 .emblem{flex:none;display:block;line-height:0}
-.emblem img{display:block;height:100px;width:auto}
+.emblem img{display:block;height:75px;width:auto}
 .emblem .lg-dark{display:none}
 :root[data-theme="dark"] .emblem .lg-light{display:none}
 :root[data-theme="dark"] .emblem .lg-dark{display:block}
@@ -42,9 +45,9 @@ a{color:var(--accent)}
 }
 /* Лого ба системийн нэрийг нимгэн зураасаар тусгаарлана */
 .masthead .mh-t{padding-left:17px;border-left:1px solid var(--line)}
-@media(max-width:860px){ .emblem img{height:82px} }
+@media(max-width:860px){ .emblem img{height:62px} }
 @media(max-width:620px){
-  .emblem img{height:70px}
+  .emblem img{height:53px}
   .masthead .mh-t{padding-left:0;border-left:0}
 }
 .masthead h1{font-size:19px;font-weight:700;line-height:1.25;letter-spacing:.005em}
@@ -240,10 +243,13 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
    Эргэлтийн төв (зургийн дэлхийн бөмбөрцгийн төв) нь давхаргын
    хэмжээнээс хамаарч өөр өөр хувь дээр тохиох тул assets/motion.js
    биш, доорх скрипт JS-ээр тооцож --earth-ox/--earth-oy болгож өгнө. */
-/* Тохируулж болох утгууд — дэлхийн томрол, эргэлт, тодрол энд байна */
-.hero.photoband{--drop:320px;--earth-zoom:.93;
+/* Тохируулж болох утгууд — дэлхийн томрол, өргөлт, эргэлт, тодрол энд байна.
+   --earth-rise: давхаргыг дээш өргөх хэмжээ (px). Ихэсгэвэл бөмбөрцгийн
+   хөвөө дээшилж, туузыг дэлхийн гадарга илүү дүүргэнэ. Доод ирмэг
+   ил гарахгүйн тулд скрипт өндрийг нь өргөлтийн хэрээр нэмж тооцно. */
+.hero.photoband{--drop:320px;--earth-zoom:.93;--earth-rise:112px;
   overflow:visible;background-color:transparent}
-@media(max-width:760px){.hero.photoband{--drop:150px}}
+@media(max-width:760px){.hero.photoband{--drop:150px;--earth-rise:52px}}
 .hero.photoband::before,.hero.photoband::after{display:none}
 
 .earthwrap{position:absolute;left:0;right:0;top:0;
@@ -257,16 +263,19 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
    хэт хол шилжинэ. */
 .earthwrap .earth{position:absolute;left:-26%;right:-26%;
   /* Нөөц утга — скрипт ажиллаагүй ч тууз хоосон үлдэхгүй. */
-  top:-14%;height:150%;
+  top:-22%;height:165%;
   transform:scale(var(--earth-zoom,1));transform-origin:50% 50%}
 .earthwrap .globe{position:absolute;inset:0;
   background:var(--page-photo) center top/cover no-repeat;
   transform:rotate(var(--earth-rot,0deg));
   transform-origin:var(--earth-ox,60%) var(--earth-oy,215%);
-  will-change:transform;
-  /* дэлхийг илүү тод, өнгөлөг болгоно */
-  filter:saturate(var(--earth-sat,1.34)) contrast(var(--earth-con,1.07))
-         brightness(var(--earth-bri,1.16))}
+  will-change:transform}
+/* Өнгөний тохиргоог (saturate 1.20 / contrast 1.06 / brightness 1.02)
+   зурагт шингээсэн тул энд CSS filter БАЙХГҮЙ. Filter нь давхаргыг
+   тусад нь растерлуулдаг бөгөөд 1920px дэлгэц дээр 150% масштабтай үед
+   тэр давхарга ~4040×2264 болж, GPU-гийн бүтэцийн хязгаарт (ихэвчлэн
+   4096px) тулж растерийн нягтрал автоматаар буурч, зураг бүдгэрдэг.
+   Өнгийг өөрчлөх бол зургаа дахин боловсруулна, filter нэмэхгүй. */
 
 /* Хотуудын гэрэл анивчина. viewBox нь эх зурагтай ижил, xMidYMin slice нь
    background-ийн "cover + center top"-той яг давхцана. */
@@ -276,9 +285,22 @@ body.night .sec-h p{color:#d9edf7;text-shadow:0 1px 3px rgba(0,0,0,.5)}
   animation:ineg-twinkle var(--d,4s) ease-in-out var(--t,0s) infinite alternate}
 @keyframes ineg-twinkle{from{opacity:.12}to{opacity:.95}}
 
+/* Хөшиг — бичвэрийн тодрол ба зургийн харагдац хоёрын тэнцвэр.
+   Бичвэрийн багана (зүүн ~50%) дээр хөшиг урьдынхаас ЗУЗААН, харин
+   түүнээс хойш хурдан суларч, дэлхийн гадарга, хотуудын гэрэл ил
+   гарна. Өмнө нь тууз бүхэлдээ жигд бүрхэгдсэн тул зураг бүдгэрч,
+   гэтэл бичвэрийн доорх тодрол нь мөн хангалтгүй байв. */
 .earthwrap .veil{position:absolute;inset:0;
-  background:linear-gradient(100deg,rgba(6,28,44,.93) 0%,rgba(6,24,42,.84) 34%,
-             rgba(7,24,44,.55) 68%,rgba(7,24,44,.30) 100%)}
+  background:linear-gradient(97deg,rgba(5,26,44,.94) 0%,rgba(5,25,43,.91) 30%,
+             rgba(6,24,44,.76) 52%,rgba(6,24,44,.44) 66%,
+             rgba(6,24,44,.16) 82%,rgba(6,24,44,.06) 100%)}
+/* 940px-ээс доош .hero .in нэг багана болох тул бичвэр туузны бүх өргөнийг
+   эзэлнэ — тэнд хэвтээ хөшиг тохирохгүй, жигд хөшиг хэрэглэнэ. Энэ нь
+   өмнөх хэвтээ хөшгийн баруун ирмэг (.30) дээр бичвэр тодрол султай
+   байсныг ч зэрэг засна. */
+@media(max-width:940px){
+  .earthwrap .veil{background:linear-gradient(180deg,rgba(5,25,43,.90) 0%,
+    rgba(6,24,44,.84) 55%,rgba(6,24,44,.78) 100%)}}
 @media (prefers-reduced-motion:reduce){
   .earthwrap .globe{transform:none}
   .earthwrap .lights circle{animation:none;opacity:.5}
@@ -354,9 +376,9 @@ main{position:relative;z-index:1}
 <header class="masthead">
   <div class="in">
     <span class="emblem">
-      <img class="lg-light" src="assets/ztya-logo.png" width="360" height="384"
+      <img class="lg-light" src="assets/ztya-logo.png" width="306" height="288"
            alt="Монгол Улсын Засгийн газар — Зам, тээврийн яам">
-      <img class="lg-dark" src="assets/ztya-logo-light.png" width="360" height="384"
+      <img class="lg-dark" src="assets/ztya-logo-light.png" width="306" height="288"
            alt="" aria-hidden="true">
     </span>
     <div class="mh-t">
@@ -372,23 +394,23 @@ main{position:relative;z-index:1}
 <section class="hero photoband">
   <div class="earthwrap" aria-hidden="true">
     <div class="earth"><div class="globe">
-      <svg class="lights" viewBox="0 0 1366 769" preserveAspectRatio="xMidYMin slice" focusable="false">
-      <circle cx="250" cy="292" r="1.40" style="--d:2.60s;--t:0.00s"/><circle cx="302" cy="251" r="1.66" style="--d:6.38s;--t:0.62s"/><circle cx="346" cy="272" r="1.92" style="--d:5.54s;--t:1.24s"/>
-      <circle cx="391" cy="300" r="2.18" style="--d:4.70s;--t:1.86s"/><circle cx="421" cy="256" r="2.44" style="--d:3.86s;--t:2.48s"/><circle cx="456" cy="291" r="2.70" style="--d:3.02s;--t:3.10s"/>
-      <circle cx="481" cy="331" r="2.96" style="--d:6.80s;--t:3.72s"/><circle cx="520" cy="332" r="3.22" style="--d:5.96s;--t:4.34s"/><circle cx="561" cy="301" r="3.48" style="--d:5.12s;--t:4.96s"/>
-      <circle cx="601" cy="216" r="1.40" style="--d:4.28s;--t:5.58s"/><circle cx="617" cy="264" r="1.66" style="--d:3.44s;--t:6.20s"/><circle cx="655" cy="240" r="1.92" style="--d:2.60s;--t:6.82s"/>
-      <circle cx="415" cy="456" r="2.18" style="--d:6.38s;--t:0.31s"/><circle cx="471" cy="501" r="2.44" style="--d:5.54s;--t:0.93s"/><circle cx="546" cy="481" r="2.70" style="--d:4.70s;--t:1.55s"/>
-      <circle cx="601" cy="521" r="2.96" style="--d:3.86s;--t:2.17s"/><circle cx="641" cy="471" r="3.22" style="--d:3.02s;--t:2.79s"/><circle cx="691" cy="501" r="3.48" style="--d:6.80s;--t:3.41s"/>
-      <circle cx="721" cy="546" r="1.40" style="--d:5.96s;--t:4.03s"/><circle cx="668" cy="436" r="1.66" style="--d:5.12s;--t:4.65s"/><circle cx="761" cy="301" r="1.92" style="--d:4.28s;--t:5.27s"/>
-      <circle cx="831" cy="271" r="2.18" style="--d:3.44s;--t:5.89s"/><circle cx="901" cy="302" r="2.44" style="--d:2.60s;--t:6.51s"/><circle cx="951" cy="252" r="2.70" style="--d:6.38s;--t:0.00s"/>
-      <circle cx="786" cy="381" r="2.96" style="--d:5.54s;--t:0.62s"/><circle cx="1021" cy="561" r="3.22" style="--d:4.70s;--t:1.24s"/><circle cx="1071" cy="601" r="3.48" style="--d:3.86s;--t:1.86s"/>
-      <circle cx="1121" cy="556" r="1.40" style="--d:3.02s;--t:2.48s"/><circle cx="1161" cy="621" r="1.66" style="--d:6.80s;--t:3.10s"/><circle cx="1201" cy="581" r="1.92" style="--d:5.96s;--t:3.72s"/>
-      <circle cx="1241" cy="641" r="2.18" style="--d:5.12s;--t:4.34s"/><circle cx="1101" cy="651" r="2.44" style="--d:4.28s;--t:4.96s"/><circle cx="1021" cy="431" r="2.70" style="--d:3.44s;--t:5.58s"/>
-      <circle cx="1081" cy="391" r="2.96" style="--d:2.60s;--t:6.20s"/><circle cx="1141" cy="431" r="3.22" style="--d:6.38s;--t:6.82s"/><circle cx="1201" cy="471" r="3.48" style="--d:5.54s;--t:0.31s"/>
-      <circle cx="1261" cy="421" r="1.40" style="--d:4.70s;--t:0.93s"/><circle cx="1151" cy="341" r="1.66" style="--d:3.86s;--t:1.55s"/><circle cx="181" cy="421" r="1.92" style="--d:3.02s;--t:2.17s"/>
-      <circle cx="241" cy="471" r="2.18" style="--d:6.80s;--t:2.79s"/><circle cx="301" cy="521" r="2.44" style="--d:5.96s;--t:3.41s"/><circle cx="211" cy="357" r="2.70" style="--d:5.12s;--t:4.03s"/>
-      <circle cx="741" cy="181" r="2.96" style="--d:4.28s;--t:4.65s"/><circle cx="1021" cy="241" r="3.22" style="--d:3.44s;--t:5.27s"/><circle cx="881" cy="201" r="3.48" style="--d:2.60s;--t:5.89s"/>
-      <circle cx="1281" cy="301" r="1.40" style="--d:6.38s;--t:6.51s"/>
+      <svg class="lights" viewBox="0 0 2000 1121" preserveAspectRatio="xMidYMin slice" focusable="false">
+      <circle cx="1244" cy="1100" r="2.05" style="--d:2.6s;--t:0.0s"/><circle cx="372" cy="788" r="2.43" style="--d:4.7s;--t:0.62s"/><circle cx="628" cy="372" r="2.81" style="--d:6.8s;--t:1.24s"/>
+      <circle cx="900" cy="612" r="3.19" style="--d:4.28s;--t:1.86s"/><circle cx="260" cy="876" r="3.57" style="--d:6.38s;--t:2.48s"/><circle cx="468" cy="420" r="3.95" style="--d:3.86s;--t:3.1s"/>
+      <circle cx="1172" cy="572" r="4.33" style="--d:5.96s;--t:3.72s"/><circle cx="828" cy="772" r="4.71" style="--d:3.44s;--t:4.34s"/><circle cx="740" cy="524" r="5.1" style="--d:5.54s;--t:4.96s"/>
+      <circle cx="1316" cy="572" r="2.05" style="--d:3.02s;--t:5.58s"/><circle cx="556" cy="668" r="2.43" style="--d:5.12s;--t:6.2s"/><circle cx="1308" cy="444" r="2.81" style="--d:2.6s;--t:6.82s"/>
+      <circle cx="1564" cy="604" r="3.19" style="--d:4.7s;--t:7.44s"/><circle cx="1676" cy="636" r="3.57" style="--d:6.8s;--t:0.62s"/><circle cx="1828" cy="884" r="3.95" style="--d:4.28s;--t:1.24s"/>
+      <circle cx="972" cy="348" r="4.33" style="--d:6.38s;--t:1.86s"/><circle cx="1420" cy="852" r="4.71" style="--d:3.86s;--t:2.48s"/><circle cx="1492" cy="500" r="5.1" style="--d:5.96s;--t:3.1s"/>
+      <circle cx="756" cy="652" r="2.05" style="--d:3.44s;--t:3.72s"/><circle cx="1052" cy="468" r="2.43" style="--d:5.54s;--t:4.34s"/><circle cx="524" cy="1060" r="2.81" style="--d:3.02s;--t:4.96s"/>
+      <circle cx="1164" cy="812" r="3.19" style="--d:5.12s;--t:5.58s"/><circle cx="356" cy="444" r="3.57" style="--d:2.6s;--t:6.2s"/><circle cx="620" cy="564" r="3.95" style="--d:4.7s;--t:6.82s"/>
+      <circle cx="1580" cy="804" r="4.33" style="--d:6.8s;--t:7.44s"/><circle cx="1148" cy="700" r="4.71" style="--d:4.28s;--t:0.62s"/><circle cx="1764" cy="1020" r="5.1" style="--d:6.38s;--t:1.24s"/>
+      <circle cx="964" cy="708" r="2.05" style="--d:3.86s;--t:1.86s"/><circle cx="772" cy="924" r="2.43" style="--d:5.96s;--t:2.48s"/><circle cx="148" cy="548" r="2.81" style="--d:3.44s;--t:3.1s"/>
+      <circle cx="1236" cy="908" r="3.19" style="--d:5.54s;--t:3.72s"/><circle cx="1084" cy="1052" r="3.57" style="--d:3.02s;--t:4.34s"/><circle cx="444" cy="604" r="3.95" style="--d:5.12s;--t:4.96s"/>
+      <circle cx="908" cy="492" r="4.33" style="--d:2.6s;--t:5.58s"/><circle cx="156" cy="780" r="4.71" style="--d:4.7s;--t:6.2s"/><circle cx="260" cy="988" r="5.1" style="--d:6.8s;--t:6.82s"/>
+      <circle cx="1780" cy="708" r="2.05" style="--d:4.28s;--t:7.44s"/><circle cx="1788" cy="588" r="2.43" style="--d:6.38s;--t:0.62s"/><circle cx="76" cy="980" r="2.81" style="--d:3.86s;--t:1.24s"/>
+      <circle cx="1684" cy="916" r="3.19" style="--d:5.96s;--t:1.86s"/><circle cx="508" cy="900" r="3.57" style="--d:3.44s;--t:2.48s"/><circle cx="860" cy="356" r="3.95" style="--d:5.54s;--t:3.1s"/>
+      <circle cx="1124" cy="348" r="4.33" style="--d:3.02s;--t:3.72s"/><circle cx="1372" cy="348" r="4.71" style="--d:5.12s;--t:4.34s"/><circle cx="1980" cy="556" r="5.1" style="--d:2.6s;--t:4.96s"/>
+      <circle cx="1516" cy="388" r="2.05" style="--d:4.7s;--t:5.58s"/>
       </svg>
     </div></div>
     <i class="veil"></i>
@@ -964,7 +986,7 @@ main{position:relative;z-index:1}
   <div class="in">
     <div class="rule"></div>
     <div class="foot-logo">
-      <img src="assets/ztya-logo-light.png" width="96" height="102"
+      <img src="assets/ztya-logo-light.png" width="96" height="90"
            alt="Монгол Улсын Засгийн газар, Зам, тээврийн яам">
       <p class="ft">Иргэний нисэхийн аюулгүй ажиллагааны хяналт шалгалтын нэгдсэн бүртгэл.
         Зам, тээврийн яамны албан ёсны мэдээллийн систем.</p>
@@ -1005,8 +1027,12 @@ inegReveal(".sec-h, .entry, .locked, .figs, .panel");
   var earth=hero.querySelector(".earth"), globe=hero.querySelector(".globe"),
       wrap=hero.querySelector(".earthwrap");
   if(!earth||!globe||!wrap) return;
-  /* Зургийн хэмжээ ба дэлхийн бөмбөрцгийн төв (эх зураг 1366×769) */
-  var IW=1366, IH=769, CX=816, CY=1653;   /* CY нь зургийн доод ирмэгээс доош */
+  /* Зургийн хэмжээ ба дэлхийн бөмбөрцгийн төв (эх зураг 2000×1121).
+     CX/CY-г зургийн хөвөөнд тойрог тааруулж (least squares, үлдэгдэл
+     1.8px) олсон — CY нь зургийн доод ирмэгээс доош. Зураг солигдвол
+     энэ хоёрыг дахин хэмжинэ, эс бөгөөс гүйлгэхэд дэлхий тэнхлэгээсээ
+     хазайж эргэнэ. */
+  var IW=2000, IH=1121, CX=995, CY=2610;
   var K=0.26;                              /* давхаргын нөөц, CSS-тэй ижил */
   function setOrigin(){
     var hh=hero.offsetHeight, w=earth.offsetWidth;
@@ -1019,9 +1045,12 @@ inegReveal(".sec-h, .entry, .locked, .figs, .panel");
     /* Томролыг тооцож нөөцийг нь урьдчилан нэмнэ — жижигрүүлсэн үед ч
        давхарга туузыг бүрэн бүрхэх ёстой. */
     var zoom=parseFloat(getComputedStyle(earth).getPropertyValue("--earth-zoom"))||1;
-    var need=(wrap.offsetHeight+K*hh+hh*0.22)/zoom;
+    /* Дээш өргөх хэмжээ — өргөсөн дүнгээрээ доод ирмэг мөн л дээшилнэ,
+       тиймээс шаардагдах өндөрт нь тэр зайг нэмж өгнө. */
+    var rise=parseFloat(getComputedStyle(earth).getPropertyValue("--earth-rise"))||0;
+    var need=(wrap.offsetHeight+K*hh+rise+hh*0.22)/zoom;
     var h=Math.max(w*IH/IW, need);
-    earth.style.top=(-K*hh)+"px";
+    earth.style.top=(-K*hh-rise)+"px";
     earth.style.height=h+"px";
     /* Эргэлтийн төв: зургийн дэлхийн бөмбөрцгийн төв (CX,CY) */
     globe.style.transformOrigin=(CX/IW*100).toFixed(2)+"% "+(CY/IH*100).toFixed(2)+"%";

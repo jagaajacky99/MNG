@@ -86,19 +86,34 @@ a.brand:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .nav .lbl{min-width:0}
 
 /* ---------- хураагддаг цэс (хулганатай дэлгэц) ----------
-   Хураасан үед 22px нарийн тууз, дээр нь хэсгийн дүрсүүд. Хулгана
-   очих эсвэл гараар (Tab) цэсэнд орох үед 216px болж, агуулгын
-   дээгүүр давхарлан нээгдэнэ — агуулга хөдлөхгүй. */
+   Хураасан үед 48px тууз — дээр нь яамны тэмдэг, доор нь хэсгийн
+   дүрсүүд голлон байрлана, өөрөөр хэлбэл хураасан ч аль систем болох
+   нь танигдана. Хулгана
+   очих эсвэл гараар (Tab) цэсэнд орох үед 216px болж нээгдэнэ.
+   Цэс агуулгыг дарж ХААХГҮЙ — баруун талын агуулга цэстэй яг ижил
+   хугацаа, ижил эвслээр хамт баруун тийш түлхэгдэнэ. Багана хоёулаа
+   нэг --rail-w хувьсагчаас хамаардаг тул хоёр хөдөлгөөн салахгүй. */
 @media (min-width:821px) and (hover:hover){
-  .shell{grid-template-columns:22px 1fr}
+  .shell{--rail-w:48px;--rail-t:.46s;--rail-e:cubic-bezier(.22,1,.36,1);
+    grid-template-columns:var(--rail-w) 1fr;
+    transition:grid-template-columns var(--rail-t) var(--rail-e)}
+  .shell:has(.rail:hover),.shell:has(.rail:focus-within){--rail-w:216px}
   .main{grid-column:2}
-  .rail{position:fixed;top:0;bottom:0;left:0;z-index:70;width:22px;overflow:hidden;
+  /* Өргөнөө .shell-ийн --rail-w-ээс авна — агуулгын баганатай нэг эх
+     сурвалжтай тул хоёулаа яг зэрэг, яг ижил хурдаар хөдөлнө. */
+  .rail{position:fixed;top:0;bottom:0;left:0;z-index:70;width:var(--rail-w);overflow:hidden;
     padding:14px 0 18px;
-    transition:width .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease}
+    transition:width var(--rail-t) var(--rail-e), box-shadow var(--rail-t) ease}
   .rail>*{width:216px;flex:none}
-  .brand{margin:-14px 0 12px}
-  .nav{padding:0 10px 0 0;transition:padding .5s cubic-bezier(.22,1,.36,1)}
-  .nav button{padding:8px 9px 8px 3px;transition:padding .5s cubic-bezier(.22,1,.36,1), background .2s, color .2s}
+  /* Хураасан үед тэмдэг (24px) 48px туузны голд таарна: (48-24)/2 = 12px.
+     Нээгдэхэд загварын 14px-д эргэж орно. */
+  .brand{margin:-14px 0 12px;padding-left:12px;
+    transition:padding-left var(--rail-t) var(--rail-e)}
+  /* Цэсний доторх зай мөн нэг хэмнэлээр — тус тусдаа хугацаатай байвал
+     тууз зогссон ч товчнууд хөдөлсөөр байгаа мэт «хоёр алхамтай» болно. */
+  .nav{padding:0 10px 0 0;transition:padding var(--rail-t) var(--rail-e)}
+  /* Дүрс (16px) мөн туузны голд: (48-16)/2 = 16px */
+  .nav button{padding:8px 9px 8px 16px;transition:padding var(--rail-t) var(--rail-e), background .2s, color .2s}
   .railfoot{margin-left:9px;width:198px}
   /* Хураасан туузны баруун ирмэгт алтлаг гэрэл аажим анивчина — «энд цэс бий» */
   .rail::after{content:"";position:absolute;top:0;bottom:0;right:0;width:2px;
@@ -106,26 +121,42 @@ a.brand:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
     opacity:.75;animation:rail-pulse 3.2s ease-in-out infinite;transition:opacity .3s}
   @keyframes rail-pulse{0%,100%{opacity:.25}50%{opacity:.85}}
 
-  .brand .mark,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot{
+  /* Дарааллын дугаар — нээх/хаах хоёуланд хүчинтэй байх ёстой тул
+     :hover-ээс гадна, элемент бүр дээрээ тогтмол суулгав. --i нь
+     удамшдаг тул товчний .lbl/.ct хүүхдүүд эцгийнхээ дугаарыг авна. */
+  .brand .mkt{--i:0} .brand .nm{--i:1} .brand .sub{--i:2} .brand .home{--i:3}
+  .nav button{--i:4}
+  .nav button:nth-child(2){--i:5} .nav button:nth-child(3){--i:6}
+  .nav button:nth-child(4){--i:7} .nav button:nth-child(n+5){--i:8}
+  .railfoot{--i:9}
+
+  /* Хаагдахдаа: бичвэр эхлээд замаасаа зайлж, дараа нь тууз нарийсна.
+     Дараалал урвуу — доод мөрүүд түрүүлж арилна. */
+  /* .mark өөрөө нуугдахаа больж, зөвхөн хажуугийн бичвэр нь (.mkt) нуугдана —
+     яамны тэмдэг хураасан үед ч туузан дээр үлдэнэ. */
+  .brand .mkt,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot{
     opacity:0;transform:translate3d(-8px,0,0);
-    transition:opacity .25s ease, transform .25s ease}
+    transition:opacity .2s ease, transform .26s var(--rail-e);
+    transition-delay:calc((9 - var(--i,0)) * 11ms)}
+  /* Бичвэр нь алга болсон ч flex-ийн gap зай эзлэхгүй — тэмдэг голоос гажихгүй */
+  .brand .mark{gap:0;transition:gap var(--rail-t) var(--rail-e)}
+  .rail:hover .brand .mark,.rail:focus-within .brand .mark{gap:8px}
 
   .rail:hover,.rail:focus-within{width:216px;
     box-shadow:inset -3px 0 0 var(--deep-2), 18px 0 44px -12px rgba(4,22,36,.55)}
   .rail:hover::after,.rail:focus-within::after{opacity:0;animation:none}
+  .rail:hover .brand,.rail:focus-within .brand{padding-left:14px}
   .rail:hover .nav,.rail:focus-within .nav{padding-left:10px}
   .rail:hover .nav button,.rail:focus-within .nav button{padding-left:9px}
-  .rail:hover :is(.brand .mark,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot),
-  .rail:focus-within :is(.brand .mark,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot){
+  .rail:hover :is(.brand .mkt,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot),
+  .rail:focus-within :is(.brand .mkt,.brand .nm,.brand .sub,.brand .home,.nav .lbl,.nav .ct,.railfoot){
     opacity:1;transform:none;
-    transition:opacity .45s ease, transform .5s cubic-bezier(.22,1,.36,1),
+    transition:opacity .34s ease, transform .42s var(--rail-e),
                background .22s ease, color .22s ease, gap .22s ease;
-    /* Гарч ирэх хөдөлгөөн зэрэгцүүлсэн сааталтай, харин hover-ийн өнгө шууд солигдоно */
-    transition-delay:calc(120ms + var(--i,0) * 35ms), calc(120ms + var(--i,0) * 35ms), 0s, 0s, 0s}
-  .rail:hover .brand .nm,.rail:focus-within .brand .nm{--i:1}
-  .rail:hover .brand .sub,.rail:focus-within .brand .sub{--i:2}
-  .rail:hover .brand .home,.rail:focus-within .brand .home{--i:3}
-  .rail:hover .railfoot,.rail:focus-within .railfoot{--i:8}
+    /* Гарч ирэх хөдөлгөөн зэрэгцүүлсэн сааталтай — тууз хагас нээгдэхээр
+       (≈90ms) эхний мөр гарч, сүүлчийнх нь туузтайгаа зэрэг дуусна.
+       Харин hover-ийн өнгө шууд солигдоно. */
+    transition-delay:calc(90ms + var(--i,0) * 24ms), calc(90ms + var(--i,0) * 24ms), 0s, 0s, 0s}
   .nav button[aria-current="true"] .ico{color:#074580}
 }
 
@@ -301,7 +332,7 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
   <aside class="rail">
     <a class="brand photoband" href="../" aria-label="Нүүр хуудас руу буцах"
        title="Нүүр хуудас руу буцах">
-      <div class="mark"><img src="../assets/ztya-mark.png" width="24" height="24" alt="">Зам, тээврийн яам</div>
+      <div class="mark"><img src="../assets/ztya-mark.png" width="24" height="24" alt=""><span class="mkt">Зам, тээврийн яам</span></div>
       <div class="nm">Хяналтын сан</div>
       <div class="sub">Иргэний нисэхийн хяналт шалгалтын мэдээллийн сан</div>
       <div class="home">
