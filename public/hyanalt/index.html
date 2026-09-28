@@ -324,6 +324,19 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
 .rtext[open]>summary::before{content:"▾ "}
 .rtext>p{margin:0 0 8px;max-width:82ch;font-size:12.5px;line-height:1.6;color:var(--ink-2)}
 .rtext>p:last-child{margin-bottom:12px}
+#rtext .rt-tog{cursor:pointer}
+.rt-acts{margin-left:auto;display:flex;gap:6px;align-items:center}
+#rtext.rt-closed>.body{display:none}
+#rtext.rt-closed>header{border-bottom:0;border-radius:var(--r)}
+.rt-edit textarea,.rt-edit input{background:var(--surface-2);border:1px solid var(--line-strong);
+  border-radius:var(--r);padding:6px 8px;font-size:13px;width:100%}
+.rt-edit textarea{resize:vertical;line-height:1.5}
+.rt-edit>textarea{margin:4px 0 12px}
+.rt-sec{border-top:1px solid var(--line);padding:10px 0}
+.rt-sec textarea{min-height:120px;margin-top:6px}
+.rt-row{display:flex;gap:6px;align-items:center}
+.rt-row input{flex:1;font-weight:700}
+.rt-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
 </style>
 </head>
 <body class="night">
@@ -672,11 +685,18 @@ ICAO-гийн нээлттэй санд Монгол Улсын үзүүлэлт
   {id:"sources",  t:"Эх сурвалж"},
 ];
 
+/* «Тайлан 2026-H1» хэсгийн админ нуудаг самбарууд */
+const REPORT_BLOCKS = [
+  {id:"rtext", t:"Тайлангийн бичвэр"},
+  {id:"notes", t:"Өгөгдлийн зөрүү — тодруулах шаардлагатай"},
+];
+
 const dashDefaults = () => ({
   views:  VIEW_DEFS.map(b=>({id:b.id, title:b.t, on:true})),
   blocks: DASH_BLOCKS.map(b=>({id:b.id, title:b.t, on:true})),
   tiles:  DASH_TILES.map(b=>({id:b.id, title:b.t, on:true})),
   intl:   normDash(INTL_BLOCKS, null),
+  rep:    normDash(REPORT_BLOCKS, null),
 });
 
 const DEFAULTS = {
@@ -692,7 +712,7 @@ const DEFAULTS = {
 /* ============================================================ төлөв */
 const state = {db:null, ready:false, canWrite:false,
   orgs:[], findings:[], inspections:[], certs:[], plan:[], regs:[], actions:[], aircraft:[], settings:null,
-  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null};
+  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null, rtDraft:null};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
@@ -748,7 +768,8 @@ function dashCfg(){
   return {views,
           blocks: normDash(DASH_BLOCKS, raw.blocks),
           tiles:  normDash(DASH_TILES,  raw.tiles),
-          intl:   normDash(INTL_BLOCKS, raw.intl)};
+          intl:   normDash(INTL_BLOCKS, raw.intl),
+          rep:    normDash(REPORT_BLOCKS, raw.rep)};
 }
 /* Засварлаж байгаа (хараахан хадгалаагүй) хувилбар */
 function dashDraft(){
@@ -2556,6 +2577,88 @@ function viewIntl(){
   return `<div class="grid">${src}${adminBar}${empty}${parts.join("")}</div>`;
 }
 
+/* ---------- тайлангийн бичвэр ----------
+   Анхдагч нь REPORT.text (эх тайлангаас үгчлэн). Админ засварлавал settings.reportText-д
+   хадгалагдаж, түүнийг харуулна. Нээлттэй/хаалттай эсэх нь хэрэглэгч бүрийн хөтөчид үлдэнэ. */
+const RTEXT_INTRO = "Доорх бичвэр нь эх тайлангийн задлагдаагүй эх хувь. Эндээс гарсан үл нийцэл, " +
+  "шаардлага нь “Үл нийцэл, CAP”, дүрмийн шинэчлэлт нь “Дүрэм, журмын шинэчлэлт”, дараагийн " +
+  "хагас жилийн ажил нь “Эрсдэлд суурилсан төлөвлөлт” хэсэгт бүртгэлээр орсон.";
+function rtextCfg(){
+  const s = settings().reportText;
+  const custom = !!(s && Array.isArray(s.sections));
+  return {custom,
+          intro:    custom && typeof s.intro==="string" ? s.intro : RTEXT_INTRO,
+          sections: custom ? s.sections : REPORT.text};
+}
+function rtextOpen(){
+  try{ return localStorage.getItem("rtextOpen")==="1"; }catch(e){ return false; }
+}
+/* Админд: зочинд нуусан эсэхийн тэмдэг ба нуух/харуулах товч */
+function repGuestCtl(it){
+  if(!state.canWrite) return "";
+  return `${it.on?"":`<span class="chip warn"><span class="dot"></span>Зочинд нуусан</span>`}
+    <button class="btn sm" data-act="repBlock:${esc(it.id)}">${it.on?"Зочинд нуух":"Зочинд харуулах"}</button>`;
+}
+/* Тохиргооны дарааллаар; зочинд нуусан самбарыг огт гаргахгүй */
+function repBlocks(){
+  return dashCfg().rep.filter(dashShow).map(it=>
+    it.id==="rtext" ? rtextPanel(it)
+  : it.id==="notes" ? `<section class="panel${it.on?"":" ghost"}">
+      <header><h2>${esc(it.title)}</h2>
+        ${state.canWrite?`<span class="rt-acts">${repGuestCtl(it)}</span>`:""}</header>
+      <div class="body"><ul class="notes" style="margin:0;padding-left:18px">
+        ${REPORT.notes.map(n=>`<li>${esc(n)}</li>`).join("")}
+      </ul></div>
+    </section>` : "").join("");
+}
+function rtextPanel(it){
+  const c = rtextCfg(), adm = state.canWrite, d = state.rtDraft;
+  const open = !!d || rtextOpen();
+  const head = `<header>
+      <h2 class="rt-tog" data-act="rtToggle" role="button" tabindex="0" aria-expanded="${open}">${esc(it.title)}</h2>
+      <span class="hint">${c.custom ? "засварласан хувилбар" : "эх файлын “Тайлбар ба дүгнэлт” хуудас · үгчлэн"}</span>
+      <span class="rt-acts">
+        ${d ? "" : repGuestCtl(it)}
+        ${adm && !d ? `<button class="btn sm" data-act="rtEdit">Засах</button>` : ""}
+        ${d ? "" : `<button class="btn sm rt-btn" data-act="rtToggle">${open ? "Хаах ▴" : "Харуулах ▾"}</button>`}
+      </span></header>`;
+
+  if(d){
+    const secs = d.sections.map((s,i,a)=>`<div class="rt-sec">
+        <div class="rt-row">
+          <input data-rth="${i}" value="${esc(s.h)}" placeholder="Гарчиг">
+          <button class="btn sm" data-act="rtMove:${i}:-1" title="Дээш" ${i>0?"":"disabled"}>↑</button>
+          <button class="btn sm" data-act="rtMove:${i}:1" title="Доош" ${i<a.length-1?"":"disabled"}>↓</button>
+          <button class="btn sm" data-act="rtDel:${i}" style="color:var(--crit)">Устгах</button>
+        </div>
+        <textarea data-rtp="${i}" placeholder="Мөр бүр нэг догол мөр болно">${esc(s.t)}</textarea>
+      </div>`).join("");
+    return `<section class="panel${it.on?"":" ghost"}" id="rtext">${head}
+      <div class="body rt-edit">
+        <label class="small muted">Тайлбар (дээд хэсэгт гарах)</label>
+        <textarea data-rti rows="3">${esc(d.intro)}</textarea>
+        ${secs}
+        <div class="rt-foot">
+          <button class="btn sm" data-act="rtAdd">+ Хэсэг нэмэх</button>
+          <span style="flex:1"></span>
+          ${c.custom ? `<button class="btn sm" data-act="rtReset">Эх бичвэрт буцаах</button>` : ""}
+          <button class="btn" data-act="rtCancel">Болих</button>
+          <button class="btn primary" data-act="rtSave">Хадгалах</button>
+        </div>
+      </div></section>`;
+  }
+
+  return `<section class="panel${open?"":" rt-closed"}${it.on?"":" ghost"}" id="rtext">${head}
+      <div class="body">
+        ${c.intro.trim() ? `<p class="small muted" style="margin:0 0 12px;max-width:70ch">${esc(c.intro)}</p>` : ""}
+        ${c.sections.map((b,i)=>`<details class="rtext"${i<2?" open":""}>
+          <summary>${esc(b.h)}</summary>
+          ${(b.p||[]).map(t=>`<p>${esc(t)}</p>`).join("")}
+        </details>`).join("")}
+      </div>
+    </section>`;
+}
+
 function viewReport(){
   const it=REPORT.inspections, tp=it.reduce((a,d)=>a+d.planned,0),
         tu=it.reduce((a,d)=>a+d.unplanned,0), td=it.reduce((a,d)=>a+d.docs,0);
@@ -2694,27 +2797,7 @@ function viewReport(){
       </div>
     </section>
 
-    <section class="panel">
-      <header><h2>Тайлангийн бичвэр</h2>
-        <span class="hint">эх файлын “Тайлбар ба дүгнэлт” хуудас · үгчлэн</span></header>
-      <div class="body">
-        <p class="small muted" style="margin:0 0 12px;max-width:70ch">Доорх бичвэр нь эх тайлангийн
-        задлагдаагүй эх хувь. Эндээс гарсан үл нийцэл, шаардлага нь “Үл нийцэл, CAP”, дүрмийн
-        шинэчлэлт нь “Дүрэм, журмын шинэчлэлт”, дараагийн хагас жилийн ажил нь
-        “Эрсдэлд суурилсан төлөвлөлт” хэсэгт бүртгэлээр орсон.</p>
-        ${REPORT.text.map((b,i)=>`<details class="rtext"${i<2?" open":""}>
-          <summary>${esc(b.h)}</summary>
-          ${b.p.map(t=>`<p>${esc(t)}</p>`).join("")}
-        </details>`).join("")}
-      </div>
-    </section>
-
-    <section class="panel">
-      <header><h2>Өгөгдлийн зөрүү — тодруулах шаардлагатай</h2></header>
-      <div class="body"><ul class="notes" style="margin:0;padding-left:18px">
-        ${REPORT.notes.map(n=>`<li>${esc(n)}</li>`).join("")}
-      </ul></div>
-    </section>
+    ${repBlocks()}
   </div>`;
 }
 
@@ -2773,6 +2856,9 @@ function dashCfgPanel(){
         тодоор бичигдэнэ. Доорх буржгар хаалттай түлхүүрүүд амьд утгаар солигдоно:
         ${Object.keys(INTL_PH_HELP).map(k=>`<span class="code">{${k}}</span>`).join(" ")}.</div></div>
       ${(d.intl||[]).map((it,i)=>row("intl",it,i,(d.intl||[]).length)).join("")}
+
+      <div class="eyebrow" style="margin:18px 0 4px">«Тайлан 2026-H1» хэсгийн самбарууд</div>
+      ${(d.rep||[]).map((it,i)=>row("rep",it,i,(d.rep||[]).length)).join("")}
 
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn primary" data-act="saveDash">Харагдацыг хадгалах</button>
@@ -2918,6 +3004,14 @@ function wire(){
   root.querySelectorAll("[data-dashtxt]").forEach(el=>el.oninput=()=>{
     const it=dashItem(el.dataset.dashtxt); if(it) it.text=el.value;
   });
+  // тайлангийн бичвэрийн ноорог — дахин зурахгүй, зөвхөн ноорогт бичнэ
+  root.querySelectorAll("[data-rti]").forEach(el=>el.oninput=()=>{ if(state.rtDraft) state.rtDraft.intro=el.value; });
+  root.querySelectorAll("[data-rth]").forEach(el=>el.oninput=()=>{
+    const s=state.rtDraft && state.rtDraft.sections[+el.dataset.rth]; if(s) s.h=el.value; });
+  root.querySelectorAll("[data-rtp]").forEach(el=>el.oninput=()=>{
+    const s=state.rtDraft && state.rtDraft.sections[+el.dataset.rtp]; if(s) s.t=el.value; });
+  root.querySelectorAll('.rt-tog').forEach(el=>el.onkeydown=e=>{
+    if(e.key==="Enter"||e.key===" "){ e.preventDefault(); act("rtToggle"); } });
   root.querySelectorAll("[data-dashon]").forEach(el=>el.onchange=()=>{
     const it=dashItem(el.dataset.dashon); if(it){ it.on=el.checked; render(); }
   });
@@ -2940,10 +3034,50 @@ document.addEventListener("keydown", e=>{
 });
 
 async function act(a){
+  /* ---- тайлангийн бичвэр ---- */
+  if(a==="rtToggle"){
+    const open=!rtextOpen();
+    try{ localStorage.setItem("rtextOpen", open?"1":"0"); }catch(e){}
+    render(); return;
+  }
+  if(a==="rtEdit"){
+    const c=rtextCfg();
+    state.rtDraft={intro:c.intro, sections:c.sections.map(s=>({h:s.h||"", t:(s.p||[]).join("\n")}))};
+    render(); return;
+  }
+  if(a==="rtCancel"){ state.rtDraft=null; render(); return; }
+  if(a==="rtAdd"){ state.rtDraft.sections.push({h:"Шинэ хэсэг", t:""}); render(); return; }
+  if(a.startsWith("rtDel:")){
+    const i=+a.split(":")[1], s=state.rtDraft.sections[i];
+    if(s && confirm(`“${s.h||"Гарчиггүй"}” хэсгийг устгах уу?`)){ state.rtDraft.sections.splice(i,1); render(); }
+    return;
+  }
+  if(a.startsWith("rtMove:")){
+    const [,i,dir]=a.split(":").map(Number), L=state.rtDraft.sections, j=i+dir;
+    if(j>=0 && j<L.length){ L.splice(j,0,L.splice(i,1)[0]); render(); }
+    return;
+  }
+  if(a==="rtSave"){
+    const d=state.rtDraft;
+    const next={intro:String(d.intro||"").trim(),
+      sections:d.sections.map(s=>({h:String(s.h||"").trim(),
+        p:String(s.t||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean)}))
+        .filter(s=>s.h||s.p.length)};
+    if(await save("meta","settings",{...settings(), reportText:next})){
+      state.rtDraft=null; toast("Бичвэрийг хадгаллаа"); render(); }
+    return;
+  }
+  if(a==="rtReset"){
+    if(!confirm("Засварласан бичвэрийг устгаж, эх тайлангийн бичвэрт буцаах уу?")) return;
+    if(await save("meta","settings",{...settings(), reportText:null})){
+      state.rtDraft=null; toast("Эх бичвэр сэргээлээ"); render(); }
+    return;
+  }
   /* ---- хяналтын самбарын харагдац ---- */
-  if(a.startsWith("dashTile:") || a.startsWith("dashBlock:") || a.startsWith("intlBlock:")){
+  if(a.startsWith("dashTile:") || a.startsWith("dashBlock:") || a.startsWith("intlBlock:") || a.startsWith("repBlock:")){
     // Самбар дээрээс шууд нуух/харуулах — тэр дороо хадгална
-    const kind = a.startsWith("dashTile:") ? "tiles" : a.startsWith("intlBlock:") ? "intl" : "blocks";
+    const kind = a.startsWith("dashTile:") ? "tiles" : a.startsWith("intlBlock:") ? "intl"
+               : a.startsWith("repBlock:") ? "rep" : "blocks";
     const id = a.split(":")[1];
     const next = dashCfg();
     const it = next[kind].find(x=>x.id===id);
@@ -2969,7 +3103,7 @@ async function act(a){
       if(x.text!==undefined) o.text=String(x.text);
       return o; };
     const next={views:d.views.map(clean), blocks:d.blocks.map(clean),
-                tiles:d.tiles.map(clean), intl:(d.intl||[]).map(clean)};
+                tiles:d.tiles.map(clean), intl:(d.intl||[]).map(clean), rep:(d.rep||[]).map(clean)};
     if(!next.views.some(v=>v.on) && !confirm("Зочинд нэг ч хэсэг харагдахгүй болно.\n\nҮргэлжлүүлэх үү?")) return;
     if(await saveDash(next)){ state.dashDraft=null; toast("Харагдацыг хадгаллаа"); render(); }
     return;
