@@ -232,6 +232,23 @@ a.brand:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .dashrow .ord{display:flex;gap:4px}
 .dashrow input[type=text]{width:100%;background:var(--surface);border:1px solid var(--line-strong);
   border-radius:var(--r);padding:5px 9px;font-size:13px;color:var(--ink)}
+/* Тайлангийн тоо засах */
+.rn-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rn-bar.banner{position:sticky;top:8px;z-index:5}
+input.rnum{width:78px;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);
+  padding:3px 6px;font:inherit;font-size:13px;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.tile .v input.rnum{width:110px;font-size:20px;font-weight:700}
+.legend input.rnum{width:64px}
+.rn-ed{border-bottom:1px dashed var(--warn);cursor:help}
+/* Цэсний мөр — тоон утгын талбартай */
+.dashrow.wcnt{grid-template-columns:auto 1fr 84px auto 100px}
+.dashrow.wcnt .chip{justify-self:start}
+@media (max-width:640px){
+  .dashrow.wcnt{grid-template-columns:auto minmax(0,1fr) 84px}
+  .dashrow.wcnt .sw{grid-column:1 / 3}
+}
+.dashrow input[type=number]{width:100%;background:var(--surface);border:1px solid var(--line-strong);
+  border-radius:var(--r);padding:5px 8px;font-size:13px;color:var(--ink);font-family:var(--fm);text-align:right}
 .dashrow .sw{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);white-space:nowrap}
 /* Бичвэр засварладаг мөр — талбар нь доогуураа бүтэн мөр эзэлнэ */
 .dashrow.wtext{grid-template-areas:"ord ttl sw chip" "txt txt txt txt"}
@@ -388,7 +405,7 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
    бүртгэлийн бүх амьд өгөгдөл (байгууллага, үл нийцэл, шалгалт, гэрчилгээ,
    төлөвлөгөө) db-д хадгалагдана. */
 const REPORT = {
-  period: "2026-H1", label: "2026.01.01 – 2026.06.30",
+  period: "2026-H1", label: "2026.01.01 – 2026.09.30",
   inspections: [
     {dept:"НХХ",   name:"Нислэгийн хяналтын хэлтэс",                    planned:54, unplanned:45, docs:58},
     {dept:"ААХХХ", name:"Аэродром, аюулгүйн хамгаалалтын хяналтын хэлтэс", planned:80, unplanned:22, docs:46},
@@ -588,6 +605,27 @@ const REPORT = {
     }
   ],
 };
+/* ---------- тайлангийн тоон утгын залруулга ----------
+   Админ тайлангийн хүснэгтийн тоог засварлавал settings.reportNums-д
+   {"inspections.0.planned": 56, …} хэлбэрээр хадгалагдана. Render бүрийн өмнө
+   REPORT-ийн тоон хэсгийг эх утгаас сэргээгээд дээр нь залруулгыг тавина. */
+const REPORT_NUM_KEYS = ["inspections","findings","certs","registry","hr","usoap"];
+const REPORT_BASE = JSON.parse(JSON.stringify(
+  Object.fromEntries(REPORT_NUM_KEYS.map(k=>[k, REPORT[k]]))));
+function repPath(obj, path){
+  const ks=path.split("."), last=ks.pop();
+  let o=obj;
+  for(const k of ks){ if(o==null || typeof o!=="object") return null; o=o[k]; }
+  return (o && typeof o==="object" && last in o) ? {o, k:last} : null;
+}
+function syncReport(){
+  REPORT_NUM_KEYS.forEach(k=>{ REPORT[k]=JSON.parse(JSON.stringify(REPORT_BASE[k])); });
+  const put=src=>Object.entries(src||{}).forEach(([p,v])=>{
+    const r=repPath(REPORT,p); if(r) r.o[r.k]=v;
+  });
+  put(settings().reportNums);
+  put(state.repDraft);
+}
 const GASP = [
   "Нислэгийн үйл ажиллагааны аюулгүй байдлын эрсдэлийг тасралтгүй бууруулах.",
   "Улсын аюулгүй байдлын хяналтын чадавхыг бэхжүүлэх.",
@@ -712,7 +750,7 @@ const DEFAULTS = {
 /* ============================================================ төлөв */
 const state = {db:null, ready:false, canWrite:false,
   orgs:[], findings:[], inspections:[], certs:[], plan:[], regs:[], actions:[], aircraft:[], settings:null,
-  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null, rtDraft:null};
+  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null, rtDraft:null, repDraft:null};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
@@ -736,6 +774,8 @@ function normDash(defs, saved){
   const mk=(d,it)=>{
     const o={id:d.id, title:String((it&&it.title)||"").trim()||d.t, on:it? it.on!==false : true};
     if(d.text!==undefined) o.text = (it && typeof it.text==="string") ? it.text : d.text;
+    // Цэсний тоолуурыг гараар тогтоосон бол (хоосон бол автоматаар тоолно)
+    if(it && Number.isFinite(it.count)) o.count = it.count;
     return o;
   };
   (Array.isArray(saved)?saved:[]).forEach(it=>{
@@ -788,7 +828,7 @@ const dashVisible = () => viewAllowed("dash");
 /* Цэсэнд харагдах хэсгүүд — тохиргооны дарааллаар */
 function navItems(){
   return dashCfg().views.filter(v=>viewAllowed(v.id))
-    .map(v=>({...v, n:VIEW_COUNT[v.id]||(()=>"")}));
+    .map(v=>({...v, n: Number.isFinite(v.count) ? ()=>v.count : (VIEW_COUNT[v.id]||(()=>""))}));
 }
 /* Самбарын хэсэг тухайн хэрэглэгчид харагдах эсэх */
 function dashShow(item){ return item.on || state.canWrite; }
@@ -983,6 +1023,10 @@ function drawNav(){
       <span class="lbl">${esc(v.title)}</span>
       <span class="ct">${v.n()===""?"":v.n()}</span></button>`).join("");
   $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    if(state.repDraft && b.dataset.v!==state.view){
+      if(Object.keys(state.repDraft).length && !confirm("Тайлангийн хадгалаагүй тоо алга болно. Үргэлжлүүлэх үү?")) return;
+      state.repDraft=null;
+    }
     state.view=b.dataset.v; state.exportRows=null; state.dashDraft=null; render();
     document.querySelector(".main").scrollIntoView({block:"start"});
   });
@@ -995,6 +1039,7 @@ function drawNav(){
 
 /* ============================================================ render */
 function render(){
+  syncReport();
   const nav=navItems();
   // Зочинд хаасан хэсэг рүү орсон бол эхний нээлттэй хэсэг рүү шилжүүлнэ
   if(!viewAllowed(state.view) && nav.length) state.view = nav[0].id;
@@ -2659,27 +2704,61 @@ function rtextPanel(it){
     </section>`;
 }
 
+/* Тайлангийн тоон нүд: засварын горимд талбар, бусад үед утга.
+   Админд залруулсан нүдийг тэмдэглэж, эх утгыг нь title-д харуулна. */
+function rn(path, v, show){
+  if(state.repDraft) return `<input class="rnum" type="number" step="any" data-rn="${path}"
+    value="${v==null?"":v}" aria-label="Утга">`;
+  const out = show ? show(v) : (v==null ? "—" : esc(v));
+  const saved = settings().reportNums || {};
+  if(!state.canWrite || !(path in saved)) return out;
+  const b = repPath(REPORT_BASE, path), orig = b ? b.o[b.k] : null;
+  return `<span class="rn-ed" title="Засварласан · эх утга: ${orig==null?"—":esc(orig)}">${out}</span>`;
+}
+const repEditedN = () => Object.keys(settings().reportNums || {}).length;
+function repNumBar(){
+  if(!state.canWrite) return "";
+  const n = repEditedN();
+  if(state.repDraft) return `<div class="banner warn rn-bar"><div><b>Тоо засварлаж байна.</b>
+      Нүдэн дэх тоог шууд засна — хоосон үлдээвэл «—» болно. Нийт дүн автоматаар дахин бодогдоно.</div>
+      <span style="flex:1"></span>
+      <button class="btn" data-act="rnCancel">Болих</button>
+      <button class="btn primary" data-act="rnSave">Хадгалах</button></div>`;
+  return `<div class="rn-bar plain">
+      <button class="btn" data-act="rnEdit">Тоо засах</button>
+      ${n ? `<span class="chip warn"><span class="dot"></span>${n} утга засварласан</span>
+             <button class="btn sm" data-act="rnReset">Эх утгад буцаах</button>` : ""}
+    </div>`;
+}
+
 function viewReport(){
-  const it=REPORT.inspections, tp=it.reduce((a,d)=>a+d.planned,0),
-        tu=it.reduce((a,d)=>a+d.unplanned,0), td=it.reduce((a,d)=>a+d.docs,0);
+  const it=REPORT.inspections, tp=it.reduce((a,d)=>a+(d.planned||0),0),
+        tu=it.reduce((a,d)=>a+(d.unplanned||0),0), td=it.reduce((a,d)=>a+(d.docs||0),0);
+  const sum = (...xs) => xs.reduce((a,x)=>a+(+x||0),0);
+  const nt = arr => (arr.find(r=>/Нийт/.test(r[0]))||[])[1];
   const f=REPORT.findings;
   // Хэлтсийн бүтэн нэр — товчлолыг задлахад хэрэглэнэ
   const deptName = code => (REPORT.inspections.find(x=>x.dept===code)||{}).name || code;
-  const org=REPORT.certs.filter(c=>!["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+c[5],0);
-  const per=REPORT.certs.filter(c=>["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+c[5],0);
+  const org=REPORT.certs.filter(c=>!["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+(c[5]||0),0);
+  const per=REPORT.certs.filter(c=>["ИНД-61","ИНД-65","ИНД-66","ИНД-67"].includes(c[0])).reduce((a,c)=>a+(c[5]||0),0);
+  // Хүний нөөцийн жагсаалт — «Нийт» мөрийг хасаад, эх индексийг хадгална
+  const legend = (key, color) => REPORT.hr[key].map((r,i)=>[r,i]).filter(([r])=>!/Нийт/.test(r[0]))
+    .map(([r,i])=>`<span><i style="background:${color}"></i>${esc(r[0])}: <b>${rn(`hr.${key}.${i}.1`, r[1], num)}</b></span>`).join("");
   return `
   <div class="grid">
-    <div class="banner info"><div>Энэ хэсэг нь <b>2026 оны I хагас жилийн батлагдсан тайлангийн (0616.xlsx)</b>
-      нийтлэгдсэн үзүүлэлт. Өөрчлөгдөхгүй лавлагаа болгон хадгалсан.</div></div>
+    <div class="banner info"><div><b>2026 оны III улирлын байдлаар</b> (${esc(REPORT.label)})</div></div>
+    ${repNumBar()}
 
     <section class="panel">
       <header><h2>Хяналт шалгалт, хэлтсээр</h2><span class="hint">${esc(REPORT.label)}</span></header>
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Хэлтэс</th><th class="num">Төлөвлөгөөт</th><th class="num">Төлөвлөгөөт бус</th>
           <th class="num">Баримт бичгийн хяналт</th><th class="num">Нийт</th></tr></thead>
-        <tbody>${it.map(d=>`<tr><td>${esc(d.name)} <span class="code">${esc(d.dept)}</span></td>
-          <td class="num">${d.planned}</td><td class="num">${d.unplanned}</td><td class="num">${d.docs}</td>
-          <td class="num"><b>${d.planned+d.unplanned+d.docs}</b></td></tr>`).join("")}</tbody>
+        <tbody>${it.map((d,i)=>`<tr><td>${esc(d.name)} <span class="code">${esc(d.dept)}</span></td>
+          <td class="num">${rn(`inspections.${i}.planned`, d.planned)}</td>
+          <td class="num">${rn(`inspections.${i}.unplanned`, d.unplanned)}</td>
+          <td class="num">${rn(`inspections.${i}.docs`, d.docs)}</td>
+          <td class="num"><b>${sum(d.planned,d.unplanned,d.docs)}</b></td></tr>`).join("")}</tbody>
         <tfoot><tr><td>НИЙТ</td><td class="num">${tp}</td><td class="num">${tu}</td><td class="num">${td}</td>
           <td class="num">${tp+tu+td}</td></tr></tfoot>
       </table></div></div>
@@ -2690,14 +2769,16 @@ function viewReport(){
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Хэлтэс</th><th class="num">Нэгдсэн тайлан</th><th class="num">Дүгнэлт</th>
           <th class="num">Үл нийцэл</th><th class="num">Шаардлага</th><th>Тэмдэглэл</th></tr></thead>
-        <tbody>${f.map(d=>`<tr><td>${esc(deptName(d.dept))} <span class="code">${esc(d.dept)}</span></td>
-          <td class="num">${d.reports}</td><td class="num">${d.conclusions}</td>
-          <td class="num">${d.nonconf}</td><td class="num">${d.reqs}</td>
+        <tbody>${f.map((d,i)=>`<tr><td>${esc(deptName(d.dept))} <span class="code">${esc(d.dept)}</span></td>
+          <td class="num">${rn(`findings.${i}.reports`, d.reports)}</td>
+          <td class="num">${rn(`findings.${i}.conclusions`, d.conclusions)}</td>
+          <td class="num">${rn(`findings.${i}.nonconf`, d.nonconf)}</td>
+          <td class="num">${rn(`findings.${i}.reqs`, d.reqs)}</td>
           <td class="small muted">${esc(d.note||"")}</td></tr>`).join("")}</tbody>
-        <tfoot><tr><td>НИЙТ</td><td class="num">${f.reduce((a,d)=>a+d.reports,0)}</td>
-          <td class="num">${f.reduce((a,d)=>a+d.conclusions,0)}</td>
-          <td class="num">${f.reduce((a,d)=>a+d.nonconf,0)}</td>
-          <td class="num">${f.reduce((a,d)=>a+d.reqs,0)}</td><td></td></tr></tfoot>
+        <tfoot><tr><td>НИЙТ</td><td class="num">${f.reduce((a,d)=>a+(d.reports||0),0)}</td>
+          <td class="num">${f.reduce((a,d)=>a+(d.conclusions||0),0)}</td>
+          <td class="num">${f.reduce((a,d)=>a+(d.nonconf||0),0)}</td>
+          <td class="num">${f.reduce((a,d)=>a+(d.reqs||0),0)}</td><td></td></tr></tfoot>
       </table></div></div>
     </section>
 
@@ -2707,14 +2788,15 @@ function viewReport(){
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>ИНД</th><th>Агуулга</th><th class="num">Шинээр</th><th class="num">Сунгасан</th>
           <th class="num">Өөрчлөлт</th><th class="num">Нийт</th></tr></thead>
-        <tbody>${REPORT.certs.map(c=>`<tr><td><span class="code">${esc(c[0])}</span></td>
-          <td class="small">${esc(c[1])}</td><td class="num">${c[2]??"—"}</td><td class="num">${c[3]??"—"}</td>
-          <td class="num">${c[4]??"—"}</td><td class="num"><b>${c[5]}</b></td></tr>`).join("")}</tbody>
+        <tbody>${REPORT.certs.map((c,i)=>`<tr><td><span class="code">${esc(c[0])}</span></td>
+          <td class="small">${esc(c[1])}</td><td class="num">${rn(`certs.${i}.2`, c[2])}</td>
+          <td class="num">${rn(`certs.${i}.3`, c[3])}</td>
+          <td class="num">${rn(`certs.${i}.4`, c[4])}</td><td class="num"><b>${rn(`certs.${i}.5`, c[5])}</b></td></tr>`).join("")}</tbody>
         <tfoot><tr><td colspan="2">НИЙТ</td>
           <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[2]||0),0)}</td>
           <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[3]||0),0)}</td>
           <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[4]||0),0)}</td>
-          <td class="num">${REPORT.certs.reduce((a,c)=>a+c[5],0)}</td></tr></tfoot>
+          <td class="num">${REPORT.certs.reduce((a,c)=>a+(c[5]||0),0)}</td></tr></tfoot>
       </table></div></div>
     </section>
 
@@ -2724,11 +2806,12 @@ function viewReport(){
       <div class="body">
         <div class="tiles" style="margin-bottom:14px">
           <div class="tile"><div class="k">AGA аудит ${esc(REPORT.usoap.dates)}</div>
-            <div class="v">${REPORT.usoap.score}</div><div class="n">${REPORT.usoap.pq} протокол асуулга</div></div>
+            <div class="v">${rn("usoap.score", REPORT.usoap.score)}</div>
+            <div class="n">${rn("usoap.pq", REPORT.usoap.pq)} протокол асуулга</div></div>
           <div class="tile"><div class="k">ICVM ${REPORT.usoap.icvm.year} · нэгдсэн EI</div>
-            <div class="v">${REPORT.usoap.icvm.ei}%</div><div class="n">үр дүнтэй хэрэгжилт</div></div>
-          ${REPORT.usoap.icvm.weak.map(w=>`<div class="tile warnv"><div class="k">${esc(w[0])} · хамгийн сул</div>
-            <div class="v">${w[2]}%</div><div class="n">${esc(w[1])}</div></div>`).join("")}
+            <div class="v">${rn("usoap.icvm.ei", REPORT.usoap.icvm.ei)}%</div><div class="n">үр дүнтэй хэрэгжилт</div></div>
+          ${REPORT.usoap.icvm.weak.map((w,i)=>`<div class="tile warnv"><div class="k">${esc(w[0])} · хамгийн сул</div>
+            <div class="v">${rn(`usoap.icvm.weak.${i}.2`, w[2])}%</div><div class="n">${esc(w[1])}</div></div>`).join("")}
         </div>
         <div class="tblwrap"><table>
           <thead><tr><th>Элемент</th><th>Агуулга</th><th>${REPORT.usoap.icvm.year} ICVM</th></tr></thead>
@@ -2750,23 +2833,25 @@ function viewReport(){
         <span class="hint">«Нэгдсэн тайлан 2026 эхний хагас» · чиглэл тус бүрийн тоо</span></header>
       <div class="body" style="padding:0"><div class="tblwrap"><table>
         <thead><tr><th>Чиглэл</th><th class="num">Тоо</th><th>Тайлбар</th></tr></thead>
-        <tbody>${REPORT.registry.map(r=>`<tr><td class="small">${esc(r[0])}</td>
-          <td class="num"><b>${esc(r[1])}</b></td>
+        <tbody>${REPORT.registry.map((r,i)=>`<tr><td class="small">${esc(r[0])}</td>
+          <td class="num"><b>${rn(`registry.${i}.1`, r[1])}</b></td>
           <td class="small muted">${esc(r[2]||"")}</td></tr>`).join("")}</tbody>
       </table></div></div>
     </section>
 
     <section class="panel">
       <header><h2>Хүний нөөц, үнэмлэхжүүлэлт</h2>
-        <span class="hint">нисгэгч 188 · ТҮ инженер 232 · НХҮ ажилтан 180 · эрүүл мэнд 359</span></header>
+        <span class="hint">нисгэгч ${num(nt(REPORT.hr.lic))} · ТҮ инженер ${num((REPORT.hr.lic.find(r=>/Нийт/.test(r[0]))||[])[2])}
+          · НХҮ ажилтан ${num(nt(REPORT.hr.ats))} · эрүүл мэнд ${num(nt(REPORT.hr.med))}</span></header>
       <div class="body">
         <div class="split">
           <div>
             <div class="eyebrow" style="margin-bottom:6px">Нисгэгч ба ТҮ инженер, байгууллагаар</div>
             <div class="tblwrap"><table>
               <thead><tr><th>Байгууллага</th><th class="num">Нисгэгч</th><th class="num">ТҮ инженер</th></tr></thead>
-              <tbody>${REPORT.hr.lic.map(r=>`<tr${/Нийт/.test(r[0])?' style="font-weight:700"':""}>
-                <td class="small">${esc(r[0])}</td><td class="num">${num(r[1])}</td><td class="num">${num(r[2])}</td></tr>`).join("")}</tbody>
+              <tbody>${REPORT.hr.lic.map((r,i)=>`<tr${/Нийт/.test(r[0])?' style="font-weight:700"':""}>
+                <td class="small">${esc(r[0])}</td><td class="num">${rn(`hr.lic.${i}.1`, r[1], num)}</td>
+                <td class="num">${rn(`hr.lic.${i}.2`, r[2], num)}</td></tr>`).join("")}</tbody>
             </table></div>
           </div>
           <div>
@@ -2774,22 +2859,19 @@ function viewReport(){
             <div class="tblwrap"><table>
               <thead><tr><th>Зэрэглэл</th><th class="num">Тоо</th><th class="num">Англи хэлтэй</th>
                 <th class="num">Багшлах</th><th class="num">Шалгах</th></tr></thead>
-              <tbody>${REPORT.hr.ats.map(r=>`<tr${/Нийт/.test(r[0])?' style="font-weight:700"':""}>
-                <td class="small">${esc(r[0])}</td><td class="num">${num(r[1])}</td>
-                <td class="num">${num(r[2])}</td><td class="num">${num(r[3])}</td><td class="num">${num(r[4])}</td></tr>`).join("")}</tbody>
+              <tbody>${REPORT.hr.ats.map((r,i)=>`<tr${/Нийт/.test(r[0])?' style="font-weight:700"':""}>
+                <td class="small">${esc(r[0])}</td>${[1,2,3,4].map(j=>
+                  `<td class="num">${rn(`hr.ats.${i}.${j}`, r[j], num)}</td>`).join("")}</tr>`).join("")}</tbody>
             </table></div>
 
             <div class="eyebrow" style="margin:14px 0 6px">Англи хэлний ур чадвар (ICAO)</div>
-            <div class="legend">${REPORT.hr.eng.filter(r=>!/Нийт/.test(r[0]))
-              .map(r=>`<span><i style="background:var(--accent)"></i>${esc(r[0])}: <b>${num(r[1])}</b></span>`).join("")}</div>
+            <div class="legend">${legend("eng","var(--accent)")}</div>
 
             <div class="eyebrow" style="margin:14px 0 6px">Эрүүл мэндийн гэрчилгээ</div>
-            <div class="legend">${REPORT.hr.med.filter(r=>!/Нийт/.test(r[0]))
-              .map(r=>`<span><i style="background:var(--s2)"></i>${esc(r[0])}: <b>${num(r[1])}</b></span>`).join("")}</div>
+            <div class="legend">${legend("med","var(--s2)")}</div>
 
             <div class="eyebrow" style="margin:14px 0 6px">Нислэгийн мэдээллийн ажилтан</div>
-            <div class="legend">${REPORT.hr.ais.filter(r=>!/Нийт/.test(r[0]))
-              .map(r=>`<span><i style="background:var(--s3)"></i>${esc(r[0])}: <b>${num(r[1])}</b></span>`).join("")}</div>
+            <div class="legend">${legend("ais","var(--s3)")}</div>
           </div>
         </div>
         <p class="small muted" style="margin:12px 0 0">НХҮ ажилтны тоо 2025.06.02-ны байдлаар.
@@ -2808,19 +2890,25 @@ function dashCfgPanel(){
   if(!state.canWrite) return "";           // зөвхөн админд — зочин нуусан хэсгийн жагсаалтыг харах шаардлагагүй
   const d = dashDraft(), dirty = dashDirty();
 
-  const row=(kind, it, i, n)=>`<div class="dashrow${it.text!==undefined?" wtext":""}">
+  const row=(kind, it, i, n)=>{
+    const auto = kind==="views" ? (VIEW_COUNT[it.id]||(()=>""))() : null;
+    return `<div class="dashrow${it.text!==undefined?" wtext":""}${kind==="views"?" wcnt":""}">
     <div class="ord">
       <button class="btn sm" data-act="dashUp:${kind}:${esc(it.id)}" title="Дээш" ${i>0?"":"disabled"}>↑</button>
       <button class="btn sm" data-act="dashDown:${kind}:${esc(it.id)}" title="Доош" ${i<n-1?"":"disabled"}>↓</button>
     </div>
     <input type="text" data-dashttl="${kind}:${esc(it.id)}" value="${esc(it.title)}"
       aria-label="Хэсгийн нэр">
+    ${kind==="views"?`<input type="number" min="0" step="1" data-dashcnt="${kind}:${esc(it.id)}"
+      value="${Number.isFinite(it.count)?it.count:""}" placeholder="${auto===""?"—":esc(auto)}"
+      aria-label="Цэсний тоон утга" title="Хоосон бол автоматаар тоолно${auto===""?"":` (одоо ${esc(auto)})`}">`:""}
     <label class="sw"><input type="checkbox" data-dashon="${kind}:${esc(it.id)}"
       ${it.on?"checked":""}> Зочинд харуулах</label>
     <span class="chip ${it.on?"good":"warn"}"><span class="dot"></span>${it.on?"Нээлттэй":"Нуусан"}</span>
     ${it.text!==undefined?`<textarea data-dashtxt="${kind}:${esc(it.id)}"
       aria-label="Тайлбар бичвэр" placeholder="Тайлбар бичвэр">${esc(it.text)}</textarea>`:""}
   </div>`;
+  };
 
   const offViews = d.views.filter(v=>!v.on).length;
   return `
@@ -2833,7 +2921,9 @@ function dashCfgPanel(){
     </header>
     <div class="body">
       <div class="banner info" style="margin-bottom:14px">
-        <div>Нэрийг нь шууд засаж, ↑↓ товчоор дарааллыг солино. Унтраасан хэсэг зочинд
+        <div>Нэрийг нь шууд засаж, ↑↓ товчоор дарааллыг солино. Цэсний хэсгийн
+        <b>тоон утгыг</b> (цэсэнд нэрийн хажууд гарах тоо) гараар оруулж болно — хоосон
+        үлдээвэл бичлэгийн тооноос автоматаар тоолно. Унтраасан хэсэг зочинд
         харагдахгүй боловч танд саарал өнгөөр харагдана. Өөрчлөлт
         <b>Харагдацыг хадгалах</b> дарсны дараа хүчинтэй.</div>
       </div>
@@ -3001,6 +3091,24 @@ function wire(){
   root.querySelectorAll("[data-dashttl]").forEach(el=>el.oninput=()=>{
     const it=dashItem(el.dataset.dashttl); if(it) it.title=el.value;
   });
+  // тайлангийн тоо — ноорогт бичээд, нийт дүнг шинэчлэхийн тулд дахин зурна
+  // (Tab-аар шилжсэн талбарын идэвхийг хадгална)
+  root.querySelectorAll("[data-rn]").forEach(el=>el.onchange=()=>{
+    if(!state.repDraft) return;
+    const t=el.value.trim();
+    state.repDraft[el.dataset.rn] = t==="" || !Number.isFinite(+t) ? null : +t;
+    setTimeout(()=>{
+      const f=document.activeElement && document.activeElement.dataset
+        ? document.activeElement.dataset.rn : null;
+      render();
+      const n=f && document.querySelector(`[data-rn="${f}"]`); if(n){ n.focus(); n.select(); }
+    },0);
+  });
+  root.querySelectorAll("[data-dashcnt]").forEach(el=>el.oninput=()=>{
+    const it=dashItem(el.dataset.dashcnt); if(!it) return;
+    const v=el.value.trim()==="" ? NaN : Math.round(+el.value);
+    if(Number.isFinite(v) && v>=0) it.count=v; else delete it.count;
+  });
   root.querySelectorAll("[data-dashtxt]").forEach(el=>el.oninput=()=>{
     const it=dashItem(el.dataset.dashtxt); if(it) it.text=el.value;
   });
@@ -3034,6 +3142,31 @@ document.addEventListener("keydown", e=>{
 });
 
 async function act(a){
+  /* ---- тайлангийн тоон утга ---- */
+  if(a==="rnEdit"){ state.repDraft={}; render(); return; }
+  if(a==="rnCancel"){ state.repDraft=null; render(); return; }
+  if(a==="rnSave"){
+    // Идэвхтэй талбарын сүүлийн утгыг change үйлдэлгүйгээр ч авна
+    const ae=document.activeElement;
+    if(ae && ae.dataset && ae.dataset.rn){
+      const t=ae.value.trim(); state.repDraft[ae.dataset.rn] = t==="" || !Number.isFinite(+t) ? null : +t; }
+    const next={...(settings().reportNums||{})};
+    Object.entries(state.repDraft).forEach(([p,v])=>{
+      const b=repPath(REPORT_BASE,p); if(!b) return;
+      const orig=b.o[b.k];
+      // Эх утгатайгаа адил болсон бол залруулгыг устгана (мөр тоо "12" ба 12-ыг адил гэж үзнэ)
+      if(v===orig || (v!=null && orig!=null && String(v)===String(orig))) delete next[p]; else next[p]=v;
+    });
+    if(await save("meta","settings",{...settings(), reportNums:next})){
+      state.repDraft=null; toast("Тоог хадгаллаа"); render(); }
+    return;
+  }
+  if(a==="rnReset"){
+    if(!confirm(`Засварласан ${repEditedN()} утгыг устгаж, эх тайлангийн тоонд буцаах уу?`)) return;
+    if(await save("meta","settings",{...settings(), reportNums:null})){
+      state.repDraft=null; toast("Эх тоо сэргээлээ"); render(); }
+    return;
+  }
   /* ---- тайлангийн бичвэр ---- */
   if(a==="rtToggle"){
     const open=!rtextOpen();
@@ -3101,6 +3234,7 @@ async function act(a){
     const d=dashDraft();
     const clean=x=>{ const o={id:x.id, title:String(x.title||"").trim(), on:!!x.on};
       if(x.text!==undefined) o.text=String(x.text);
+      if(Number.isFinite(x.count)) o.count=x.count;
       return o; };
     const next={views:d.views.map(clean), blocks:d.blocks.map(clean),
                 tiles:d.tiles.map(clean), intl:(d.intl||[]).map(clean), rep:(d.rep||[]).map(clean)};
