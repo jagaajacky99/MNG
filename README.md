@@ -152,6 +152,10 @@ public/                 ← нийтлэгдэх агуулга (build output di
   hyanalt/intl-snapshot.json  ← ICAO-гийн үзүүлэлтийн нөөц хуулбар
   garyn-avlaga/index.html
   assets/theme.css      ← гурван хуудсын нэгдсэн албан ёсны загвар
+  assets/ui-2027.css    ← нүүр ба хяналтын сангийн бараан загвар (theme.css-ийн дараа)
+  assets/ui-fx.js       ← хулганыг дагах гэрлийн толбо, гүйлгэхэд нимгэрэх толгой
+  assets/route-globe.js ← нүүрний амьд нислэгийн зураг (UBN → 11 чиглэл, canvas)
+  assets/geo-dots.js    ← бөмбөрцгийн цэгүүд, Natural Earth 1:110m (нийтийн эзэмшил)
   assets/bg-earth.jpg   ← гурван хуудсын дэвсгэр зураг
   assets/gate.js        ← гарын авлагын нэвтрэлтийн хаалт
   _headers              ← Cloudflare Pages-ийн аюулгүй байдлын толгойнууд
