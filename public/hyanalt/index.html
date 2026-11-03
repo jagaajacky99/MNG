@@ -663,20 +663,21 @@ const CERT_ACTIONS = ["Шинээр олгосон","Сунгасан","Өөрч
 /* ---------- цэсний хэсгүүд ба хяналтын самбарын бүтэц ----------
    Цэсний хэсэг бүрийг, мөн самбарын хайрцаг, блок бүрийг админ зочинд
    харуулах/нуух, нэрийг нь солих, дарааллыг нь өөрчлөх боломжтой.
-   Доорх жагсаалтууд нь анхны байдал. */
+   Доорх жагсаалтууд нь анхны байдал. on:false гэсэн хэсэг нь тохиргоо
+   хадгалаагүй, эсвэл сангаас уншиж чадаагүй үед зочинд харагдахгүй. */
 const VIEW_DEFS = [
-  {id:"dash",   t:"Хяналтын самбар"},
-  {id:"orgs",   t:"Байгууллага, эрсдэл"},
-  {id:"cap",    t:"Үл нийцэл, CAP"},
-  {id:"insp",   t:"Хяналт шалгалт"},
-  {id:"certs",  t:"Гэрчилгээ"},
-  {id:"aircraft",t:"Агаарын хөлөг"},
-  {id:"plan",   t:"Эрсдэлд суурилсан төлөвлөлт"},
-  {id:"regs",   t:"Дүрэм, журмын шинэчлэлт"},
-  {id:"actions",t:"Хэрэгжүүлэх арга хэмжээ"},
+  {id:"dash",   t:"Хяналтын самбар", on:false},
+  {id:"orgs",   t:"Байгууллага, эрсдэл", on:false},
+  {id:"cap",    t:"Үл нийцэл, CAP", on:false},
+  {id:"insp",   t:"Хяналт шалгалт", on:false},
+  {id:"certs",  t:"Гэрчилгээ", on:false},
+  {id:"aircraft",t:"Агаарын хөлөг", on:false},
+  {id:"plan",   t:"Эрсдэлд суурилсан төлөвлөлт", on:false},
+  {id:"regs",   t:"Дүрэм, журмын шинэчлэлт", on:false},
+  {id:"actions",t:"Хэрэгжүүлэх арга хэмжээ", on:false},
   {id:"report", t:"Тайлан 2026 III улирал"},
   {id:"intl",   t:"Олон улс"},
-  {id:"cfg",    t:"Тохиргоо"},
+  {id:"cfg",    t:"Тохиргоо", on:false},
 ];
 const DASH_TILES = [
   {id:"orgs",    t:"Байгууллага"},
@@ -734,7 +735,7 @@ const REPORT_BLOCKS = [
 ];
 
 const dashDefaults = () => ({
-  views:  VIEW_DEFS.map(b=>({id:b.id, title:b.t, on:true})),
+  views:  normDash(VIEW_DEFS, null),
   blocks: DASH_BLOCKS.map(b=>({id:b.id, title:b.t, on:true})),
   tiles:  DASH_TILES.map(b=>({id:b.id, title:b.t, on:true})),
   intl:   normDash(INTL_BLOCKS, null),
@@ -776,7 +777,7 @@ function normDash(defs, saved){
   const out=[], seen=new Set();
   /* Анхны жагсаалтад бичвэртэй хэсэг байвал хадгалсан бичвэрийг нь авч үлдэнэ */
   const mk=(d,it)=>{
-    const o={id:d.id, title:String((it&&it.title)||"").trim()||d.t, on:it? it.on!==false : true};
+    const o={id:d.id, title:String((it&&it.title)||"").trim()||d.t, on:it? it.on!==false : d.on!==false};
     if(d.text!==undefined) o.text = (it && typeof it.text==="string") ? it.text : d.text;
     // Цэсний тоолуурыг гараар тогтоосон бол (хоосон бол автоматаар тоолно)
     if(it && Number.isFinite(it.count)) o.count = it.count;
