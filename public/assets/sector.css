@@ -200,3 +200,50 @@ body.night .hero.sector .in{padding:72px 24px 56px}
 @media(max-width:940px){ body.night .hero.sector .in{padding:44px 20px 230px} }
 body.night .hero.sector h2{max-width:15ch}
 body.night .hero .stats b small{font-size:13px;font-weight:500;color:#9eabbe;letter-spacing:0;margin-left:3px}
+
+/* ---------- хатуу хучилттай замын зураг (assets/road-map.js) ---------- */
+.rmap{display:grid;grid-template-columns:minmax(0,1fr) 300px}
+@media(max-width:860px){.rmap{grid-template-columns:1fr}}
+.rmap-stage{padding:14px 14px 8px;min-width:0}
+.rmap-svg{display:block;width:100%;height:auto;overflow:visible}
+.rm-dot{fill:none;stroke:var(--line-strong);stroke-width:4px;stroke-linecap:round;vector-effect:non-scaling-stroke;opacity:1}
+.rm-town{fill:var(--surface);stroke:var(--ink-3);stroke-width:1.2px;vector-effect:non-scaling-stroke}
+.rm-lbl{font:600 30px var(--ff);fill:var(--ink-2);paint-order:stroke;stroke:var(--surface);stroke-width:6px;pointer-events:none}
+@media(max-width:560px){.rm-lbl{display:none}}
+.rm-road{cursor:pointer;outline:none;transition:opacity .25s}
+.rm-road path{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.rm-road .glow{stroke-width:8px;opacity:.42;filter:url(#rglow);transition:opacity .2s,stroke-width .2s}
+.rm-road .core{stroke-width:2px;transition:stroke-width .2s}
+.rm-road .hit{stroke:transparent;stroke-width:16px;pointer-events:stroke}
+.rm-road.int path.glow,.rm-road.int path.core{stroke:#f0c45e}
+.rm-road.st path.glow,.rm-road.st path.core{stroke:#7fb6ff}
+.rm-road:hover .glow,.rm-road:focus-visible .glow{opacity:.9;stroke-width:12px}
+.rm-road:hover .core,.rm-road:focus-visible .core{stroke-width:3px}
+.rm-road.on .glow{opacity:1;stroke-width:10px}
+.rm-road.on .core{stroke:#fff;stroke-width:3.4px}
+.rmap.has-sel .rm-road:not(.on){opacity:.3}
+@keyframes rm-pulse{0%,100%{opacity:.34}50%{opacity:.6}}
+.rmap:not(.has-sel) .rm-road:not(:hover):not(:focus-visible) .glow{animation:rm-pulse 3.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.rm-road .glow{animation:none!important}}
+.rinfo{border-left:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:11px;min-width:0}
+@media(max-width:860px){.rinfo{border-left:0;border-top:1px solid var(--line)}}
+.rinfo h4{margin:0;font-size:17px;font-weight:700;line-height:1.3;color:var(--ink)}
+.ri-k{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.ri-big{font-size:28px;font-weight:700;line-height:1.1;color:var(--accent);font-variant-numeric:tabular-nums}
+.ri-big small{display:block;margin-top:5px;font-size:12px;font-weight:400;color:var(--ink-3)}
+.ri-leg{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--ink-2)}
+.ri-leg i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:9px;vertical-align:3px}
+.ri-leg i.int{background:#f0c45e;box-shadow:0 0 8px #f0c45e}
+.ri-leg i.st{background:#7fb6ff;box-shadow:0 0 8px #7fb6ff}
+.ri-hint{margin:0;font-size:12.5px;line-height:1.55;color:var(--ink-3)}
+.ri-top{display:flex;align-items:center;gap:8px}
+.ri-code{font:700 12px/1 var(--ff);letter-spacing:.06em;padding:5px 8px;border-radius:6px;
+  background:var(--gold-soft);color:var(--gold);border:1px solid rgba(224,165,38,.35)}
+.ri-dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 12px;margin:2px 0 0;font-size:12.5px;line-height:1.45}
+.ri-dl dt{color:var(--ink-3)}
+.ri-dl dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.ri-back{align-self:flex-start;font:600 12.5px/1 var(--ff);padding:8px 12px;border-radius:8px;cursor:pointer;
+  background:transparent;color:var(--accent);border:1px solid var(--line-strong)}
+.ri-back:hover{border-color:var(--accent)}
+.ri-sel{margin-top:auto;width:100%;font:400 13px var(--ff);padding:9px 10px;border-radius:8px;
+  background:var(--surface-2);color:var(--ink);border:1px solid var(--line-strong)}

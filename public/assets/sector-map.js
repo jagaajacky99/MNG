@@ -145,6 +145,34 @@
     var cy = narrow ? hh - 130 : hh * .5;
     ox = cx - mw * sc / 2; oy = cy - mh * sc / 2;
     build();
+    buildGlow();
+  }
+
+  /* Авто зам горимд бодит хатуу хучилттай замыг (assets/road-paved.js) гэрэлтүүлж
+     зурна. Сүүдэр (blur) хүнд тул нэг удаа тусдаа зураг болгоод кадр бүрт хуулна. */
+  var REAL = MODE === "road" && window.ROAD_PAVED ? window.ROAD_PAVED : null, glowCv = null;
+  function buildGlow(){
+    if (!REAL) return;
+    glowCv = glowCv || document.createElement("canvas");
+    glowCv.width = cv.width; glowCv.height = cv.height;
+    var g = glowCv.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    g.lineCap = "round"; g.lineJoin = "round";
+    [[4.2, .38, 16], [1.5, .95, 6]].forEach(function(L){
+      REAL.forEach(function(s){
+        var c = s.cl === "int" ? "240,196,94" : "127,182,255";
+        g.strokeStyle = "rgba(" + c + "," + L[1] + ")"; g.lineWidth = L[0];
+        g.shadowColor = "rgba(" + c + ",.9)"; g.shadowBlur = L[2];
+        g.beginPath();
+        s.g.forEach(function(p){
+          for (var i = 0; i < p.length; i += 2){
+            var x = X(p[i]/1000), y = Y(p[i+1]/1000);
+            if (i) g.lineTo(x, y); else g.moveTo(x, y);
+          }
+        });
+        g.stroke();
+      });
+    });
   }
 
   /* Шугам бүрийг дэлгэцийн цэгүүд ба хуримтлагдсан уртаар бэлдэнэ */
@@ -216,14 +244,26 @@
 
     /* суурь авто замын сүлжээ */
     ctx.lineCap = "round"; ctx.lineJoin = "round";
-    ctx.strokeStyle = "rgba(170,200,240," + S.baseAlpha + ")"; ctx.lineWidth = 1;
-    BASE.forEach(function(b){
-      ctx.beginPath(); b.pts.forEach(function(p, k){ k ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }); ctx.stroke();
-    });
+    if (glowCv){
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = reduce ? 1 : .8 + .2 * Math.sin(now / 900);
+      ctx.drawImage(glowCv, 0, 0);
+      ctx.restore();
+    } else {
+      ctx.strokeStyle = "rgba(170,200,240," + S.baseAlpha + ")"; ctx.lineWidth = 1;
+      BASE.forEach(function(b){
+        ctx.beginPath(); b.pts.forEach(function(p, k){ k ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }); ctx.stroke();
+      });
+    }
 
-    /* гол шугамууд */
+    /* гол шугамууд — бодит зам гэрэлтэж байгаа үед зөвхөн тэмдэглэгээ */
     PATHS.forEach(function(p){
       var l = p.l;
+      if (glowCv){
+        ctx.strokeStyle = "rgba(" + l.c + ",.3)"; ctx.lineWidth = 1;
+        ctx.beginPath(); p.pts.forEach(function(q, k){ k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); ctx.stroke();
+        return;
+      }
       ctx.strokeStyle = "rgba(" + l.c + ",.22)"; ctx.lineWidth = l.w + 4;
       ctx.beginPath(); p.pts.forEach(function(q, k){ k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); ctx.stroke();
       ctx.strokeStyle = "rgba(" + l.c + ",.75)"; ctx.lineWidth = l.w;
