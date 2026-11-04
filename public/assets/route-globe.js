@@ -106,10 +106,17 @@
 
   /* --- зурах --- */
   var mx = 0, my = 0, tx = 0, ty = 0;
+  /* хэрэглэгчийн чирсэн эргэлт (градус) ба сулласны дараах инерц */
+  var uLon = 0, uLat = 0, vLon = 0, vLat = 0, drag = null;
+  function clampLat(v){ return Math.max(-110, Math.min(38, v)); }
   function frame(now){
     tx += (mx - tx) * .04; ty += (my - ty) * .04;
+    if (!drag && (vLon || vLat)){
+      uLon += vLon; uLat = clampLat(uLat + vLat); vLon *= .94; vLat *= .94;
+      if (Math.abs(vLon) + Math.abs(vLat) < .01) vLon = vLat = 0;
+    }
     var t = now / 1000;
-    setView(100 + Math.sin(t*.045)*12 + tx*6, 40 + ty*4);
+    setView(100 + Math.sin(t*.045)*12 + tx*6 + uLon, 40 + ty*4 + uLat);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
 
@@ -216,8 +223,50 @@
   }
   size();
   frame(performance.now());
+  /* --- хулганы зүүн товчоор чирж эргүүлэх ---
+     Бөмбөрцөг бичвэрийн ард байрлах тул зөвхөн бичвэр, товч биш хоосон
+     хэсэгт, бөмбөрцгийн тойрог дотор дарсан үед чирэлт эхэлнэ. Утсан дээр
+     хуудас гүйлгэхэд саад болохгүйн тулд хүрэлтийг оролцуулахгүй. */
+  function onGlobe(e){
+    if (e.target.closest && e.target.closest("a,button,input,select,textarea,.htxt")) return false;
+    var r = wrap.getBoundingClientRect(), dx = e.clientX - r.left - CX, dy = e.clientY - r.top - CY;
+    return dx*dx + dy*dy <= R*R;
+  }
+  hero.addEventListener("pointerdown", function(e){
+    if (e.pointerType === "touch" || e.button !== 0 || !onGlobe(e)) return;
+    e.preventDefault();
+    drag = { x:e.clientX, y:e.clientY, t:performance.now() };
+    vLon = vLat = 0;
+    hero.setPointerCapture(e.pointerId);
+    hero.classList.add("globe-drag");
+  });
+  hero.addEventListener("pointermove", function(e){
+    if (!drag){
+      if (e.pointerType !== "touch") hero.classList.toggle("globe-grab", onGlobe(e));
+      return;
+    }
+    var k = 180 / Math.PI / R;
+    var dLo = -(e.clientX - drag.x) * k, dLa = (e.clientY - drag.y) * k;
+    drag.x = e.clientX; drag.y = e.clientY; drag.t = performance.now();
+    uLon += dLo; uLat = clampLat(uLat + dLa);
+    vLon = dLo * .8; vLat = dLa * .8;
+    if (!running) frame(performance.now());
+  });
+  function endDrag(){
+    if (!drag) return;
+    /* Сулласны өмнө хулгана зогссон бол инерцгүй */
+    if (reduce || performance.now() - drag.t > 90) vLon = vLat = 0;
+    drag = null;
+    hero.classList.remove("globe-drag");
+  }
+  hero.addEventListener("pointerup", endDrag);
+  hero.addEventListener("pointercancel", endDrag);
+  hero.addEventListener("lostpointercapture", endDrag);
+  hero.addEventListener("pointerleave", function(){ if (!drag) hero.classList.remove("globe-grab"); });
+
   if (!reduce){
     addEventListener("pointermove", function(e){
+      if (drag) return;
       mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1;
     }, { passive:true });
     if ("IntersectionObserver" in window){

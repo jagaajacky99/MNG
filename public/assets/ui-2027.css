@@ -221,8 +221,8 @@ body.night .masthead.scrolled .in{ padding-top:6px; padding-bottom:6px }
 body.night .masthead h1{ font-size:17px; font-weight:600; letter-spacing:-.015em; color:var(--ink) }
 body.night .masthead p{ color:var(--ink-3); font-size:12.5px }
 body.night .masthead .mh-t{ border-left-color:var(--line) }
-body.night .emblem img{ height:56px; transition:height .3s ease }
-body.night .masthead.scrolled .emblem img{ height:44px }
+body.night .emblem img{ height:74px; transition:height .3s ease }
+body.night .masthead.scrolled .emblem img{ height:56px }
 body.night .emblem .lg-light{ display:none !important }
 body.night .emblem .lg-dark{ display:block !important }
 
@@ -251,6 +251,9 @@ body.night .wrap{ max-width:1180px; padding:0 24px }
 body.night .hero .in{ max-width:1180px; padding:84px 24px 72px; gap:56px;
   grid-template-columns:minmax(0,1fr) minmax(220px,280px) }
 @media(max-width:940px){ body.night .hero .in{ grid-template-columns:1fr; padding:56px 20px 44px } }
+/* Нүүр хуудас: үзүүлэлтийн мөрийн доорх хоосон зайг багасгаж, «Салбар» хэсгийг дээш татна */
+body.night .hero:not(.sector) .in{ padding-bottom:24px }
+body.night .hero:not(.sector)+main>section.blk:first-child{ padding-top:16px }
 body.night .hero .htxt{ will-change:opacity,transform }
 
 body.night .hero .kick{
@@ -401,7 +404,7 @@ body.night .rtext>summary:hover{ color:var(--ink) }
   body.night .masthead .in{ padding:10px 16px; gap:10px 12px }
   body.night .masthead p, body.night .masthead .sp{ display:none }
   body.night .masthead h1{ font-size:16px }
-  body.night .emblem img{ height:44px }
+  body.night .emblem img{ height:54px }
   body.night .tbtn{ padding:8px 12px; font-size:12.5px; border-color:var(--line) }
   body.night .hero h2{ font-size:clamp(32px,9vw,40px) }
   body.night .hero p{ font-size:15.5px }
