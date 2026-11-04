@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Төмөр замын салбар · Зам, тээврийн яам</title>
+<meta name="description" content="Төмөр замын ачаа, зорчигч тээврийн 2026 оны I–III улирлын статистик үзүүлэлт — Зам, тээврийн яам">
+<link rel="icon" type="image/png" href="../assets/ztya-mark.png">
+<meta name="theme-color" content="#050b16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
+<link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/sector.css">
+<link rel="stylesheet" href="../assets/ui-2027.css">
+</head>
+<body class="night">
+
+<a class="skip" href="#main">Үндсэн агуулга руу шилжих</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-train" viewBox="0 0 34 34">
+    <path d="M11 3.5h12a3.5 3.5 0 0 1 3.5 3.5v13.5a3.5 3.5 0 0 1-3.5 3.5H11a3.5 3.5 0 0 1-3.5-3.5V7A3.5 3.5 0 0 1 11 3.5z"/>
+    <path d="M7.5 14h19M14 7.5h6"/><circle cx="12" cy="19" r="1.2"/><circle cx="22" cy="19" r="1.2"/>
+    <path d="M12.5 24 9 30.5M21.5 24l3.5 6.5M10.5 27.8h13"/>
+  </symbol>
+  <symbol id="i-bus" viewBox="0 0 34 34">
+    <path d="M8.5 4h17A2.5 2.5 0 0 1 28 6.5V25H6V6.5A2.5 2.5 0 0 1 8.5 4z"/>
+    <path d="M6 16.5h22M6 9h22"/><circle cx="11" cy="21" r="1.2"/><circle cx="23" cy="21" r="1.2"/>
+    <path d="M9 25v3.5M25 25v3.5"/>
+  </symbol>
+  <symbol id="i-road" viewBox="0 0 34 34">
+    <path d="M12.5 30.5 15 3.5M21.5 30.5 19 3.5"/><path d="M17 6.5v3.2M17 13.6v4.2M17 22v5.5"/>
+    <path d="M4 30.5h26"/>
+  </symbol>
+  <symbol id="i-plane" viewBox="0 0 34 34">
+    <path d="M17 3.4c1.25 0 2.1 1.35 2.1 3v5.1L30 17.7v2.9l-10.9-3.2v5.9l3.2 2.4v2.2L17 27l-5.3.9v-2.2l3.2-2.4v-5.9L4 20.6v-2.9l10.9-6.2v-5.1c0-1.65.85-3 2.1-3z"/>
+  </symbol>
+  <symbol id="i-box" viewBox="0 0 34 34">
+    <path d="M17 3.4 30 10v14L17 30.6 4 24V10z"/><path d="M4 10l13 6.6L30 10M17 16.6V30.6"/>
+  </symbol>
+  <symbol id="i-globe" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="13.2"/><path d="M3.8 17h26.4"/>
+    <ellipse cx="17" cy="17" rx="5.6" ry="13.2"/><path d="M6.6 9.2h20.8M6.6 24.8h20.8"/>
+  </symbol>
+  <symbol id="i-pin" viewBox="0 0 34 34">
+    <path d="M17 3.2c-5.3 0-9.6 4.3-9.6 9.6 0 7.1 9.6 18 9.6 18s9.6-10.9 9.6-18c0-5.3-4.3-9.6-9.6-9.6z"/>
+    <circle cx="17" cy="12.8" r="3.9"/>
+  </symbol>
+  <symbol id="i-chart" viewBox="0 0 34 34">
+    <path d="M4 29.5h26M8.5 25V15M14.5 25V8M20.5 25v-7M26.5 25V11"/>
+  </symbol>
+  <symbol id="i-user" viewBox="0 0 34 34">
+    <circle cx="17" cy="11" r="5.4"/><path d="M6.5 29.5c0-5.8 4.7-9.6 10.5-9.6s10.5 3.8 10.5 9.6"/>
+  </symbol>
+  <symbol id="i-pie" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="12.8"/><path d="M17 4.2V17h12.8"/>
+  </symbol>
+</svg>
+
+<div class="gov-bar">
+  <div class="in">
+    <span class="org">Зам, тээврийн яам</span>
+    <span class="dot"></span>
+    <span class="sub">Зам, тээврийн салбарын статистик</span>
+    <span class="sp"></span>
+    <button class="tbtn" id="theme" type="button" style="padding:4px 10px;font-size:11px">Өнгө</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="in">
+    <a class="emblem" href="../" aria-label="Нүүр хуудас">
+      <img class="lg-light" src="../assets/ztya-logo.png" width="306" height="288"
+           alt="Монгол Улсын Засгийн газар — Зам, тээврийн яам">
+      <img class="lg-dark" src="../assets/ztya-logo-light.png" width="306" height="288"
+           alt="" aria-hidden="true">
+    </a>
+    <div class="mh-t">
+      <h1>Төмөр замын салбар</h1>
+      <p>Ачаа, зорчигч тээврийн статистик үзүүлэлт · 2026 оны I–III улирал</p>
+    </div>
+    <span class="sp"></span>
+    <a class="tbtn" href="../">← Нүүр хуудас</a>
+    <a class="tbtn cta" href="#stat">Үзүүлэлт ↓</a>
+  </div>
+</header>
+
+<section class="hero photoband sector">
+  <div class="earthwrap" data-mode="rail" aria-hidden="true">
+    <i class="veil"></i>
+  </div>
+  <div class="in">
+    <div class="htxt">
+      <div class="kick">Зам, тээврийн яам<span class="sep" aria-hidden="true"></span>2026 · I–III улирал</div>
+      <h2>Төмөр замын тээвэр</h2>
+      <div class="rule"></div>
+      <p>2026 оны эхний 9 сард төмөр замаар 46.1 сая тонн ачаа тээвэрлэж, өмнөх оны мөн
+        үеэс 34.6%-иар өссөн. Улсын нийт ачаа тээврийн гуравны нэг, ачаа эргэлтийн 62.1%-ийг
+        төмөр зам гүйцэтгэж байна.</p>
+      <div class="cta-row">
+        <a class="btn pri" href="#stat">Үзүүлэлт үзэх <span class="arr" aria-hidden="true">↓</span></a>
+        <a class="btn sec" href="../">← Нүүр хуудас</a>
+      </div>
+      <div class="stats" aria-label="Гол үзүүлэлт">
+        <div><b>46.1<small>сая тн</small></b><span>ачаа · I–IX сар</span></div>
+        <div><b>+34.6%</b><span>өмнөх оны мөн үеэс</span></div>
+        <div><b>1.30<small>сая</small></b><span>зорчигч · I–IX сар</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap" id="main">
+
+  <section class="blk">
+    <nav class="secnav" aria-label="Тээврийн салбар">
+      <a href="../#nisleg"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Иргэний нисэх</a>
+      <a href="./" aria-current="page"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-train"/></svg>Төмөр зам</a>
+      <a href="../avto-teever/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-bus"/></svg>Автотээвэр</a>
+      <a href="../avto-zam/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-road"/></svg>Авто зам</a>
+    </nav>
+  </section>
+
+  <section class="blk" id="stat" style="padding-top:0">
+    <div class="sec-h">
+      <h3>Төмөр замын гол үзүүлэлт</h3>
+      <p>2026 оны эхний 9 сар (I–III улирал) · өмнөх оны мөн үетэй харьцуулсан өсөлт, бууралт</p>
+    </div>
+
+    <dl class="figs">
+      <div class="fig"><dt>Нийт ачаа</dt><dd>46 100.0<small>мянган тонн <span class="chip good">+34.6%</span></small></dd></div>
+      <div class="fig"><dt>Ачаа эргэлт</dt><dd>19 791.7<small>сая тн.км <span class="chip good">+19.2%</span></small></dd></div>
+      <div class="fig"><dt>Дотоодын ачаа</dt><dd>29 056.9<small>мянган тонн <span class="chip good">+56.7%</span></small></dd></div>
+      <div class="fig"><dt>Экспорт</dt><dd>9 461.9<small>мянган тонн <span class="chip good">+10.9%</span></small></dd></div>
+      <div class="fig"><dt>Импорт</dt><dd>3 313.0<small>мянган тонн <span class="chip good">+19.7%</span></small></dd></div>
+      <div class="fig"><dt>Дамжин өнгөрөх ачаа</dt><dd>4 268.2<small>мянган тонн <span class="chip serious">−3.5%</span></small></dd></div>
+    </dl>
+
+    <div class="panel wide">
+      <header>
+        <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg>Ачаа тээвэр, сараар</h2>
+        <span class="hint">2024.02 – 2026.09 · мянган тонн</span>
+      </header>
+      <div class="body">
+        <div class="legend">
+          <span><i style="background:var(--s1)"></i>2024–2025 он</span>
+          <span><i style="background:var(--gold)"></i>2026 он</span>
+        </div>
+        <div class="chartwrap">
+          <svg viewBox="0 0 980 300" role="img" class="mchart"
+             aria-label="Төмөр замын ачаа тээвэр сараар, 2024 оны 2 дугаар сараас 2026 оны 9 дүгээр сар хүртэл">
+            <text x="56" y="11" class="ax">мян.тн</text><line x1="54" x2="970" y1="248.0" y2="248.0" class="gl" stroke-opacity=".6"/><text x="46" y="251.5" class="ax" text-anchor="end">0</text><line x1="54" x2="970" y1="209.7" y2="209.7" class="gl"/><text x="46" y="213.2" class="ax" text-anchor="end">1 000</text><line x1="54" x2="970" y1="171.3" y2="171.3" class="gl"/><text x="46" y="174.8" class="ax" text-anchor="end">2 000</text><line x1="54" x2="970" y1="133.0" y2="133.0" class="gl"/><text x="46" y="136.5" class="ax" text-anchor="end">3 000</text><line x1="54" x2="970" y1="94.7" y2="94.7" class="gl"/><text x="46" y="98.2" class="ax" text-anchor="end">4 000</text><line x1="54" x2="970" y1="56.3" y2="56.3" class="gl"/><text x="46" y="59.8" class="ax" text-anchor="end">5 000</text><line x1="54" x2="970" y1="18.0" y2="18.0" class="gl"/><text x="46" y="21.5" class="ax" text-anchor="end">6 000</text><line x1="364.9" x2="364.9" y1="18" y2="248" class="yr"/><line x1="708.4" x2="708.4" y1="18" y2="248" class="yr"/><g><title>2024 оны 2 сар — 3 391.3 мян.тн</title><rect x="58.0" y="118.0" width="20.6" height="130.0" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 3 сар — 3 905.6 мян.тн</title><rect x="86.6" y="98.3" width="20.6" height="149.7" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 4 сар — 3 661.9 мян.тн</title><rect x="115.3" y="107.6" width="20.6" height="140.4" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 5 сар — 3 590.0 мян.тн</title><rect x="143.9" y="110.4" width="20.6" height="137.6" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 6 сар — 3 601.5 мян.тн</title><rect x="172.5" y="109.9" width="20.6" height="138.1" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 7 сар — 3 707.5 мян.тн</title><rect x="201.1" y="105.9" width="20.6" height="142.1" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 8 сар — 3 848.4 мян.тн</title><rect x="229.8" y="100.5" width="20.6" height="147.5" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 9 сар — 3 951.9 мян.тн</title><rect x="258.4" y="96.5" width="20.6" height="151.5" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 10 сар — 4 297.2 мян.тн</title><rect x="287.0" y="83.3" width="20.6" height="164.7" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 11 сар — 4 307.4 мян.тн</title><rect x="315.6" y="82.9" width="20.6" height="165.1" rx="1.5" fill="var(--s1)"/></g><g><title>2024 оны 12 сар — 4 032.7 мян.тн</title><rect x="344.3" y="93.4" width="20.6" height="154.6" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 1 сар — 3 743.5 мян.тн</title><rect x="372.9" y="104.5" width="20.6" height="143.5" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 2 сар — 3 154.9 мян.тн, өмнөх оны мөн үе 3 391.3, −7.0%</title><rect x="401.5" y="127.1" width="20.6" height="120.9" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 3 сар — 3 403.1 мян.тн, өмнөх оны мөн үе 3 905.6, −12.9%</title><rect x="430.1" y="117.5" width="20.6" height="130.5" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 4 сар — 3 295.8 мян.тн, өмнөх оны мөн үе 3 661.9, −10.0%</title><rect x="458.8" y="121.7" width="20.6" height="126.3" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 5 сар — 3 732.5 мян.тн, өмнөх оны мөн үе 3 590.0, +4.0%</title><rect x="487.4" y="104.9" width="20.6" height="143.1" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 6 сар — 3 569.4 мян.тн, өмнөх оны мөн үе 3 601.5, −0.9%</title><rect x="516.0" y="111.2" width="20.6" height="136.8" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 7 сар — 3 853.7 мян.тн, өмнөх оны мөн үе 3 707.5, +3.9%</title><rect x="544.6" y="100.3" width="20.6" height="147.7" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 8 сар — 4 749.6 мян.тн, өмнөх оны мөн үе 3 848.4, +23.4%</title><rect x="573.3" y="65.9" width="20.6" height="182.1" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 9 сар — 4 759.5 мян.тн, өмнөх оны мөн үе 3 951.9, +20.4%</title><rect x="601.9" y="65.6" width="20.6" height="182.4" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 10 сар — 4 763.2 мян.тн, өмнөх оны мөн үе 4 297.2, +10.8%</title><rect x="630.5" y="65.4" width="20.6" height="182.6" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 11 сар — 5 287.7 мян.тн, өмнөх оны мөн үе 4 307.4, +22.8%</title><rect x="659.1" y="45.3" width="20.6" height="202.7" rx="1.5" fill="var(--s1)"/></g><g><title>2025 оны 12 сар — 5 616.5 мян.тн, өмнөх оны мөн үе 4 032.7, +39.3%</title><rect x="687.8" y="32.7" width="20.6" height="215.3" rx="1.5" fill="var(--s1)"/></g><g><title>2026 оны 1 сар — 5 296.3 мян.тн, өмнөх оны мөн үе 3 743.5, +41.5%</title><rect x="716.4" y="45.0" width="20.6" height="203.0" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 2 сар — 4 249.1 мян.тн, өмнөх оны мөн үе 3 154.9, +34.7%</title><rect x="745.0" y="85.1" width="20.6" height="162.9" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 3 сар — 5 403.1 мян.тн, өмнөх оны мөн үе 3 403.1, +58.8%</title><rect x="773.6" y="40.9" width="20.6" height="207.1" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 4 сар — 5 242.7 мян.тн, өмнөх оны мөн үе 3 295.8, +59.1%</title><rect x="802.3" y="47.0" width="20.6" height="201.0" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 5 сар — 5 365.4 мян.тн, өмнөх оны мөн үе 3 732.5, +43.7%</title><rect x="830.9" y="42.3" width="20.6" height="205.7" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 6 сар — 5 263.0 мян.тн, өмнөх оны мөн үе 3 569.4, +47.4%</title><rect x="859.5" y="46.3" width="20.6" height="201.7" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 7 сар — 4 981.5 мян.тн, өмнөх оны мөн үе 3 853.7, +29.3%</title><rect x="888.1" y="57.0" width="20.6" height="191.0" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 8 сар — 5 182.6 мян.тн, өмнөх оны мөн үе 4 749.6, +9.1%</title><rect x="916.8" y="49.3" width="20.6" height="198.7" rx="1.5" fill="var(--gold)"/></g><g><title>2026 оны 9 сар — 5 115.2 мян.тн, өмнөх оны мөн үе 4 759.5, +7.5%</title><rect x="945.4" y="51.9" width="20.6" height="196.1" rx="1.5" fill="var(--gold)"/></g><text x="68.3" y="263" class="ax" text-anchor="middle">2</text><text x="125.6" y="263" class="ax" text-anchor="middle">4</text><text x="211.4" y="263" class="ax" text-anchor="middle">7</text><text x="297.3" y="263" class="ax" text-anchor="middle">10</text><text x="383.2" y="263" class="ax" text-anchor="middle">1</text><text x="469.1" y="263" class="ax" text-anchor="middle">4</text><text x="554.9" y="263" class="ax" text-anchor="middle">7</text><text x="640.8" y="263" class="ax" text-anchor="middle">10</text><text x="726.7" y="263" class="ax" text-anchor="middle">1</text><text x="812.6" y="263" class="ax" text-anchor="middle">4</text><text x="898.4" y="263" class="ax" text-anchor="middle">7</text><text x="211.4" y="285" class="yl" text-anchor="middle">2024 (II–XII сар)</text><text x="540.6" y="285" class="yl" text-anchor="middle">2025</text><text x="841.2" y="285" class="yl" text-anchor="middle">2026 (I–IX сар)</text>
+          </svg>
+        </div>
+        <p class="note">2026 онд төмөр замын ачаа сард дунджаар <b>5.1 сая тонн</b> болж, өмнөх оны
+          мөн үеийн дунджаас (3.8 сая тонн) 1.3 сая тонноор өссөн. Сарын хамгийн өндөр үзүүлэлт
+          2025 оны 12 дугаар сард (5.6 сая тонн) гарсан. 2026 оны 9 дүгээр сард 5.1 сая тонн ачаа
+          тээвэрлэж, өмнөх оны мөн үеэс 7.5%-иар өссөн.</p>
+      </div>
+    </div>
+
+    <div class="av2">
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-train"/></svg>Тээвэрлэгч байгууллагаар</h2>
+          <span class="hint">нийт ачаа, мянган тонн</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn">“Улаанбаатар төмөр зам” ХНН</div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">25 796.1</div>
+            <div class="bd"><span class="sh">56.0%</span><span class="chip good">+6.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">“Монголын төмөр зам” ТӨХК</div>
+            <div class="bt"><span style="width:42.7%"></span></div>
+            <div class="bv">11 016.5</div>
+            <div class="bd"><span class="sh">23.9%</span><span class="chip good">+131.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">“Монголиантранс Лайн” ХХК</div>
+            <div class="bt"><span style="width:22.9%"></span></div>
+            <div class="bv">5 897.1</div>
+            <div class="bd"><span class="sh">12.8%</span><span class="chip good">+253.4%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">“Монголиантранс Ложистик” ХХК</div>
+            <div class="bt"><span style="width:13.1%"></span></div>
+            <div class="bv">3 390.3</div>
+            <div class="bd"><span class="sh">7.4%</span><span class="chip good">+20.5%</span></div>
+          </div>
+          <p class="note">“Улаанбаатар төмөр зам” ХНН нийт ачааны талаас илүүг тээвэрлэсэн хэвээр.
+            Өсөлтийг “Монголын төмөр зам” ТӨХК (+6.2 сая тн) болон “Монголиантранс Лайн” ХХК
+            (+4.2 сая тн) голлон бүрдүүлэв.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-box"/></svg>Ачааны төрлөөр</h2>
+          <span class="hint">мянган тонн · эзлэх хувь</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn">Дотоодын ачаа</div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">29 056.9</div>
+            <div class="bd"><span class="sh">63.0%</span><span class="chip good">+56.7%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">Экспорт</div>
+            <div class="bt"><span style="width:32.6%"></span></div>
+            <div class="bv">9 461.9</div>
+            <div class="bd"><span class="sh">20.5%</span><span class="chip good">+10.9%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">Дамжин өнгөрөх</div>
+            <div class="bt"><span style="width:14.7%"></span></div>
+            <div class="bv">4 268.2</div>
+            <div class="bd"><span class="sh">9.3%</span><span class="chip serious">−3.5%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">Импорт</div>
+            <div class="bt"><span style="width:11.4%"></span></div>
+            <div class="bv">3 313.0</div>
+            <div class="bd"><span class="sh">7.2%</span><span class="chip good">+19.7%</span></div>
+          </div>
+          <p class="note">Дотоодын ачаа <b>10.5 сая тонноор</b> нэмэгдэж, нийт өсөлтийн 89%-ийг бүрдүүлэв.
+            Дамжин өнгөрөх ачаа цорын ганц буурсан төрөл байна.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg>Экспорт, импорт, улсаар</h2>
+          <span class="hint">мянган тонн</span>
+        </header>
+        <div class="body">
+          <div class="tblwrap">
+            <table class="av-tbl">
+              <thead><tr><th scope="col">Үзүүлэлт</th><th scope="col">9 дүгээр сар</th><th scope="col">Өссөн дүн</th><th scope="col">2026/2025</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">Экспорт</th><td class="mono">1 123.3</td><td class="mono">9 461.9</td><td><span class="chip good">+10.9%</span></td></tr>
+              <tr class="sub"><th scope="row">— БНХАУ руу</th><td class="mono">1 109.2</td><td class="mono">9 355.4</td><td><span class="chip good">+11.3%</span></td></tr>
+              <tr class="sub"><th scope="row">— ОХУ руу</th><td class="mono">14.0</td><td class="mono">106.6</td><td><span class="chip serious">−13.2%</span></td></tr>
+              <tr><th scope="row">Импорт</th><td class="mono">423.7</td><td class="mono">3 313.0</td><td><span class="chip good">+19.7%</span></td></tr>
+              <tr class="sub"><th scope="row">— БНХАУ-аас</th><td class="mono">83.2</td><td class="mono">844.5</td><td><span class="chip good">+25.0%</span></td></tr>
+              <tr class="sub"><th scope="row">— ОХУ-аас</th><td class="mono">340.5</td><td class="mono">2 468.6</td><td><span class="chip good">+18.0%</span></td></tr>
+              <tr><th scope="row">Дамжин өнгөрөх</th><td class="mono">403.6</td><td class="mono">4 268.2</td><td><span class="chip serious">−3.5%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Төмөр замын экспортын 98.9% нь БНХАУ руу, импортын 74.5% нь ОХУ-аас
+            тээвэрлэгдсэн.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>Дотоодын ачаа, байгууллагаар</h2>
+          <span class="hint">29.1 сая тонн</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn">“Монголын төмөр зам” ТӨХК</div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">11 016.4</div>
+            <div class="bd"><span class="sh">37.9%</span><span class="chip good">+131.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">“Улаанбаатар төмөр зам” ХНН</div>
+            <div class="bt"><span style="width:79.5%"></span></div>
+            <div class="bv">8 753.0</div>
+            <div class="bd"><span class="sh">30.1%</span><span class="chip good">+1.8%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">“Монголиантранс Лайн” ХХК</div>
+            <div class="bt"><span style="width:56.4%"></span></div>
+            <div class="bv">6 217.7</div>
+            <div class="bd"><span class="sh">21.4%</span><span class="chip good">+272.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">“Монголиантранс Ложистик” ХХК</div>
+            <div class="bt"><span style="width:27.9%"></span></div>
+            <div class="bv">3 069.7</div>
+            <div class="bd"><span class="sh">10.6%</span><span class="chip good">+9.1%</span></div>
+          </div>
+          <p class="note">Дотоодын ачаанд “Монголын төмөр зам” ТӨХК тэргүүлж, “Улаанбаатар төмөр зам”
+            ХНН-ийг гүйцэв.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>Зорчигч тээвэр</h2>
+          <span class="hint">мянган хүн</span>
+        </header>
+        <div class="body">
+          <div class="tblwrap">
+            <table class="av-tbl">
+              <thead><tr><th scope="col">Үзүүлэлт</th><th scope="col">9 дүгээр сар</th><th scope="col">Өссөн дүн</th><th scope="col">2026/2025</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">Нийт зорчигч</th><td class="mono">123.5</td><td class="mono">1 299.0</td><td><span class="chip serious">−2.7%</span></td></tr>
+              <tr class="sub"><th scope="row">— орон нутагт</th><td class="mono">120.7</td><td class="mono">1 270.4</td><td><span class="chip serious">−2.2%</span></td></tr>
+              <tr class="sub"><th scope="row">— олон улсад</th><td class="mono">2.9</td><td class="mono">28.6</td><td><span class="chip serious">−19.4%</span></td></tr>
+              <tr><th scope="row">Зорчигч эргэлт, сая хүн.км</th><td class="mono">51.3</td><td class="mono">542.4</td><td><span class="chip serious">−1.0%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Төмөр замын зорчигчийн 97.8% нь орон нутгийн зорчигч. 9 дүгээр сард
+            123.5 мянган зорчигч зорчиж, өмнөх оны мөн үеэс 3.1%-иар өссөн.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-pie"/></svg>Тээврийн төрлүүдийн дунд</h2>
+          <span class="hint">эзлэх хувь · I–IX сар</span>
+        </header>
+        <div class="body">
+          <div class="mlegend">
+            <span><i style="background:#3f7fd0"></i>Төмөр зам</span>
+            <span><i style="background:#c98a2b"></i>Автотээвэр</span>
+            <span><i style="background:#5b6b86"></i>Агаар</span>
+          </div>
+          <div class="mode-row"><div class="mt">Нийт ачаа <b>33.9%</b></div>
+            <div class="stack"><span class="m-rail cur" style="width:33.9%">33.9%</span><span class="m-road" style="width:66.1%">66.1%</span></div></div>
+          <div class="mode-row"><div class="mt">Ачаа эргэлт <b>62.1%</b></div>
+            <div class="stack"><span class="m-rail cur" style="width:62.1%">62.1%</span><span class="m-road" style="width:37.8%">37.8%</span><span class="m-air" style="width:.1%" title="Агаар 0.1%"></span></div></div>
+          <div class="mode-row"><div class="mt">Экспорт <b>9.9%</b></div>
+            <div class="stack"><span class="m-rail cur" style="width:9.9%">9.9%</span><span class="m-road" style="width:90.1%">90.1%</span></div></div>
+          <div class="mode-row"><div class="mt">Импорт <b>47.8%</b></div>
+            <div class="stack"><span class="m-rail cur" style="width:47.8%">47.8%</span><span class="m-road" style="width:52.2%">52.2%</span></div></div>
+          <div class="mode-row"><div class="mt">Орон нутгийн зорчигч <b>43.3%</b></div>
+            <div class="stack"><span class="m-rail cur" style="width:43.3%">43.3%</span><span class="m-road" style="width:45.7%">45.7%</span><span class="m-air" style="width:11.0%">11%</span></div></div>
+          <p class="note">Ачааг холын зайд тээвэрлэдэг тул төмөр зам ачааны биет хэмжээний
+            33.9%-ийг эзэлдэг ч ачаа эргэлтийн <b>62.1%</b>-ийг гүйцэтгэдэг. Нэг тонн ачааг дунджаар
+            429 км зөөсөн (авто замаар 134 км). Дамжин өнгөрөх ачааг бүхэлд нь төмөр зам тээвэрлэдэг.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="src">Эх сурвалж: Зам, тээврийн яамны Бодлого, төлөвлөлтийн газар — Мэдээллийн технологи,
+      стандарт, статистикийн хэлтэс. “Зам, тээврийн салбарын статистикийн мэдээ”, 2026 оны
+      9 дүгээр сар (2026.10.20), Хүснэгт 1, 4, 5, Зураг 8. Эзлэх хувь, дундаж зайг эх мэдээнээс тооцоолов.
+      Хүснэгт 4-т 2025 оны ачаа эргэлтийн өссөн дүнг 21 217.7 гэж бичсэн боловч өсөлтийн хувь болон
+      Хүснэгт 1-тэй нийцэх 16 606.5-ыг ашиглав.</p>
+  </section>
+
+</main>
+
+<footer class="gov-foot">
+  <div class="in">
+    <div class="rule"></div>
+    <div class="foot-logo">
+      <img src="../assets/ztya-logo-light.png" width="96" height="90"
+           alt="Монгол Улсын Засгийн газар, Зам, тээврийн яам">
+      <p class="ft">Зам, тээврийн салбарын статистик үзүүлэлт.
+        Зам, тээврийн яамны албан ёсны мэдээллийн сан.</p>
+    </div>
+    <div class="cols">
+      <div>
+        <h4>Салбар</h4>
+        <p><a href="../#nisleg">Иргэний нисэх</a><br>
+           <a href="./">Төмөр зам</a><br>
+           <a href="../avto-teever/">Автотээвэр</a><br>
+           <a href="../avto-zam/">Авто зам</a></p>
+      </div>
+      <div>
+        <h4>Мэдээллийн сан</h4>
+        <p><a href="../">Нүүр хуудас</a><br>
+           <a href="../hyanalt/">Хяналтын мэдээллийн сан</a></p>
+      </div>
+      <div>
+        <h4>Тайлант хугацаа</h4>
+        <p>2026 оны I–III улирал<br>2026.01.01 – 2026.09.30</p>
+      </div>
+    </div>
+    <div class="base">Зам, тээврийн яам · Төмөр замын салбарын үзүүлэлт</div>
+  </div>
+</footer>
+
+<script src="../assets/motion.js"></script>
+<script src="../assets/ui-fx.js" defer></script>
+<script src="../assets/geo-dots.js" defer></script>
+<script src="../assets/sector-map.js" defer></script>
+<script src="../assets/sector-page.js"></script>
+</body>
+</html>

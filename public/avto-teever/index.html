@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Автотээврийн салбар · Зам, тээврийн яам</title>
+<meta name="description" content="Автотээврийн зорчигч, ачаа тээврийн 2026 оны I–III улирлын статистик үзүүлэлт — Зам, тээврийн яам">
+<link rel="icon" type="image/png" href="../assets/ztya-mark.png">
+<meta name="theme-color" content="#050b16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
+<link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/sector.css">
+<link rel="stylesheet" href="../assets/ui-2027.css">
+</head>
+<body class="night">
+
+<a class="skip" href="#main">Үндсэн агуулга руу шилжих</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-train" viewBox="0 0 34 34">
+    <path d="M11 3.5h12a3.5 3.5 0 0 1 3.5 3.5v13.5a3.5 3.5 0 0 1-3.5 3.5H11a3.5 3.5 0 0 1-3.5-3.5V7A3.5 3.5 0 0 1 11 3.5z"/>
+    <path d="M7.5 14h19M14 7.5h6"/><circle cx="12" cy="19" r="1.2"/><circle cx="22" cy="19" r="1.2"/>
+    <path d="M12.5 24 9 30.5M21.5 24l3.5 6.5M10.5 27.8h13"/>
+  </symbol>
+  <symbol id="i-bus" viewBox="0 0 34 34">
+    <path d="M8.5 4h17A2.5 2.5 0 0 1 28 6.5V25H6V6.5A2.5 2.5 0 0 1 8.5 4z"/>
+    <path d="M6 16.5h22M6 9h22"/><circle cx="11" cy="21" r="1.2"/><circle cx="23" cy="21" r="1.2"/>
+    <path d="M9 25v3.5M25 25v3.5"/>
+  </symbol>
+  <symbol id="i-road" viewBox="0 0 34 34">
+    <path d="M12.5 30.5 15 3.5M21.5 30.5 19 3.5"/><path d="M17 6.5v3.2M17 13.6v4.2M17 22v5.5"/>
+    <path d="M4 30.5h26"/>
+  </symbol>
+  <symbol id="i-plane" viewBox="0 0 34 34">
+    <path d="M17 3.4c1.25 0 2.1 1.35 2.1 3v5.1L30 17.7v2.9l-10.9-3.2v5.9l3.2 2.4v2.2L17 27l-5.3.9v-2.2l3.2-2.4v-5.9L4 20.6v-2.9l10.9-6.2v-5.1c0-1.65.85-3 2.1-3z"/>
+  </symbol>
+  <symbol id="i-box" viewBox="0 0 34 34">
+    <path d="M17 3.4 30 10v14L17 30.6 4 24V10z"/><path d="M4 10l13 6.6L30 10M17 16.6V30.6"/>
+  </symbol>
+  <symbol id="i-globe" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="13.2"/><path d="M3.8 17h26.4"/>
+    <ellipse cx="17" cy="17" rx="5.6" ry="13.2"/><path d="M6.6 9.2h20.8M6.6 24.8h20.8"/>
+  </symbol>
+  <symbol id="i-pin" viewBox="0 0 34 34">
+    <path d="M17 3.2c-5.3 0-9.6 4.3-9.6 9.6 0 7.1 9.6 18 9.6 18s9.6-10.9 9.6-18c0-5.3-4.3-9.6-9.6-9.6z"/>
+    <circle cx="17" cy="12.8" r="3.9"/>
+  </symbol>
+  <symbol id="i-chart" viewBox="0 0 34 34">
+    <path d="M4 29.5h26M8.5 25V15M14.5 25V8M20.5 25v-7M26.5 25V11"/>
+  </symbol>
+  <symbol id="i-user" viewBox="0 0 34 34">
+    <circle cx="17" cy="11" r="5.4"/><path d="M6.5 29.5c0-5.8 4.7-9.6 10.5-9.6s10.5 3.8 10.5 9.6"/>
+  </symbol>
+  <symbol id="i-pie" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="12.8"/><path d="M17 4.2V17h12.8"/>
+  </symbol>
+</svg>
+
+<div class="gov-bar">
+  <div class="in">
+    <span class="org">Зам, тээврийн яам</span>
+    <span class="dot"></span>
+    <span class="sub">Зам, тээврийн салбарын статистик</span>
+    <span class="sp"></span>
+    <button class="tbtn" id="theme" type="button" style="padding:4px 10px;font-size:11px">Өнгө</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="in">
+    <a class="emblem" href="../" aria-label="Нүүр хуудас">
+      <img class="lg-light" src="../assets/ztya-logo.png" width="306" height="288"
+           alt="Монгол Улсын Засгийн газар — Зам, тээврийн яам">
+      <img class="lg-dark" src="../assets/ztya-logo-light.png" width="306" height="288"
+           alt="" aria-hidden="true">
+    </a>
+    <div class="mh-t">
+      <h1>Автотээврийн салбар</h1>
+      <p>Зорчигч, ачаа тээврийн статистик үзүүлэлт · 2026 оны I–III улирал</p>
+    </div>
+    <span class="sp"></span>
+    <a class="tbtn" href="../">← Нүүр хуудас</a>
+    <a class="tbtn cta" href="#stat">Үзүүлэлт ↓</a>
+  </div>
+</header>
+
+<section class="hero photoband sector">
+  <div class="earthwrap" data-mode="bus" aria-hidden="true">
+    <i class="veil"></i>
+  </div>
+  <div class="in">
+    <div class="htxt">
+      <div class="kick">Зам, тээврийн яам<span class="sep" aria-hidden="true"></span>2026 · I–III улирал</div>
+      <h2>Автотээврийн зорчигч тээвэр</h2>
+      <div class="rule"></div>
+      <p>2026 оны эхний 9 сард автотээврээр 136.0 сая зорчигч зорчиж, өмнөх оны мөн үеэс 6.3%-иар өссөн. Үүний 98.9% нь нийслэлийн нийтийн тээврийн зорчигч бөгөөд хот хооронд зорчигчдын 45.7%-ийг автотээвэр тээвэрлэж байна.</p>
+      <div class="cta-row">
+        <a class="btn pri" href="#stat">Үзүүлэлт үзэх <span class="arr" aria-hidden="true">↓</span></a>
+        <a class="btn sec" href="../">← Нүүр хуудас</a>
+      </div>
+      <div class="stats" aria-label="Гол үзүүлэлт">
+        <div><b>136.0<small>сая</small></b><span>зорчигч · I–IX сар</span></div>
+        <div><b>+6.3%</b><span>өмнөх оны мөн үеэс</span></div>
+        <div><b>1.34<small>сая</small></b><span>хот хоорондын зорчигч</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap" id="main">
+
+  <section class="blk">
+    <nav class="secnav" aria-label="Тээврийн салбар">
+      <a href="../#nisleg"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Иргэний нисэх</a>
+      <a href="../tomor-zam/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-train"/></svg>Төмөр зам</a>
+      <a href="./" aria-current="page"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-bus"/></svg>Автотээвэр</a>
+      <a href="../avto-zam/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-road"/></svg>Авто зам</a>
+    </nav>
+  </section>
+
+  <section class="blk" id="stat" style="padding-top:0">
+    <div class="sec-h">
+      <h3>Автотээврийн гол үзүүлэлт</h3>
+      <p>2026 оны эхний 9 сар (I–III улирал) · өмнөх оны мөн үетэй харьцуулсан өсөлт, бууралт</p>
+    </div>
+
+    <dl class="figs">
+      <div class="fig"><dt>Нийт зорчигч</dt><dd>135 994.4<small>мянган хүн <span class="chip good">+6.3%</span></small></dd></div>
+      <div class="fig"><dt>Нийслэлийн нийтийн тээвэр</dt><dd>134 434.9<small>мянган хүн <span class="chip good">+6.5%</span></small></dd></div>
+      <div class="fig"><dt>Хот хоорондын зорчигч</dt><dd>1 340.3<small>мянган хүн <span class="chip serious">−4.8%</span></small></dd></div>
+      <div class="fig"><dt>Олон улсын зорчигч</dt><dd>219.2<small>мянган хүн <span class="chip serious">−9.2%</span></small></dd></div>
+      <div class="fig"><dt>Зорчигч эргэлт</dt><dd>1 380.3<small>сая хүн.км <span class="chip serious">−6.2%</span></small></dd></div>
+      <div class="fig"><dt>9 дүгээр сарын зорчигч</dt><dd>18 474.5<small>мянган хүн <span class="chip good">+7.6%</span></small></dd></div>
+    </dl>
+
+    <div class="av2">
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg>2025 ба 2026 он</h2>
+          <span class="hint">I–IX сар · мянган хүн</span>
+        </header>
+        <div class="body">
+          <div class="cmp">
+            <div class="bn">Нийслэлийн нийтийн тээвэр</div>
+            <div class="bar y25"><span style="width:93.9%"></span></div><div class="v">2025 · 126 261.4</div>
+            <div class="bar y26"><span style="width:100%"></span></div><div class="v">2026 · <b>134 434.9</b></div>
+            <div class="ch"><span class="chip good">+6.5%</span> <span class="sh" style="font-size:11.5px;color:var(--ink-3)">мянган хүн</span></div>
+          </div>
+          <div class="cmp">
+            <div class="bn">Хот хоорондын</div>
+            <div class="bar y25"><span style="width:100%"></span></div><div class="v">2025 · 1 407.3</div>
+            <div class="bar y26"><span style="width:95.2%"></span></div><div class="v">2026 · <b>1 340.3</b></div>
+            <div class="ch"><span class="chip serious">−4.8%</span> <span class="sh" style="font-size:11.5px;color:var(--ink-3)">мянган хүн</span></div>
+          </div>
+          <div class="cmp">
+            <div class="bn">Олон улсын</div>
+            <div class="bar y25"><span style="width:100%"></span></div><div class="v">2025 · 241.4</div>
+            <div class="bar y26"><span style="width:90.8%"></span></div><div class="v">2026 · <b>219.2</b></div>
+            <div class="ch"><span class="chip serious">−9.2%</span> <span class="sh" style="font-size:11.5px;color:var(--ink-3)">мянган хүн</span></div>
+          </div>
+          <div class="cmp">
+            <div class="bn">Зорчигч эргэлт</div>
+            <div class="bar y25"><span style="width:100%"></span></div><div class="v">2025 · 1 471.5</div>
+            <div class="bar y26"><span style="width:93.8%"></span></div><div class="v">2026 · <b>1 380.3</b></div>
+            <div class="ch"><span class="chip serious">−6.2%</span> <span class="sh" style="font-size:11.5px;color:var(--ink-3)">сая хүн.км</span></div>
+          </div>
+          <p class="note">Баганын уртыг мөр тус бүрийн дотор харьцуулав. Нийслэлийн нийтийн тээврийн
+            зорчигч <b>8.2 сая</b>-аар нэмэгдсэн бол хот хоорондын болон олон улсын зорчигч буурсан.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-bus"/></svg>Зорчигч тээвэр</h2>
+          <span class="hint">Хүснэгт 3 · мянган хүн</span>
+        </header>
+        <div class="body">
+          <div class="tblwrap">
+            <table class="av-tbl">
+              <thead><tr><th scope="col">Үзүүлэлт</th><th scope="col">9 дүгээр сар</th><th scope="col">Өссөн дүн</th><th scope="col">2026/2025</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">Нийт зорчигч</th><td class="mono">18 474.5</td><td class="mono">135 994.4</td><td><span class="chip good">+6.3%</span></td></tr>
+              <tr class="sub"><th scope="row">— хот доторх нийтийн тээвэр</th><td class="mono">18 334.7</td><td class="mono">134 434.9</td><td><span class="chip good">+6.5%</span></td></tr>
+              <tr class="sub"><th scope="row">— орон нутагт</th><td class="mono">120.1</td><td class="mono">1 340.3</td><td><span class="chip serious">−4.8%</span></td></tr>
+              <tr class="sub"><th scope="row">— олон улсад</th><td class="mono">19.6</td><td class="mono">219.2</td><td><span class="chip serious">−9.2%</span></td></tr>
+              <tr><th scope="row">Зорчигч эргэлт, сая хүн.км</th><td class="mono">146.4</td><td class="mono">1 380.3</td><td><span class="chip serious">−6.2%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">9 дүгээр сард нийслэлийн нийтийн тээврийн зорчигч 8.5%-иар өссөн бол хот
+            хоорондын зорчигч <b>52.1%</b>-иар (250.9 → 120.1 мянга), олон улсын зорчигч 9.6%-иар буурав.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>Зорчигчийн бүтэц</h2>
+          <span class="hint">эзлэх хувь · I–IX сар</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn">Нийслэлийн нийтийн тээвэр</div>
+            <div class="bt"><span style="width:100%"></span></div>
+            <div class="bv">134 434.9</div>
+            <div class="bd"><span class="sh">98.9%</span><span class="chip good">+6.5%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">Хот хоорондын (орон нутаг)</div>
+            <div class="bt"><span style="width:1.0%"></span></div>
+            <div class="bv">1 340.3</div>
+            <div class="bd"><span class="sh">1.0%</span><span class="chip serious">−4.8%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn">Олон улсын</div>
+            <div class="bt"><span style="width:0.2%"></span></div>
+            <div class="bv">219.2</div>
+            <div class="bd"><span class="sh">0.2%</span><span class="chip serious">−9.2%</span></div>
+          </div>
+          <p class="note">Автотээврийн зорчигчийн бараг бүгд нь Улаанбаатар хотын нийтийн тээврээр
+            зорчсон. Нэг сард дунджаар <b>14.9 сая</b> зорчилт хийгдэж байна.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-pie"/></svg>Тээврийн төрлүүдийн дунд</h2>
+          <span class="hint">эзлэх хувь · I–IX сар</span>
+        </header>
+        <div class="body">
+          <div class="mlegend">
+            <span><i style="background:#3f7fd0"></i>Төмөр зам</span>
+            <span><i style="background:#c98a2b"></i>Автотээвэр</span>
+            <span><i style="background:#5b6b86"></i>Агаар</span>
+          </div>
+          <div class="mode-row"><div class="mt">Нийт зорчигч <b>97.6%</b></div>
+            <div class="stack"><span class="m-rail" style="width:0.9%" title="Төмөр зам 0.9%"></span><span class="m-road cur" style="width:97.6%">97.6%</span><span class="m-air" style="width:1.5%" title="Агаар 1.5%"></span></div></div>
+          <div class="mode-row"><div class="mt">Хот хоорондын зорчигч <b>45.7%</b></div>
+            <div class="stack"><span class="m-rail" style="width:43.3%">43.3%</span><span class="m-road cur" style="width:45.7%">45.7%</span><span class="m-air" style="width:11.0%">11.0%</span></div></div>
+          <div class="mode-row"><div class="mt">Олон улсын зорчигч <b>11.2%</b></div>
+            <div class="stack"><span class="m-rail" style="width:1.5%" title="Төмөр зам 1.5%"></span><span class="m-road cur" style="width:11.2%">11.2%</span><span class="m-air" style="width:87.3%">87.3%</span></div></div>
+          <div class="mode-row"><div class="mt">Зорчигч эргэлт <b>21.0%</b></div>
+            <div class="stack"><span class="m-rail" style="width:8.2%">8.2%</span><span class="m-road cur" style="width:21.0%">21.0%</span><span class="m-air" style="width:70.8%">70.8%</span></div></div>
+          <p class="note">Автотээвэр нийт зорчигчийн 97.6%-ийг тээвэрлэдэг ч зорчигч эргэлтийн 21.0%-ийг
+            эзэлдэг нь хот доторх богино зайн зорчилт давамгайг харуулна. Хот хооронд автотээвэр (45.7%)
+            төмөр замаас (43.3%) бага зэрэг илүү зорчигч тээвэрлэв.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-box"/></svg>Ачаа тээвэр</h2>
+          <span class="hint">Хүснэгт 2 · мянган тонн</span>
+        </header>
+        <div class="body">
+          <div class="tblwrap">
+            <table class="av-tbl">
+              <thead><tr><th scope="col">Үзүүлэлт</th><th scope="col">9 дүгээр сар</th><th scope="col">Өссөн дүн</th><th scope="col">2026/2025</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">Нийт ачаа</th><td class="mono">8 124.9</td><td class="mono">89 861.5</td><td><span class="chip good">+33.2%</span></td></tr>
+              <tr class="sub"><th scope="row">— экспорт</th><td class="mono">7 585.9</td><td class="mono">86 244.6</td><td><span class="chip good">+34.0%</span></td></tr>
+              <tr class="sub"><th scope="row">— импорт</th><td class="mono">539.0</td><td class="mono">3 616.9</td><td><span class="chip good">+17.6%</span></td></tr>
+              <tr><th scope="row">Ачаа эргэлт, сая тн.км</th><td class="mono">801.7</td><td class="mono">12 046.3</td><td><span class="chip good">+20.6%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Автотээврийн ачааны 96.0% нь экспорт. Дэлгэрэнгүйг
+            <a href="../avto-zam/">Авто зам</a> хэсгээс үзнэ үү.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="src">Эх сурвалж: Зам, тээврийн яамны Бодлого, төлөвлөлтийн газар — Мэдээллийн технологи,
+      стандарт, статистикийн хэлтэс. “Зам, тээврийн салбарын статистикийн мэдээ”, 2026 оны
+      9 дүгээр сар (2026.10.20), Хүснэгт 1–3. Эзлэх хувийг эх мэдээнээс тооцоолов.</p>
+  </section>
+
+</main>
+
+<footer class="gov-foot">
+  <div class="in">
+    <div class="rule"></div>
+    <div class="foot-logo">
+      <img src="../assets/ztya-logo-light.png" width="96" height="90"
+           alt="Монгол Улсын Засгийн газар, Зам, тээврийн яам">
+      <p class="ft">Зам, тээврийн салбарын статистик үзүүлэлт.
+        Зам, тээврийн яамны албан ёсны мэдээллийн сан.</p>
+    </div>
+    <div class="cols">
+      <div>
+        <h4>Салбар</h4>
+        <p><a href="../#nisleg">Иргэний нисэх</a><br>
+           <a href="../tomor-zam/">Төмөр зам</a><br>
+           <a href="./">Автотээвэр</a><br>
+           <a href="../avto-zam/">Авто зам</a></p>
+      </div>
+      <div>
+        <h4>Мэдээллийн сан</h4>
+        <p><a href="../">Нүүр хуудас</a><br>
+           <a href="../hyanalt/">Хяналтын мэдээллийн сан</a></p>
+      </div>
+      <div>
+        <h4>Тайлант хугацаа</h4>
+        <p>2026 оны I–III улирал<br>2026.01.01 – 2026.09.30</p>
+      </div>
+    </div>
+    <div class="base">Зам, тээврийн яам · Автотээврийн салбарын үзүүлэлт</div>
+  </div>
+</footer>
+
+<script src="../assets/motion.js"></script>
+<script src="../assets/ui-fx.js" defer></script>
+<script src="../assets/geo-dots.js" defer></script>
+<script src="../assets/sector-map.js" defer></script>
+<script src="../assets/sector-page.js"></script>
+</body>
+</html>
