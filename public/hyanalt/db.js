@@ -318,6 +318,10 @@
       };
     },
     refresh: refresh,
+    /* Сервер талын функц дуудах (жишээ нь visit_stats) — нэвтэрсэн эрхээр */
+    rpc: function (name, args) {
+      return rest("rpc/" + encodeURIComponent(name), { method: "POST", body: JSON.stringify(args || {}) });
+    },
     signIn: signIn,
     signOut: signOut,
     user: user,

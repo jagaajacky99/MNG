@@ -399,6 +399,7 @@ select.inline,input.inline{background:var(--surface-2);border:1px solid var(--li
 <div id="authHost"></div>
 
 <script src="config.js"></script>
+<script src="../assets/visit.js" defer></script>
 <script src="db.js"></script>
 <script src="../assets/motion.js"></script>
 <script src="../assets/ui-fx.js" defer></script>
@@ -760,7 +761,7 @@ const DEFAULTS = {
 /* ============================================================ төлөв */
 const state = {db:null, ready:false, canWrite:false,
   orgs:[], findings:[], inspections:[], certs:[], plan:[], regs:[], actions:[], aircraft:[], settings:null,
-  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null, rtDraft:null, repDraft:null};
+  view:"dash", exportRows:null, intl:{status:"idle", live:false, data:null, msg:null}, visits:{status:"idle", data:null, msg:null}, modal:null, filter:{}, authOpen:false, dashDraft:null, rtDraft:null, repDraft:null};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
@@ -831,14 +832,19 @@ const dashDirty = () => !!state.dashDraft &&
 /* Цэсний хэсгийг тухайн хэрэглэгч харах эрхтэй эсэх (админ үргэлж бүгдийг харна) */
 function viewAllowed(id){
   if(state.canWrite) return true;
+  if(id==="visits") return false;   // зочны тоолуур — зөвхөн админд
   const v=dashCfg().views.find(x=>x.id===id);
   return v ? v.on : true;
 }
 const dashVisible = () => viewAllowed("dash");
 /* Цэсэнд харагдах хэсгүүд — тохиргооны дарааллаар */
 function navItems(){
-  return dashCfg().views.filter(v=>viewAllowed(v.id))
+  const out = dashCfg().views.filter(v=>viewAllowed(v.id))
     .map(v=>({...v, n: Number.isFinite(v.count) ? ()=>v.count : (VIEW_COUNT[v.id]||(()=>""))}));
+  /* «Зочилсон хүмүүс» нь тохиргооны жагсаалтад ордоггүй, үргэлж зөвхөн админд харагдана */
+  if(state.canWrite) out.push({id:"visits", title:"Зочилсон хүмүүс", on:false,
+    n:()=>state.visits.data && state.visits.data.today ? state.visits.data.today.visitors : ""});
+  return out;
 }
 /* Самбарын хэсэг тухайн хэрэглэгчид харагдах эсэх */
 function dashShow(item){ return item.on || state.canWrite; }
@@ -907,7 +913,7 @@ async function boot(){
   if(!db){
     state.ready=true; drawMode(); render(); return;
   }
-  db.onAuth(()=>{ state.dashDraft=null; drawMode(); render(); });
+  db.onAuth(()=>{ state.dashDraft=null; state.visits={status:"idle", data:null, msg:null}; drawMode(); render(); });
   drawMode();
   // Нүүр хуудаснаас «Админаар нэвтрэх» гэж ирсэн бол цонхыг шууд нээнэ
   if(/[?&]admin=1/.test(location.search) && !db.user()){ state.authOpen=true; drawAuth(); }
@@ -1024,6 +1030,7 @@ const NAV_ICO = {
   report:"M4 20V11M10 20V4M16 20v-8M21 20H2",
   intl:"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18",
   cfg:"M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1M13 4v4M7 10v4M15 16v4",
+  visits:"M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8M2 21v-1a6 6 0 0 1 12 0v1M16 3.5a4 4 0 0 1 0 7.5M18 14.5a6 6 0 0 1 4 5.5v1",
 };
 function drawNav(){
   $("#nav").innerHTML = navItems().map((v,i)=>
@@ -1079,7 +1086,7 @@ function render(){
   el.classList.remove("enter");
   el.innerHTML = offline + ({dash:viewDash, orgs:viewOrgs, cap:viewCap, insp:viewInsp,
                    certs:viewCerts, aircraft:viewAircraft, plan:viewPlan, regs:viewRegs, actions:viewActions,
-                   report:viewReport, intl:viewIntl, cfg:viewCfg}[state.view])();
+                   report:viewReport, intl:viewIntl, cfg:viewCfg, visits:viewVisits}[state.view])();
   wire();
   drawModal();
   $("#exportBtn").hidden = !state.exportRows;
@@ -2229,6 +2236,114 @@ function intlNote(txt, ph){
   }).join("");
 }
 
+/* ============================================================ зочилсон хүмүүс
+   supabase/visits.sql-ийн page_visits хүснэгт ба visit_stats() функцээс
+   уншина. Зөвхөн нэвтэрсэн админ харна. */
+async function loadVisits(){
+  if(state.visits.status!=="idle" || !state.db) return;
+  state.visits = {...state.visits, status:"loading"};
+  try{
+    const data = await state.db.rpc("visit_stats", {days:30});
+    state.visits = {status:"ready", data, msg:null};
+  }catch(e){
+    const missing = e.status===404 || /visit_stats|page_visits|schema cache/i.test(e.message||"");
+    state.visits = {status:"error", data:null, msg: missing ? "missing" : wErr(e)};
+  }
+  render();
+}
+const PAGE_NAME = {"/":"Нүүр хуудас", "/hyanalt/":"Хяналтын сан", "/avto-zam/":"Авто зам",
+  "/avto-teever/":"Автотээвэр", "/tomor-zam/":"Төмөр зам", "/garyn-avlaga/":"Гарын авлага"};
+function visitsChart(daily){
+  const W=680, H=180, P={t:14,r:8,b:24,l:30};
+  const max = Math.max(1, ...daily.map(d=>+d.visitors||0));
+  const step = (W-P.l-P.r)/Math.max(daily.length,1), bw = Math.max(3, step*0.66);
+  const y = v => P.t + (H-P.t-P.b) * (1 - v/max);
+  const ticks = [0, Math.round(max/2), max].filter((v,i,a)=>a.indexOf(v)===i);
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" role="img"
+      aria-label="Сүүлийн ${daily.length} хоногийн зочдын тоо">
+    ${ticks.map(t=>`<line x1="${P.l}" x2="${W-P.r}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/>
+      <text x="${P.l-6}" y="${y(t)+4}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${t}</text>`).join("")}
+    ${daily.map((d,i)=>{
+      const x = P.l + i*step + (step-bw)/2, v=+d.visitors||0, last=i===daily.length-1;
+      const lbl = String(d.day).slice(5).replace("-",".");
+      const showLbl = last || (daily.length-1-i)%5===0;
+      return `<rect x="${x.toFixed(1)}" y="${y(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(H-P.b-y(v)).toFixed(1)}"
+          rx="2" fill="${last?"var(--gold)":"var(--accent)"}"><title>${esc(d.day)}: ${v} зочин · ${d.views} үзэлт</title></rect>
+        ${showLbl ? `<text x="${(x+bw/2).toFixed(1)}" y="${H-7}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${lbl}</text>` : ""}`;
+    }).join("")}
+  </svg>`;
+}
+function viewVisits(){
+  const S = state.visits;
+  if(S.status==="idle") loadVisits();
+  if(S.status==="error" && S.msg==="missing"){
+    return `<div class="banner warn"><div><b>Зочин тоолуур хараахан идэвхжээгүй байна.</b>
+      Supabase → <b>SQL Editor</b> → New query хэсэгт <code>supabase/visits.sql</code> файлын агуулгыг
+      хуулж тавиад <b>Run</b> дарна. Үүнээс хойш сайтад зочилсон хүн бүр энд тоологдоно.</div></div>`;
+  }
+  if(S.status==="error"){
+    return `<div class="banner warn"><div><b>Зочдын мэдээллийг уншиж чадсангүй.</b> ${esc(S.msg||"")}
+      <button class="btn sm" data-act="visitsReload" style="margin-left:8px">Дахин оролдох</button></div></div>`;
+  }
+  if(!S.data){
+    return `<div class="panel"><div class="body muted">Зочдын тоог уншиж байна…</div></div>`;
+  }
+  const d = S.data, z = {views:0, visitors:0};
+  const T = d.today||z, Wk = d.week||z, M = d.month||z, A = d.total||z;
+  const daily = d.daily||[], pages = d.pages||[], sources = d.sources||[];
+  const since = A.since ? String(A.since).replace(/-/g,".") : null;
+  const tile = (k,o,n,cls="") => `<div class="tile ${cls}"><div class="k">${k}</div>
+    <div class="v">${num(o.visitors)}</div><div class="n">${n} · ${num(o.views)} хуудас үзэлт</div></div>`;
+  return `
+  <div class="grid">
+    <div class="tiles">
+      ${tile("Өнөөдөр", T, "зочин", "goodv")}
+      ${tile("Сүүлийн 7 хоног", Wk, "зочин")}
+      ${tile("Сүүлийн 30 хоног", M, "зочин")}
+      ${tile("Нийт", A, since ? since+"-аас хойш" : "тоолж эхлээгүй")}
+    </div>
+
+    <section class="panel">
+      <header><h2>Өдөр тутмын зочин</h2>
+        <span class="hint">сүүлийн ${daily.length} хоног · Улаанбаатарын цагаар</span>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn sm" data-act="visitsReload">↻ Шинэчлэх</button>
+      </header>
+      <div class="body">${A.views ? visitsChart(daily)
+        : `<p class="muted" style="margin:0">Одоогоор бүртгэгдсэн зочин алга. Сайтад хэн нэгэн орж ирэхэд энд гарч ирнэ.</p>`}</div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Хамгийн их үзсэн хуудас</h2><span class="hint">сүүлийн 30 хоног</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Хуудас</th><th style="text-align:right">Зочин</th><th style="text-align:right">Үзэлт</th></tr></thead>
+          <tbody>${pages.length ? pages.map(p=>`<tr><td>${esc(PAGE_NAME[p.path]||p.path)}
+              <span class="code">${esc(p.path)}</span></td>
+            <td style="text-align:right">${num(p.visitors)}</td><td style="text-align:right">${num(p.views)}</td></tr>`).join("")
+            : `<tr><td colspan="3" class="muted">Мэдээлэл алга</td></tr>`}</tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2>Хаанаас орж ирсэн</h2><span class="hint">сүүлийн 30 хоног</span></header>
+      <div class="body" style="padding:0">
+        <div class="tblwrap"><table>
+          <thead><tr><th>Эх сурвалж</th><th style="text-align:right">Зочин</th><th style="text-align:right">Үзэлт</th></tr></thead>
+          <tbody>${sources.length ? sources.map(r=>`<tr><td>${r.referrer ? esc(r.referrer)
+              : `<span class="muted">Шууд хаягаар / хадгалсан холбоосоор</span>`}</td>
+            <td style="text-align:right">${num(r.visitors)}</td><td style="text-align:right">${num(r.views)}</td></tr>`).join("")
+            : `<tr><td colspan="3" class="muted">Мэдээлэл алга</td></tr>`}</tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <p class="small muted" style="margin:0">«Зочин» гэдэг нь давтагдаагүй хөтөч (нэг хүн нэг төхөөрөмжөөс хэд ч орсон 1 гэж тоологдоно),
+      «үзэлт» нь нээсэн хуудасны тоо. Нэвтэрсэн админы зочлолт тоологдохгүй. Хувийн мэдээлэл (IP, нэр) хадгалдаггүй.</p>
+  </div>`;
+}
+
 function viewIntl(){
   const S = state.intl;
   if(S.status==="idle"){ loadIntl(); }
@@ -3152,6 +3267,7 @@ document.addEventListener("keydown", e=>{
 });
 
 async function act(a){
+  if(a==="visitsReload"){ state.visits={status:"idle", data:state.visits.data, msg:null}; render(); return; }
   /* ---- тайлангийн тоон утга ---- */
   if(a==="rnEdit"){ state.repDraft={}; render(); return; }
   if(a==="rnCancel"){ state.repDraft=null; render(); return; }

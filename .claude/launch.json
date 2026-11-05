@@ -9,6 +9,15 @@
         "start"
       ],
       "port": 8792
+    },
+    {
+      "name": "mock",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "mock"
+      ],
+      "port": 8793
     }
   ]
 }

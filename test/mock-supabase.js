@@ -59,6 +59,46 @@ const DB = {
   } }],
 };
 
+/* Зочдын туршилтын өгөгдөл — сүүлийн 30 хоногт санамсаргүй тархсан */
+const ubDay = (t) => new Date(t.getTime() + 8 * 3600e3).toISOString().slice(0, 10);
+const VISITS = [];
+(function seed() {
+  const pages = ["/", "/", "/", "/hyanalt/", "/avto-zam/", "/tomor-zam/", "/avto-teever/"];
+  const refs = [null, null, null, "www.google.com", "www.facebook.com", "mcaa.gov.mn"];
+  let r = 7;
+  const rnd = (n) => (r = (r * 9301 + 49297) % 233280) % n;
+  for (let i = 40; i >= 1; i--) {
+    const day = ubDay(new Date(Date.now() - i * 86400e3));
+    const n = 3 + rnd(12);
+    for (let k = 0; k < n; k++)
+      VISITS.push({ visitor: "seed-" + rnd(140), path: pages[rnd(pages.length)],
+                    referrer: refs[rnd(refs.length)], d: day });
+  }
+})();
+function visitStats(days) {
+  const today = ubDay(new Date());
+  const ago = (n) => ubDay(new Date(Date.now() - n * 86400e3));
+  const agg = (rows) => ({ views: rows.length, visitors: new Set(rows.map((v) => v.visitor)).size });
+  const since = (n) => VISITS.filter((v) => v.d > ago(n));
+  const win = since(days);
+  const group = (rows, key) => Object.values(rows.reduce((m, v) => {
+    const k = key(v); (m[k] = m[k] || { k, rows: [] }).rows.push(v); return m; }, {}))
+    .map((g) => ({ k: g.k, ...agg(g.rows) })).sort((a, b) => b.views - a.views);
+  const daily = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = ago(i);
+    daily.push({ day: d, ...agg(VISITS.filter((v) => v.d === d)) });
+  }
+  return {
+    today: agg(VISITS.filter((v) => v.d === today)), week: agg(since(7)), month: agg(since(30)),
+    total: { ...agg(VISITS), since: VISITS.length ? VISITS.map((v) => v.d).sort()[0] : null },
+    daily,
+    pages: group(win, (v) => v.path).slice(0, 15).map((g) => ({ path: g.k, views: g.views, visitors: g.visitors })),
+    sources: group(win, (v) => v.referrer || "").slice(0, 10)
+      .map((g) => ({ referrer: g.k, views: g.views, visitors: g.visitors })),
+  };
+}
+
 const CORS = {
   "access-control-allow-origin": "*",
   "access-control-allow-headers": "authorization,apikey,content-type,prefer",
@@ -89,6 +129,17 @@ http.createServer((req, res) => {
       return send(400, { error_description: "Invalid login credentials" });
     }
     if (u.pathname === "/auth/v1/logout") return send(204, null);
+
+    /* Зочин тоолуур (supabase/visits.sql-ийн дуураймал) */
+    if (u.pathname === "/rest/v1/page_visits" && req.method === "POST") {
+      VISITS.push({ visitor: body.visitor, path: body.path, referrer: body.referrer || null,
+                    d: ubDay(new Date()) });
+      return send(201, null);
+    }
+    if (u.pathname === "/rest/v1/rpc/visit_stats") {
+      if (!signedIn) return send(401, { message: "permission denied for function visit_stats" });
+      return send(200, visitStats((body && body.days) || 30));
+    }
 
     const m = u.pathname.match(/^\/rest\/v1\/(\w+)$/);
     if (!m) return send(404, { message: "not found" });
