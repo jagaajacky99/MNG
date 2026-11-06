@@ -16,7 +16,9 @@
     const t0 = performance.now(), d = dur || 900;
     (function step(t){
       const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3);
-      txt.nodeValue = k < 1 ? m[1] + (target * e).toFixed(dec) + m[4] : orig;
+      const sep = /[ ,]/.exec(m[2]);
+      const fmt = v => { const p = v.toFixed(dec).split("."); if (sep) p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep[0]); return p.join("."); };
+      txt.nodeValue = k < 1 ? m[1] + fmt(target * e) + m[4] : orig;
       if (k < 1) requestAnimationFrame(step);
     })(t0);
   }

@@ -2,7 +2,7 @@
    өнгөний горим ба гүйлгэхэд гарч ирэх хөдөлгөөн. motion.js-ийн дараа ачаална. */
 (function(){
   "use strict";
-  document.querySelectorAll(".fig dd").forEach(function(d){ d.setAttribute("data-count",""); });
+  document.querySelectorAll(".fig dd:not(.val):not(.dl):not(.sp):not(.note):not(.meter):not(.share):not(.split), .kpi .v").forEach(function(d){ d.setAttribute("data-count",""); });
   if (window.inegReveal) inegReveal(".sec-h, .secnav, .figs, .panel");
 
   var root = document.documentElement, KEY = "ineg.theme", saved = null;

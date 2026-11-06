@@ -288,6 +288,7 @@ main{position:relative;z-index:1}
 .sectors .tile:hover .go .arr{transform:translateX(4px)}
 </style>
 <link rel="stylesheet" href="assets/ui-2027.css">
+<link rel="stylesheet" href="assets/kpi.css">
 </head>
 <body class="night">
 
@@ -295,6 +296,43 @@ main{position:relative;z-index:1}
 
 <!-- Нисэхийн тэмдгийн сан. Харагдахгүй, зөвхөн <use>-ээр иш татна. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<!-- kpi-marks:start · assets/kpi.css-ийн тэмдэг ба туг (build_kpi.py) -->
+  <symbol id="i-users" viewBox="0 0 34 34"><circle cx="13" cy="11.5" r="4.6"/><path d="M4.5 27.5c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5"/><path d="M21.2 7.4a4.2 4.2 0 0 1 0 8.2M24 19.4c3.3.9 5.5 4 5.5 8.1"/></symbol>
+  <symbol id="i-route" viewBox="0 0 34 34"><circle cx="7.5" cy="25" r="3"/><circle cx="26.5" cy="9" r="3"/><path d="M10.5 25h9.5a4.5 4.5 0 0 0 0-9h-6a3.5 3.5 0 0 1 0-7h9.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 34 34"><path d="M12 6H9.5A2.5 2.5 0 0 0 7 8.5v20A2.5 2.5 0 0 0 9.5 31h15a2.5 2.5 0 0 0 2.5-2.5v-20A2.5 2.5 0 0 0 24.5 6H22"/><rect x="12" y="3.5" width="10" height="5" rx="1.5"/><path d="M12 19.5l3.5 3.5 7-7.5"/></symbol>
+  <symbol id="i-cert" viewBox="0 0 34 34"><circle cx="17" cy="13" r="8.5"/><circle cx="17" cy="13" r="3.6"/><path d="M12 20 10 30.5l7-3.6 7 3.6L22 20"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 34 34"><path d="M15 5.8a2.3 2.3 0 0 1 4 0l11.6 20.6a2.3 2.3 0 0 1-2 3.4H5.4a2.3 2.3 0 0 1-2-3.4z"/><path d="M17 13v7M17 24.6v.1"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 34 34"><path d="M4.5 25a12.5 12.5 0 1 1 25 0"/><path d="M17 25l6.2-7.4"/><circle cx="17" cy="25" r="1.8"/><path d="M8 16.5l1.6 1M17 12.5v1.8M26 16.5l-1.6 1"/></symbol>
+  <symbol id="i-out" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></g></symbol>
+  <symbol id="i-in" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M21 3 11 13"/><path d="M11 6.5V13h6.5"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></g></symbol>
+  <symbol id="i-transit" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M2.5 12h18"/><path d="m16.5 8 4 4-4 4"/><path d="M8 4v4.5M8 15.5V20M14 4v2M14 18v2"/></g></symbol>
+  <symbol id="i-cal" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M14 14h2M8 18h2"/></g></symbol>
+  <symbol id="i-truck" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></g></symbol>
+  <symbol id="i-wrench" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g></symbol>
+  <symbol id="i-city" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></g></symbol>
+  <symbol id="i-coins" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></g></symbol>
+  <symbol id="i-clock" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></g></symbol>
+  <symbol id="i-layers" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></g></symbol>
+  <symbol id="i-bridge" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M2 8h20M4 8v12M20 8v12M4 17a8 7 0 0 1 16 0M9 8v3.2M15 8v3.2"/></g></symbol>
+  <symbol id="i-network" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></g></symbol>
+  <symbol id="i-chart2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></g></symbol>
+  <symbol id="i-bus2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M8 6v6M15 6v6M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></g></symbol>
+  <symbol id="i-train2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M12 3v8M8 19l-2 3M18 22l-2-3M8 15h.01M16 15h.01"/></g></symbol>
+  <symbol id="i-plane2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></g></symbol>
+  <symbol id="i-pin2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></g></symbol>
+  <symbol id="i-road2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M4 21 9 3M20 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20"/></g></symbol>
+  <symbol id="i-up" viewBox="0 0 12 12"><path d="M6 10.5v-9M2.2 5.3 6 1.5l3.8 3.8"/></symbol>
+  <symbol id="f-jp" viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#bc002d"/></symbol>
+  <symbol id="f-de" viewBox="0 0 30 20"><rect width="30" height="20" fill="#ffce00"/><rect width="30" height="13.34" fill="#dd0000"/><rect width="30" height="6.67" fill="#000"/></symbol>
+  <symbol id="f-ru" viewBox="0 0 30 20"><rect width="30" height="20" fill="#d52b1e"/><rect width="30" height="13.34" fill="#0039a6"/><rect width="30" height="6.67" fill="#fff"/></symbol>
+  <symbol id="f-cn" viewBox="0 0 30 20"><rect width="30" height="20" fill="#de2910"/><polygon fill="#ffde00" points="5.00,2.00 5.67,4.07 7.85,4.07 6.09,5.35 6.76,7.43 5.00,6.15 3.24,7.43 3.91,5.35 2.15,4.07 4.33,4.07"/><polygon fill="#ffde00" points="9.14,2.51 9.62,1.97 9.25,1.34 9.91,1.63 10.39,1.08 10.33,1.80 11.00,2.09 10.29,2.25 10.22,2.97 9.85,2.35"/><polygon fill="#ffde00" points="11.01,4.14 11.66,3.82 11.56,3.10 12.07,3.62 12.72,3.30 12.38,3.95 12.88,4.47 12.17,4.34 11.83,4.99 11.73,4.27"/><polygon fill="#ffde00" points="11.04,6.73 11.76,6.70 11.96,6.00 12.21,6.68 12.94,6.66 12.37,7.10 12.62,7.79 12.01,7.38 11.44,7.83 11.64,7.13"/><polygon fill="#ffde00" points="9.22,8.38 9.90,8.63 10.35,8.06 10.32,8.79 11.00,9.05 10.30,9.24 10.26,9.96 9.87,9.36 9.16,9.55 9.62,8.98"/></symbol>
+  <symbol id="f-tr" viewBox="0 0 30 20"><rect width="30" height="20" fill="#e30a17"/><circle cx="11.2" cy="10" r="5" fill="#fff"/><circle cx="12.5" cy="10" r="4" fill="#e30a17"/><polygon fill="#fff" points="15.40,10.00 16.92,9.51 16.92,7.91 17.86,9.20 19.38,8.71 18.44,10.00 19.38,11.29 17.86,10.80 16.92,12.09 16.92,10.49"/></symbol>
+  <symbol id="f-hk" viewBox="0 0 30 20"><rect width="30" height="20" fill="#de2910"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(12 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(84 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(156 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(228 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(300 15 10)"/></symbol>
+  <symbol id="f-kr" viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><g transform="rotate(33.7 15 10)"><circle cx="15" cy="10" r="5" fill="#0047a0"/><path d="M10 10a5 5 0 0 1 10 0a2.5 2.5 0 0 1-5 0a2.5 2.5 0 0 0-5 0z" fill="#cd2e3a"/></g><g transform="translate(6.2 4.6) rotate(56.3)" fill="#000"><rect x="-2.2" y="-1.55" width="4.4" height=".7"/><rect x="-2.2" y="-0.45" width="4.4" height=".7"/><rect x="-2.2" y="0.65" width="4.4" height=".7"/></g><g transform="translate(23.8 15.4) rotate(56.3)" fill="#000"><rect x="-2.2" y="-1.55" width="1.9" height=".7"/><rect x=".3" y="-1.55" width="1.9" height=".7"/><rect x="-2.2" y="-0.45" width="1.9" height=".7"/><rect x=".3" y="-0.45" width="1.9" height=".7"/><rect x="-2.2" y="0.65" width="1.9" height=".7"/><rect x=".3" y="0.65" width="1.9" height=".7"/></g><g transform="translate(23.8 4.6) rotate(123.7)" fill="#000"><rect x="-2.2" y="-1.55" width="4.4" height=".7"/><rect x="-2.2" y="-0.45" width="1.9" height=".7"/><rect x=".3" y="-0.45" width="1.9" height=".7"/><rect x="-2.2" y="0.65" width="4.4" height=".7"/></g><g transform="translate(6.2 15.4) rotate(123.7)" fill="#000"><rect x="-2.2" y="-1.55" width="1.9" height=".7"/><rect x=".3" y="-1.55" width="1.9" height=".7"/><rect x="-2.2" y="-0.45" width="4.4" height=".7"/><rect x="-2.2" y="0.65" width="1.9" height=".7"/><rect x=".3" y="0.65" width="1.9" height=".7"/></g></symbol>
+  <symbol id="f-mn" viewBox="0 0 30 20"><rect width="30" height="20" fill="#c4272f"/><rect x="10" width="10" height="20" fill="#015197"/><g fill="#f9cf02"><circle cx="5" cy="5.4" r="1.1"/><path d="M3.3 7.6h3.4v1H3.3zM3.3 9.1h3.4L5 10.6zM3.3 11.2h3.4v6H3.3z"/></g></symbol>
+<!-- kpi-marks:end -->
+
+
   <symbol id="i-plane" viewBox="0 0 34 34">
     <path d="M17 3.4c1.25 0 2.1 1.35 2.1 3v5.1L30 17.7v2.9l-10.9-3.2v5.9l3.2 2.4v2.2L17 27l-5.3.9v-2.2l3.2-2.4v-5.9L4 20.6v-2.9l10.9-6.2v-5.1c0-1.65.85-3 2.1-3z"/>
   </symbol>
@@ -470,11 +508,17 @@ main{position:relative;z-index:1}
     <div class="sec-h">
       <h3 data-k="Гүйцэтгэл">2026 оны I–III улирлын үзүүлэлт</h3>
     </div>
-    <dl class="figs">
-      <div class="fig"><dt>Хяналт шалгалт</dt><dd>725<small>5 хэлтсийн гүйцэтгэл</small></dd></div>
-      <div class="fig"><dt>Гэрчилгээ, үнэмлэх</dt><dd>1 041<small>20 ангилал · эхний хагас жил</small></dd></div>
-      <div class="fig"><dt>Илэрсэн үл нийцэл</dt><dd>43<small>371 шаардлагын хамт</small></dd></div>
-      <div class="fig"><dt>USOAP-CMA оноо</dt><dd>83.06<small>Аэродромын чиглэл · 153 асуулга</small></dd></div>
+    <dl class="figs kpi">
+      <div class="fig" style="--c:#5b9cf5"><dt><svg class="wm" aria-hidden="true"><use href="#i-check"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Хяналт шалгалт</dt>
+        <dd class="val"><span class="v">725</span></dd><dd class="note">5 хэлтсийн гүйцэтгэл</dd></div>
+      <div class="fig" style="--c:#3fc1b0"><dt><svg class="wm" aria-hidden="true"><use href="#i-cert"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-cert"/></svg></span>Гэрчилгээ, үнэмлэх</dt>
+        <dd class="val"><span class="v">1 041</span></dd><dd class="note">20 ангилал · эхний хагас жил</dd></div>
+      <div class="fig" style="--c:#f07a7a"><dt><svg class="wm" aria-hidden="true"><use href="#i-alert"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-alert"/></svg></span>Илэрсэн үл нийцэл</dt>
+        <dd class="val"><span class="v">43</span></dd><dd class="note">371 шаардлагын хамт</dd></div>
+      <div class="fig" style="--c:#d9ad4f"><dt><svg class="wm" aria-hidden="true"><use href="#i-gauge"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-gauge"/></svg></span>USOAP-CMA оноо</dt>
+        <dd class="val"><span class="v">83.06</span><span class="u">/ 100</span></dd>
+        <dd class="meter" aria-hidden="true"><i style="--p:83.06%"></i></dd>
+        <dd class="note">Аэродромын чиглэл · 153 асуулга</dd></div>
     </dl>
   </section>
 
@@ -482,16 +526,36 @@ main{position:relative;z-index:1}
     <div class="sec-h">
       <h3 data-k="Салбар">Иргэний нисэхийн салбарын үзүүлэлт</h3>
       <p>2026 оны эхний 9 сар · Зам, тээврийн яамны статистикийн мэдээ,
-        2026 оны 9 дүгээр сар</p>
+        2026 оны 9 дүгээр сар
+        <span class="kpi-legend"><span><i></i>2026, сараар</span><span><i class="pv"></i>2025 оны мөн үе</span></span></p>
     </div>
 
-    <dl class="figs av-figs">
-      <div class="fig"><dt>Нийт зорчигч</dt><dd>2 033.0<small>мянган хүн <span class="chip good">+6.3%</span></small></dd></div>
-      <div class="fig"><dt>Олон улсын зорчигч</dt><dd>1 710.3<small>мянган хүн <span class="chip good">+8.4%</span></small></dd></div>
-      <div class="fig"><dt>Орон нутгийн зорчигч</dt><dd>322.7<small>мянган хүн <span class="chip serious">−3.3%</span></small></dd></div>
-      <div class="fig"><dt>Нийт нислэг</dt><dd>92 914<small>өнгөрөлт, хөөрөлт, буулт <span class="chip good">+15.6%</span></small></dd></div>
-      <div class="fig"><dt>Ачаа, шуудан</dt><dd>7 684.4<small>тонн <span class="chip good">+0.4%</span></small></dd></div>
-      <div class="fig"><dt>Зорчигч эргэлт</dt><dd>4 652.8<small>сая хүн.км <span class="chip good">+3.9%</span></small></dd></div>
+    <dl class="figs av-figs kpi">
+      <div class="fig hero-k" style="--c:#8b9cff"><dt><svg class="wm" aria-hidden="true"><use href="#i-users"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-users"/></svg></span>Нийт зорчигч</dt>
+        <dd class="val"><span class="v">2 033.0</span><span class="u">мянган хүн</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>6.3%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="split"><span class="bar" aria-hidden="true"><i style="width:84.1%;background:#5b9cf5"></i><i style="width:15.9%;background:#d9ad4f"></i></span>
+          <span class="lg"><span><i style="background:#5b9cf5"></i>Олон улсын <b>84.1%</b></span><span><i style="background:#d9ad4f"></i>Орон нутгийн <b>15.9%</b></span></span></dd>
+        <dd class="sp"><svg class="spark" viewBox="0 0 200 44" preserveAspectRatio="none" role="img" aria-label="Сар бүрийн зорчигч, 2026 оны 1–9 сар, 2025 оны мөн үетэй харьцуулсан"><path class="ar" d="M2.0 27.1L26.5 39.0L51.0 34.8L75.5 35.7L100.0 31.3L124.5 17.1L149.0 5.6L173.5 4.0L198.0 21.3L198.0 44L2.0 44Z"/><path class="pv" d="M2.0 31.1L26.5 41.0L51.0 39.6L75.5 37.7L100.0 33.9L124.5 19.1L149.0 10.5L173.5 4.9L198.0 22.3"/><path class="cu" d="M2.0 27.1L26.5 39.0L51.0 34.8L75.5 35.7L100.0 31.3L124.5 17.1L149.0 5.6L173.5 4.0L198.0 21.3" pathLength="1"/><circle cx="198.0" cy="21.3" r="2.6"/></svg><span class="mx" aria-hidden="true"><span>1 сар</span><span>3</span><span>5</span><span>7</span><span>9 сар</span></span></dd></div>
+      <div class="fig" style="--c:#5b9cf5"><dt><svg class="wm" aria-hidden="true"><use href="#i-globe"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-globe"/></svg></span>Олон улсын зорчигч</dt>
+        <dd class="val"><span class="v">1 710.3</span><span class="u">мянган хүн</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>8.4%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="share"><i class="donut" style="--p:84.1" aria-hidden="true"></i>Нийт зорчигчийн <b>84.1%</b></dd>
+        <dd class="sp"><svg class="spark" viewBox="0 0 200 44" role="img" aria-label="Сар бүрийн олон улсын зорчигч, 2026 оны 1–9 сар, 2025 оны мөн үетэй харьцуулсан"><path class="ar" d="M2.0 26.5L26.5 38.6L51.0 34.9L75.5 35.9L100.0 31.4L124.5 17.2L149.0 6.0L173.5 4.0L198.0 21.9L198.0 44L2.0 44Z"/><path class="pv" d="M2.0 30.9L26.5 41.0L51.0 39.9L75.5 38.1L100.0 34.4L124.5 19.5L149.0 11.5L173.5 5.6L198.0 23.1"/><path class="cu" d="M2.0 26.5L26.5 38.6L51.0 34.9L75.5 35.9L100.0 31.4L124.5 17.2L149.0 6.0L173.5 4.0L198.0 21.9" pathLength="1"/><circle cx="198.0" cy="21.9" r="2.6"/></svg></dd></div>
+      <div class="fig" style="--c:#d9ad4f"><dt><svg class="wm" aria-hidden="true"><use href="#i-pin"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>Орон нутгийн зорчигч</dt>
+        <dd class="val"><span class="v">322.7</span><span class="u">мянган хүн</span></dd>
+        <dd class="dl dn"><b><svg aria-hidden="true"><use href="#i-up"/></svg>3.3%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="share"><i class="donut" style="--p:15.9" aria-hidden="true"></i>Нийт зорчигчийн <b>15.9%</b></dd>
+        <dd class="sp"><svg class="spark" viewBox="0 0 200 44" role="img" aria-label="Сар бүрийн орон нутгийн зорчигч, 2026 оны 1–9 сар, 2025 оны мөн үетэй харьцуулсан"><path class="ar" d="M2.0 36.4L26.5 41.0L51.0 31.9L75.5 30.7L100.0 30.0L124.5 19.1L149.0 9.0L173.5 13.5L198.0 15.6L198.0 44L2.0 44Z"/><path class="pv" d="M2.0 33.4L26.5 36.7L51.0 30.8L75.5 29.4L100.0 25.2L124.5 17.6L149.0 4.0L173.5 4.6L198.0 14.6"/><path class="cu" d="M2.0 36.4L26.5 41.0L51.0 31.9L75.5 30.7L100.0 30.0L124.5 19.1L149.0 9.0L173.5 13.5L198.0 15.6" pathLength="1"/><circle cx="198.0" cy="15.6" r="2.6"/></svg></dd></div>
+      <div class="fig" style="--c:#3fc1b0"><dt><svg class="wm" aria-hidden="true"><use href="#i-takeoff"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-takeoff"/></svg></span>Нийт нислэг</dt>
+        <dd class="val"><span class="v">92 914</span><span class="u">өнгөрөлт, хөөрөлт, буулт</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>15.6%</b><span>өмнөх оны мөн үеэс</span></dd></div>
+      <div class="fig" style="--c:#f0955e"><dt><svg class="wm" aria-hidden="true"><use href="#i-box"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-box"/></svg></span>Ачаа, шуудан</dt>
+        <dd class="val"><span class="v">7 684.4</span><span class="u">тонн</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>0.4%</b><span>өмнөх оны мөн үеэс</span></dd></div>
+      <div class="fig" style="--c:#c084fc"><dt><svg class="wm" aria-hidden="true"><use href="#i-route"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-route"/></svg></span>Зорчигч эргэлт</dt>
+        <dd class="val"><span class="v">4 652.8</span><span class="u">сая хүн.км</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>3.9%</b><span>өмнөх оны мөн үеэс</span></dd></div>
     </dl>
 
     <div class="panel av">
@@ -526,67 +590,67 @@ main{position:relative;z-index:1}
         </header>
         <div class="body">
           <div class="brow">
-            <div class="bn">Сөүл</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-kr"/></svg></span><span>Сөүл</span></div>
             <div class="bt"><span style="width:100.0%"></span></div>
             <div class="bv">587 210</div>
             <div class="bd"><span class="chip good">+12.9%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Бээжин</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Бээжин</span></div>
             <div class="bt"><span style="width:46.0%"></span></div>
             <div class="bv">269 860</div>
             <div class="bd"><span class="chip good">+10.9%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Токио</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-jp"/></svg></span><span>Токио</span></div>
             <div class="bt"><span style="width:25.8%"></span></div>
             <div class="bv">151 332</div>
             <div class="bd"><span class="chip good">+18.1%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Истанбул</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-tr"/></svg></span><span>Истанбул</span></div>
             <div class="bt"><span style="width:18.4%"></span></div>
             <div class="bv">107 792</div>
             <div class="bd"><span class="chip serious">−6.1%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Хонконг</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-hk"/></svg></span><span>Хонконг</span></div>
             <div class="bt"><span style="width:14.2%"></span></div>
             <div class="bv">83 308</div>
             <div class="bd"><span class="chip serious">−2.6%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Франкфурт</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-de"/></svg></span><span>Франкфурт</span></div>
             <div class="bt"><span style="width:13.9%"></span></div>
             <div class="bv">81 453</div>
             <div class="bd"><span class="chip serious">−0.3%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Хөх хот</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Хөх хот</span></div>
             <div class="bt"><span style="width:11.6%"></span></div>
             <div class="bv">67 849</div>
             <div class="bd"><span class="chip good">+56.1%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Бусан</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-kr"/></svg></span><span>Бусан</span></div>
             <div class="bt"><span style="width:9.0%"></span></div>
             <div class="bv">52 791</div>
             <div class="bd"><span class="chip serious">−22.3%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Эрээн</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Эрээн</span></div>
             <div class="bt"><span style="width:6.9%"></span></div>
             <div class="bv">40 799</div>
             <div class="bd"><span class="chip good">+236.2%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Шанхай</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Шанхай</span></div>
             <div class="bt"><span style="width:6.7%"></span></div>
             <div class="bv">39 275</div>
             <div class="bd"><span class="chip good">+531.7%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Санья / Хайнань</div>
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Санья / Хайнань</span></div>
             <div class="bt"><span style="width:4.2%"></span></div>
             <div class="bv">24 903</div>
             <div class="bd"><span class="chip good">+8.7%</span></div>
@@ -604,103 +668,103 @@ main{position:relative;z-index:1}
         </header>
         <div class="body">
           <div class="brow">
-            <div class="bn">“МИАТ” ТӨХК</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/om.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“МИАТ” ТӨХК</span></div>
             <div class="bt"><span style="width:100.0%"></span></div>
             <div class="bv">413 422</div>
             <div class="bd"><span class="sh">43.6%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">“Хүннү Эйр” ХХК</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/mr.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Хүннү Эйр” ХХК</span></div>
             <div class="bt"><span style="width:27.4%"></span></div>
             <div class="bv">113 463</div>
             <div class="bd"><span class="sh">12.0%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Air China</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/ca.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Air China</span></div>
             <div class="bt"><span style="width:24.4%"></span></div>
             <div class="bv">100 975</div>
             <div class="bd"><span class="sh">10.6%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Korean Air</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/ke.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Korean Air</span></div>
             <div class="bt"><span style="width:18.2%"></span></div>
             <div class="bv">75 443</div>
             <div class="bd"><span class="sh">8.0%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">“Аэро Монголиа” ХХК</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/m0.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Аэро Монголиа” ХХК</span></div>
             <div class="bt"><span style="width:14.4%"></span></div>
             <div class="bv">59 355</div>
             <div class="bd"><span class="sh">6.3%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Jeju Air</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/7c.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Jeju Air</span></div>
             <div class="bt"><span style="width:10.0%"></span></div>
             <div class="bv">41 359</div>
             <div class="bd"><span class="sh">4.4%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Turkish Airlines</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/tk.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Turkish Airlines</span></div>
             <div class="bt"><span style="width:9.7%"></span></div>
             <div class="bv">39 939</div>
             <div class="bd"><span class="sh">4.2%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Asiana Airlines</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/oz.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Asiana Airlines</span></div>
             <div class="bt"><span style="width:7.2%"></span></div>
             <div class="bv">29 884</div>
             <div class="bd"><span class="sh">3.2%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Spring Airlines</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/9c.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Spring Airlines</span></div>
             <div class="bt"><span style="width:4.2%"></span></div>
             <div class="bv">17 371</div>
             <div class="bd"><span class="sh">1.8%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">T’way Air</div>
+            <div class="bn has-lead"><span class="al alw" style="--a:#d8232a" aria-hidden="true">TW</span><span>T’way Air</span></div>
             <div class="bt"><span style="width:3.5%"></span></div>
             <div class="bv">14 446</div>
             <div class="bd"><span class="sh">1.5%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">IRAERO</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/io.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>IRAERO</span></div>
             <div class="bt"><span style="width:2.0%"></span></div>
             <div class="bv">8 225</div>
             <div class="bd"><span class="sh">0.9%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">United Airlines</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/ua.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>United Airlines</span></div>
             <div class="bt"><span style="width:1.8%"></span></div>
             <div class="bv">7 273</div>
             <div class="bd"><span class="sh">0.8%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Air Busan</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/bx.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Air Busan</span></div>
             <div class="bt"><span style="width:1.4%"></span></div>
             <div class="bv">5 759</div>
             <div class="bd"><span class="sh">0.6%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Juneyao Air</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/ho.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Juneyao Air</span></div>
             <div class="bt"><span style="width:1.3%"></span></div>
             <div class="bv">5 395</div>
             <div class="bd"><span class="sh">0.6%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Jin Air</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/lj.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Jin Air</span></div>
             <div class="bt"><span style="width:1.0%"></span></div>
             <div class="bv">4 100</div>
             <div class="bd"><span class="sh">0.4%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">China United Airlines</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/kn.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>China United Airlines</span></div>
             <div class="bt"><span style="width:0.8%"></span></div>
             <div class="bv">3 300</div>
             <div class="bd"><span class="sh">0.3%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Бусад тээвэрлэгч</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#8a97ab"><svg aria-hidden="true"><use href="#i-plane2"/></svg></span><span>Бусад тээвэрлэгч</span></div>
             <div class="bt"><span style="width:2.1%"></span></div>
             <div class="bv">8 700</div>
             <div class="bd"><span class="sh">0.9%</span></div>
@@ -718,55 +782,55 @@ main{position:relative;z-index:1}
         </header>
         <div class="body">
           <div class="brow">
-            <div class="bn">Оюутолгой</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Оюутолгой</span></div>
             <div class="bt"><span style="width:100.0%"></span></div>
             <div class="bv">244 947</div>
             <div class="bd"><span class="chip serious">−8.1%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Өлгий</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Өлгий</span></div>
             <div class="bt"><span style="width:6.8%"></span></div>
             <div class="bv">16 555</div>
             <div class="bd"><span class="chip good">+2.1%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Мөрөн</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Мөрөн</span></div>
             <div class="bt"><span style="width:6.8%"></span></div>
             <div class="bv">16 554</div>
             <div class="bd"><span class="chip good">+21.8%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Ховд</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Ховд</span></div>
             <div class="bt"><span style="width:6.0%"></span></div>
             <div class="bv">14 639</div>
             <div class="bd"><span class="chip good">+5.6%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Улиастай</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Улиастай</span></div>
             <div class="bt"><span style="width:2.0%"></span></div>
             <div class="bv">4 936</div>
             <div class="bd"><span class="chip serious">−5.5%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Улаангом</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Улаангом</span></div>
             <div class="bt"><span style="width:2.0%"></span></div>
             <div class="bv">4 783</div>
             <div class="bd"><span class="chip serious">−28.4%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Алтай</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Алтай</span></div>
             <div class="bt"><span style="width:1.9%"></span></div>
             <div class="bv">4 629</div>
             <div class="bd"><span class="chip serious">−23.4%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Баянхонгор</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Баянхонгор</span></div>
             <div class="bt"><span style="width:1.5%"></span></div>
             <div class="bv">3 737</div>
             <div class="bd"><span class="chip neutral">шинэ</span></div>
           </div>
           <div class="brow">
-            <div class="bn">Бусад чиглэл</div>
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Бусад чиглэл</span></div>
             <div class="bt"><span style="width:4.8%"></span></div>
             <div class="bv">11 741</div>
             <div class="bd"></div>
@@ -783,19 +847,19 @@ main{position:relative;z-index:1}
         </header>
         <div class="body">
           <div class="brow">
-            <div class="bn">“МИАТ” ТӨХК</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/om.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“МИАТ” ТӨХК</span></div>
             <div class="bt"><span style="width:100.0%"></span></div>
             <div class="bv">200 100</div>
             <div class="bd"><span class="sh">62.0%</span><span class="chip good">+1.9%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">“Аэро Монголиа” ХХК</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/m0.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Аэро Монголиа” ХХК</span></div>
             <div class="bt"><span style="width:30.8%"></span></div>
             <div class="bv">61 600</div>
             <div class="bd"><span class="sh">19.0%</span><span class="chip serious">−24.9%</span></div>
           </div>
           <div class="brow">
-            <div class="bn">“Хүннү Эйр” ХХК</div>
+            <div class="bn has-lead"><img class="alogo" src="assets/airlines/mr.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Хүннү Эйр” ХХК</span></div>
             <div class="bt"><span style="width:26.0%"></span></div>
             <div class="bv">52 100</div>
             <div class="bd"><span class="sh">16.0%</span><span class="chip serious">−5.4%</span></div>
@@ -955,8 +1019,9 @@ main{position:relative;z-index:1}
 <script src="assets/geo-dots.js" defer></script>
 <script src="assets/route-globe.js" defer></script>
 <script>
-document.querySelectorAll(".fig dd").forEach(function(d){ d.setAttribute("data-count",""); });
+document.querySelectorAll(".fig dd:not(.val):not(.dl):not(.sp):not(.note):not(.meter), .kpi .v").forEach(function(d){ d.setAttribute("data-count",""); });
 inegReveal(".sec-h, .tiles, .entry, .locked, .figs, .panel");
+
 
 </script>
 <script>
