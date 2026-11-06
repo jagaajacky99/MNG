@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Иргэний нисэхийн салбар · Зам, тээврийн яам</title>
+<meta name="description" content="Иргэний нисэхийн зорчигч, нислэг, ачаа тээврийн 2026 оны I–III улирлын статистик үзүүлэлт ба хяналтын мэдээллийн сан — Зам, тээврийн яам">
+<link rel="icon" type="image/png" href="../assets/ztya-mark.png">
+<meta name="theme-color" content="#050b16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
+<link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/sector.css">
+<link rel="stylesheet" href="../assets/ui-2027.css">
+<link rel="stylesheet" href="../assets/kpi.css">
+<style>
+/* Иргэний нисэхийн хуудас: хяналтын сангийн орц (нүүр хуудаснаас шилжүүлэв) ба бөмбөрцгийн шошго */
+.entry{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--deep);
+  border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.entry .eb{padding:24px 26px;display:grid;gap:22px;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+@media(max-width:720px){.entry .eb{grid-template-columns:1fr}}
+.entry h4{font-size:19px;font-weight:700;margin:0 0 8px}
+.entry p{margin:0;font-size:14px;color:var(--ink-2);max-width:56ch}
+.acts{display:flex;flex-direction:column;gap:10px;min-width:210px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:4px;
+  font-size:14.5px;font-weight:700;text-decoration:none;cursor:pointer;border:1px solid transparent;font-family:var(--ff)}
+.btn.pri{background:var(--accent);color:#fff}
+.btn.pri:hover{background:var(--accent-2)}
+.btn.sec{background:var(--surface);color:var(--accent);border-color:var(--line-strong);font-weight:400}
+.btn.sec:hover{border-color:var(--accent);background:var(--accent-soft)}
+.entry .note{padding:13px 26px;border-top:1px solid var(--line);background:var(--deep-soft);
+  font-size:12.5px;color:var(--ink-2)}
+
+/* ---------- хаалттай хэсэг ---------- */
+.locked{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);
+  border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow)}
+.locked .lt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+.locked h4{font-size:17px;font-weight:700;margin:0}
+.tag{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:3px;
+  background:var(--good-soft);color:var(--good)}
+.locked p{margin:0;font-size:13.5px;color:var(--ink-2);max-width:62ch}
+.locked .meta{margin-top:11px;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.acts .btn{justify-content:center}
+.hero.globe-grab{cursor:grab}
+.hero.globe-drag{cursor:grabbing;-webkit-user-select:none;user-select:none}
+.hero.globe-pt{cursor:pointer}
+/* хотын шошго */
+.gtip{position:absolute;left:0;top:0;z-index:4;pointer-events:none;min-width:190px;max-width:250px;
+  padding:11px 13px 10px;border-radius:12px;background:rgba(9,15,26,.92);
+  border:1px solid rgba(160,185,220,.24);box-shadow:0 16px 36px -14px rgba(0,0,0,.9);
+  backdrop-filter:blur(8px);font-size:12.5px;color:#b4bfcf;line-height:1.4}
+.gtip[hidden]{display:none}
+.gtip .gt-h{display:flex;align-items:center;gap:8px}
+.gtip .gt-h b{color:#fff;font-size:14px;font-weight:650}
+.gtip .gt-c{margin-left:auto;font-size:11px;color:#8a97ab;letter-spacing:.04em}
+.gtip .gt-pin{width:10px;height:10px;border-radius:50%;background:#e6c27a;box-shadow:0 0 10px rgba(230,194,122,.7);flex:none}
+.gtip .gt-v{margin-top:7px}
+.gtip .gt-v b{color:#fff;font-size:17px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.gtip .gt-g{margin-left:4px;font-weight:600;font-size:11.5px;padding:1px 7px;border-radius:99px;background:rgba(160,185,220,.1);color:#b4bfcf}
+.gtip .gt-g.up{color:#4cc99a;background:rgba(76,201,154,.13)}
+.gtip .gt-g.dn{color:#f0955e;background:rgba(240,149,94,.13)}
+.gtip .gt-s{margin-top:5px;font-size:11px;color:#7d8aa0}
+</style>
+</head>
+<body class="night">
+
+<a class="skip" href="#main">Үндсэн агуулга руу шилжих</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-takeoff" viewBox="0 0 34 34">
+    <path d="M4 30h26"/>
+    <g transform="rotate(42 17 15)">
+      <path d="M17 1.8c1.15 0 1.95 1.25 1.95 2.8v4.7l10.1 5.75v2.7l-10.1-3v5.5l3 2.2v2L17 23.6l-4.95.85v-2l3-2.2v-5.5l-10.1 3v-2.7l10.1-5.75V4.6c0-1.55.8-2.8 1.95-2.8z"/>
+    </g>
+  </symbol>
+<!-- kpi-marks:start · assets/kpi.css-ийн тэмдэг ба туг (build_kpi.py) -->
+  <symbol id="i-users" viewBox="0 0 34 34"><circle cx="13" cy="11.5" r="4.6"/><path d="M4.5 27.5c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5"/><path d="M21.2 7.4a4.2 4.2 0 0 1 0 8.2M24 19.4c3.3.9 5.5 4 5.5 8.1"/></symbol>
+  <symbol id="i-route" viewBox="0 0 34 34"><circle cx="7.5" cy="25" r="3"/><circle cx="26.5" cy="9" r="3"/><path d="M10.5 25h9.5a4.5 4.5 0 0 0 0-9h-6a3.5 3.5 0 0 1 0-7h9.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 34 34"><path d="M12 6H9.5A2.5 2.5 0 0 0 7 8.5v20A2.5 2.5 0 0 0 9.5 31h15a2.5 2.5 0 0 0 2.5-2.5v-20A2.5 2.5 0 0 0 24.5 6H22"/><rect x="12" y="3.5" width="10" height="5" rx="1.5"/><path d="M12 19.5l3.5 3.5 7-7.5"/></symbol>
+  <symbol id="i-cert" viewBox="0 0 34 34"><circle cx="17" cy="13" r="8.5"/><circle cx="17" cy="13" r="3.6"/><path d="M12 20 10 30.5l7-3.6 7 3.6L22 20"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 34 34"><path d="M15 5.8a2.3 2.3 0 0 1 4 0l11.6 20.6a2.3 2.3 0 0 1-2 3.4H5.4a2.3 2.3 0 0 1-2-3.4z"/><path d="M17 13v7M17 24.6v.1"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 34 34"><path d="M4.5 25a12.5 12.5 0 1 1 25 0"/><path d="M17 25l6.2-7.4"/><circle cx="17" cy="25" r="1.8"/><path d="M8 16.5l1.6 1M17 12.5v1.8M26 16.5l-1.6 1"/></symbol>
+  <symbol id="i-out" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></g></symbol>
+  <symbol id="i-in" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M21 3 11 13"/><path d="M11 6.5V13h6.5"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></g></symbol>
+  <symbol id="i-transit" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M2.5 12h18"/><path d="m16.5 8 4 4-4 4"/><path d="M8 4v4.5M8 15.5V20M14 4v2M14 18v2"/></g></symbol>
+  <symbol id="i-cal" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M14 14h2M8 18h2"/></g></symbol>
+  <symbol id="i-truck" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></g></symbol>
+  <symbol id="i-wrench" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g></symbol>
+  <symbol id="i-city" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></g></symbol>
+  <symbol id="i-coins" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></g></symbol>
+  <symbol id="i-clock" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></g></symbol>
+  <symbol id="i-layers" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></g></symbol>
+  <symbol id="i-bridge" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M2 8h20M4 8v12M20 8v12M4 17a8 7 0 0 1 16 0M9 8v3.2M15 8v3.2"/></g></symbol>
+  <symbol id="i-network" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></g></symbol>
+  <symbol id="i-chart2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></g></symbol>
+  <symbol id="i-bus2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M8 6v6M15 6v6M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></g></symbol>
+  <symbol id="i-train2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M12 3v8M8 19l-2 3M18 22l-2-3M8 15h.01M16 15h.01"/></g></symbol>
+  <symbol id="i-plane2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></g></symbol>
+  <symbol id="i-pin2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></g></symbol>
+  <symbol id="i-road2" viewBox="0 0 34 34"><g transform="translate(-0.0 -0.0) scale(1.4167)" stroke-width="1.48"><path d="M4 21 9 3M20 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20"/></g></symbol>
+  <symbol id="i-up" viewBox="0 0 12 12"><path d="M6 10.5v-9M2.2 5.3 6 1.5l3.8 3.8"/></symbol>
+  <symbol id="f-jp" viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#bc002d"/></symbol>
+  <symbol id="f-de" viewBox="0 0 30 20"><rect width="30" height="20" fill="#ffce00"/><rect width="30" height="13.34" fill="#dd0000"/><rect width="30" height="6.67" fill="#000"/></symbol>
+  <symbol id="f-ru" viewBox="0 0 30 20"><rect width="30" height="20" fill="#d52b1e"/><rect width="30" height="13.34" fill="#0039a6"/><rect width="30" height="6.67" fill="#fff"/></symbol>
+  <symbol id="f-cn" viewBox="0 0 30 20"><rect width="30" height="20" fill="#de2910"/><polygon fill="#ffde00" points="5.00,2.00 5.67,4.07 7.85,4.07 6.09,5.35 6.76,7.43 5.00,6.15 3.24,7.43 3.91,5.35 2.15,4.07 4.33,4.07"/><polygon fill="#ffde00" points="9.14,2.51 9.62,1.97 9.25,1.34 9.91,1.63 10.39,1.08 10.33,1.80 11.00,2.09 10.29,2.25 10.22,2.97 9.85,2.35"/><polygon fill="#ffde00" points="11.01,4.14 11.66,3.82 11.56,3.10 12.07,3.62 12.72,3.30 12.38,3.95 12.88,4.47 12.17,4.34 11.83,4.99 11.73,4.27"/><polygon fill="#ffde00" points="11.04,6.73 11.76,6.70 11.96,6.00 12.21,6.68 12.94,6.66 12.37,7.10 12.62,7.79 12.01,7.38 11.44,7.83 11.64,7.13"/><polygon fill="#ffde00" points="9.22,8.38 9.90,8.63 10.35,8.06 10.32,8.79 11.00,9.05 10.30,9.24 10.26,9.96 9.87,9.36 9.16,9.55 9.62,8.98"/></symbol>
+  <symbol id="f-tr" viewBox="0 0 30 20"><rect width="30" height="20" fill="#e30a17"/><circle cx="11.2" cy="10" r="5" fill="#fff"/><circle cx="12.5" cy="10" r="4" fill="#e30a17"/><polygon fill="#fff" points="15.40,10.00 16.92,9.51 16.92,7.91 17.86,9.20 19.38,8.71 18.44,10.00 19.38,11.29 17.86,10.80 16.92,12.09 16.92,10.49"/></symbol>
+  <symbol id="f-hk" viewBox="0 0 30 20"><rect width="30" height="20" fill="#de2910"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(12 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(84 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(156 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(228 15 10)"/><ellipse cx="15" cy="6.6" rx="1.7" ry="3.3" fill="#fff" transform="rotate(300 15 10)"/></symbol>
+  <symbol id="f-kr" viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><g transform="rotate(33.7 15 10)"><circle cx="15" cy="10" r="5" fill="#0047a0"/><path d="M10 10a5 5 0 0 1 10 0a2.5 2.5 0 0 1-5 0a2.5 2.5 0 0 0-5 0z" fill="#cd2e3a"/></g><g transform="translate(6.2 4.6) rotate(56.3)" fill="#000"><rect x="-2.2" y="-1.55" width="4.4" height=".7"/><rect x="-2.2" y="-0.45" width="4.4" height=".7"/><rect x="-2.2" y="0.65" width="4.4" height=".7"/></g><g transform="translate(23.8 15.4) rotate(56.3)" fill="#000"><rect x="-2.2" y="-1.55" width="1.9" height=".7"/><rect x=".3" y="-1.55" width="1.9" height=".7"/><rect x="-2.2" y="-0.45" width="1.9" height=".7"/><rect x=".3" y="-0.45" width="1.9" height=".7"/><rect x="-2.2" y="0.65" width="1.9" height=".7"/><rect x=".3" y="0.65" width="1.9" height=".7"/></g><g transform="translate(23.8 4.6) rotate(123.7)" fill="#000"><rect x="-2.2" y="-1.55" width="4.4" height=".7"/><rect x="-2.2" y="-0.45" width="1.9" height=".7"/><rect x=".3" y="-0.45" width="1.9" height=".7"/><rect x="-2.2" y="0.65" width="4.4" height=".7"/></g><g transform="translate(6.2 15.4) rotate(123.7)" fill="#000"><rect x="-2.2" y="-1.55" width="1.9" height=".7"/><rect x=".3" y="-1.55" width="1.9" height=".7"/><rect x="-2.2" y="-0.45" width="4.4" height=".7"/><rect x="-2.2" y="0.65" width="1.9" height=".7"/><rect x=".3" y="0.65" width="1.9" height=".7"/></g></symbol>
+  <symbol id="f-mn" viewBox="0 0 30 20"><rect width="30" height="20" fill="#c4272f"/><rect x="10" width="10" height="20" fill="#015197"/><g fill="#f9cf02"><circle cx="5" cy="5.4" r="1.1"/><path d="M3.3 7.6h3.4v1H3.3zM3.3 9.1h3.4L5 10.6zM3.3 11.2h3.4v6H3.3z"/></g></symbol>
+<!-- kpi-marks:end -->
+
+
+  <symbol id="i-train" viewBox="0 0 34 34">
+    <path d="M11 3.5h12a3.5 3.5 0 0 1 3.5 3.5v13.5a3.5 3.5 0 0 1-3.5 3.5H11a3.5 3.5 0 0 1-3.5-3.5V7A3.5 3.5 0 0 1 11 3.5z"/>
+    <path d="M7.5 14h19M14 7.5h6"/><circle cx="12" cy="19" r="1.2"/><circle cx="22" cy="19" r="1.2"/>
+    <path d="M12.5 24 9 30.5M21.5 24l3.5 6.5M10.5 27.8h13"/>
+  </symbol>
+  <symbol id="i-bus" viewBox="0 0 34 34">
+    <path d="M8.5 4h17A2.5 2.5 0 0 1 28 6.5V25H6V6.5A2.5 2.5 0 0 1 8.5 4z"/>
+    <path d="M6 16.5h22M6 9h22"/><circle cx="11" cy="21" r="1.2"/><circle cx="23" cy="21" r="1.2"/>
+    <path d="M9 25v3.5M25 25v3.5"/>
+  </symbol>
+  <symbol id="i-road" viewBox="0 0 34 34">
+    <path d="M12.5 30.5 15 3.5M21.5 30.5 19 3.5"/><path d="M17 6.5v3.2M17 13.6v4.2M17 22v5.5"/>
+    <path d="M4 30.5h26"/>
+  </symbol>
+  <symbol id="i-plane" viewBox="0 0 34 34">
+    <path d="M17 3.4c1.25 0 2.1 1.35 2.1 3v5.1L30 17.7v2.9l-10.9-3.2v5.9l3.2 2.4v2.2L17 27l-5.3.9v-2.2l3.2-2.4v-5.9L4 20.6v-2.9l10.9-6.2v-5.1c0-1.65.85-3 2.1-3z"/>
+  </symbol>
+  <symbol id="i-box" viewBox="0 0 34 34">
+    <path d="M17 3.4 30 10v14L17 30.6 4 24V10z"/><path d="M4 10l13 6.6L30 10M17 16.6V30.6"/>
+  </symbol>
+  <symbol id="i-globe" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="13.2"/><path d="M3.8 17h26.4"/>
+    <ellipse cx="17" cy="17" rx="5.6" ry="13.2"/><path d="M6.6 9.2h20.8M6.6 24.8h20.8"/>
+  </symbol>
+  <symbol id="i-pin" viewBox="0 0 34 34">
+    <path d="M17 3.2c-5.3 0-9.6 4.3-9.6 9.6 0 7.1 9.6 18 9.6 18s9.6-10.9 9.6-18c0-5.3-4.3-9.6-9.6-9.6z"/>
+    <circle cx="17" cy="12.8" r="3.9"/>
+  </symbol>
+  <symbol id="i-chart" viewBox="0 0 34 34">
+    <path d="M4 29.5h26M8.5 25V15M14.5 25V8M20.5 25v-7M26.5 25V11"/>
+  </symbol>
+  <symbol id="i-user" viewBox="0 0 34 34">
+    <circle cx="17" cy="11" r="5.4"/><path d="M6.5 29.5c0-5.8 4.7-9.6 10.5-9.6s10.5 3.8 10.5 9.6"/>
+  </symbol>
+  <symbol id="i-pie" viewBox="0 0 34 34">
+    <circle cx="17" cy="17" r="12.8"/><path d="M17 4.2V17h12.8"/>
+  </symbol>
+</svg>
+
+<div class="gov-bar">
+  <div class="in">
+    <span class="org">Зам, тээврийн яам</span>
+    <span class="dot"></span>
+    <span class="sub">Зам, тээврийн салбарын статистик</span>
+    <span class="sp"></span>
+    <button class="tbtn" id="theme" type="button" style="padding:4px 10px;font-size:11px">Өнгө</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="in">
+    <a class="emblem" href="../" aria-label="Нүүр хуудас">
+      <img class="lg-light" src="../assets/ztya-logo.png" width="306" height="288"
+           alt="Монгол Улсын Засгийн газар — Зам, тээврийн яам">
+      <img class="lg-dark" src="../assets/ztya-logo-light.png" width="306" height="288"
+           alt="" aria-hidden="true">
+    </a>
+    <div class="mh-t">
+      <h1>Иргэний нисэхийн салбар</h1>
+      <p>Агаарын тээвэр, нислэг, хяналт шалгалт · 2026 оны I–III улирал</p>
+    </div>
+    <span class="sp"></span>
+    <a class="tbtn" href="../">← Нүүр хуудас</a>
+    <a class="tbtn cta" href="../hyanalt/">Хяналтын сан →</a>
+  </div>
+</header>
+
+<section class="hero photoband sector">
+  <div class="earthwrap" data-zoom="2.8" data-lat="46.5" data-lon="103.5" aria-hidden="true">
+    <i class="veil"></i>
+  </div>
+  <div class="in">
+    <div class="htxt">
+      <div class="kick">Зам, тээврийн яам<span class="sep" aria-hidden="true"></span>2026 · I–III улирал</div>
+      <h2>Иргэний нисэх</h2>
+      <div class="rule"></div>
+      <p>2026 оны эхний 9 сард агаарын тээврээр 2.03 сая зорчигч зорчиж, өмнөх оны мөн
+        үеэс 6.3%-иар өссөн. Монголын агаарын зайгаар 70&nbsp;531 олон улсын нислэг дамжин
+        өнгөрч, нисэх буудлуудад 22&nbsp;383 удаа хөөрч, буусан.</p>
+      <div class="cta-row">
+        <a class="btn pri" href="#stat">Үзүүлэлт үзэх <span class="arr" aria-hidden="true">↓</span></a>
+        <a class="btn sec" href="#hyanalt">Хяналтын мэдээллийн сан</a>
+      </div>
+      <div class="stats" aria-label="Гол үзүүлэлт">
+        <div><b>2.03<small>сая</small></b><span>зорчигч · I–IX сар</span></div>
+        <div><b>70 531</b><span>өнгөрөх нислэг</span></div>
+        <div><b>22 383</b><span>хөөрөлт, буулт</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap" id="main">
+
+  <section class="blk">
+    <nav class="secnav" aria-label="Тээврийн салбар">
+      <a href="./" aria-current="page"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Иргэний нисэх</a>
+      <a href="../tomor-zam/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-train"/></svg>Төмөр зам</a>
+      <a href="../avto-teever/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-bus"/></svg>Автотээвэр</a>
+      <a href="../avto-zam/"><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-road"/></svg>Авто зам</a>
+    </nav>
+  </section>
+
+  <section class="blk" id="stat" style="padding-top:0">
+    <div class="sec-h">
+      <h3 data-k="Үзүүлэлт">Иргэний нисэхийн гол үзүүлэлт</h3>
+      <p>2026 оны эхний 9 сар · Зам, тээврийн яамны статистикийн мэдээ,
+        2026 оны 9 дүгээр сар
+        <span class="kpi-legend"><span><i></i>2026, сараар</span><span><i class="pv"></i>2025 оны мөн үе</span></span></p>
+    </div>
+
+    <dl class="figs av-figs kpi">
+      <div class="fig hero-k" style="--c:#8b9cff"><dt><svg class="wm" aria-hidden="true"><use href="#i-users"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-users"/></svg></span>Нийт зорчигч</dt>
+        <dd class="val"><span class="v">2 033.0</span><span class="u">мянган хүн</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>6.3%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="split"><span class="bar" aria-hidden="true"><i style="width:84.1%;background:#5b9cf5"></i><i style="width:15.9%;background:#d9ad4f"></i></span>
+          <span class="lg"><span><i style="background:#5b9cf5"></i>Олон улсын <b>84.1%</b></span><span><i style="background:#d9ad4f"></i>Орон нутгийн <b>15.9%</b></span></span></dd>
+        <dd class="sp"><svg class="spark" viewBox="0 0 200 44" preserveAspectRatio="none" role="img" aria-label="Сар бүрийн зорчигч, 2026 оны 1–9 сар, 2025 оны мөн үетэй харьцуулсан"><path class="ar" d="M2.0 27.1L26.5 39.0L51.0 34.8L75.5 35.7L100.0 31.3L124.5 17.1L149.0 5.6L173.5 4.0L198.0 21.3L198.0 44L2.0 44Z"/><path class="pv" d="M2.0 31.1L26.5 41.0L51.0 39.6L75.5 37.7L100.0 33.9L124.5 19.1L149.0 10.5L173.5 4.9L198.0 22.3"/><path class="cu" d="M2.0 27.1L26.5 39.0L51.0 34.8L75.5 35.7L100.0 31.3L124.5 17.1L149.0 5.6L173.5 4.0L198.0 21.3" pathLength="1"/><circle cx="198.0" cy="21.3" r="2.6"/></svg><span class="mx" aria-hidden="true"><span>1 сар</span><span>3</span><span>5</span><span>7</span><span>9 сар</span></span></dd></div>
+      <div class="fig" style="--c:#5b9cf5"><dt><svg class="wm" aria-hidden="true"><use href="#i-globe"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-globe"/></svg></span>Олон улсын зорчигч</dt>
+        <dd class="val"><span class="v">1 710.3</span><span class="u">мянган хүн</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>8.4%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="share"><i class="donut" style="--p:84.1" aria-hidden="true"></i>Нийт зорчигчийн <b>84.1%</b></dd>
+        <dd class="sp"><svg class="spark" viewBox="0 0 200 44" role="img" aria-label="Сар бүрийн олон улсын зорчигч, 2026 оны 1–9 сар, 2025 оны мөн үетэй харьцуулсан"><path class="ar" d="M2.0 26.5L26.5 38.6L51.0 34.9L75.5 35.9L100.0 31.4L124.5 17.2L149.0 6.0L173.5 4.0L198.0 21.9L198.0 44L2.0 44Z"/><path class="pv" d="M2.0 30.9L26.5 41.0L51.0 39.9L75.5 38.1L100.0 34.4L124.5 19.5L149.0 11.5L173.5 5.6L198.0 23.1"/><path class="cu" d="M2.0 26.5L26.5 38.6L51.0 34.9L75.5 35.9L100.0 31.4L124.5 17.2L149.0 6.0L173.5 4.0L198.0 21.9" pathLength="1"/><circle cx="198.0" cy="21.9" r="2.6"/></svg></dd></div>
+      <div class="fig" style="--c:#d9ad4f"><dt><svg class="wm" aria-hidden="true"><use href="#i-pin"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>Орон нутгийн зорчигч</dt>
+        <dd class="val"><span class="v">322.7</span><span class="u">мянган хүн</span></dd>
+        <dd class="dl dn"><b><svg aria-hidden="true"><use href="#i-up"/></svg>3.3%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="share"><i class="donut" style="--p:15.9" aria-hidden="true"></i>Нийт зорчигчийн <b>15.9%</b></dd>
+        <dd class="sp"><svg class="spark" viewBox="0 0 200 44" role="img" aria-label="Сар бүрийн орон нутгийн зорчигч, 2026 оны 1–9 сар, 2025 оны мөн үетэй харьцуулсан"><path class="ar" d="M2.0 36.4L26.5 41.0L51.0 31.9L75.5 30.7L100.0 30.0L124.5 19.1L149.0 9.0L173.5 13.5L198.0 15.6L198.0 44L2.0 44Z"/><path class="pv" d="M2.0 33.4L26.5 36.7L51.0 30.8L75.5 29.4L100.0 25.2L124.5 17.6L149.0 4.0L173.5 4.6L198.0 14.6"/><path class="cu" d="M2.0 36.4L26.5 41.0L51.0 31.9L75.5 30.7L100.0 30.0L124.5 19.1L149.0 9.0L173.5 13.5L198.0 15.6" pathLength="1"/><circle cx="198.0" cy="15.6" r="2.6"/></svg></dd></div>
+      <div class="fig" style="--c:#3fc1b0"><dt><svg class="wm" aria-hidden="true"><use href="#i-takeoff"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-takeoff"/></svg></span>Хөөрөлт, буулт</dt>
+        <dd class="val"><span class="v">22 383</span><span class="u">удаа</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>4.0%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="note">олон улсын <b>12 091</b> · орон нутгийн <b>10 292</b></dd></div>
+      <div class="fig" style="--c:#22c3e6"><dt><svg class="wm" aria-hidden="true"><use href="#i-transit"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-transit"/></svg></span>Олон улсын өнгөрөх нислэг</dt>
+        <dd class="val"><span class="v">70 531</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>19.8%</b><span>өмнөх оны мөн үеэс</span></dd>
+        <dd class="share"><i class="donut" style="--p:75.9" aria-hidden="true"></i>Нийт нислэгийн <b>75.9%</b></dd></div>
+      <div class="fig" style="--c:#f0955e"><dt><svg class="wm" aria-hidden="true"><use href="#i-box"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-box"/></svg></span>Ачаа, шуудан</dt>
+        <dd class="val"><span class="v">7 684.4</span><span class="u">тонн</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>0.4%</b><span>өмнөх оны мөн үеэс</span></dd></div>
+      <div class="fig" style="--c:#c084fc"><dt><svg class="wm" aria-hidden="true"><use href="#i-route"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-route"/></svg></span>Зорчигч эргэлт</dt>
+        <dd class="val"><span class="v">4 652.8</span><span class="u">сая хүн.км</span></dd>
+        <dd class="dl up"><b><svg aria-hidden="true"><use href="#i-up"/></svg>3.9%</b><span>өмнөх оны мөн үеэс</span></dd></div>
+    </dl>
+
+    <div class="panel av">
+      <header>
+        <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Зорчигч тээвэр, сараар</h2>
+        <span class="hint">2023.01 – 2026.09 · мянган хүн</span>
+      </header>
+      <div class="body">
+        <div class="legend">
+          <span><i style="background:var(--s1)"></i>Олон улсын нислэг</span>
+          <span><i style="background:var(--gold)"></i>Орон нутгийн нислэг</span>
+        </div>
+        <div class="chartwrap">
+          <svg viewBox="0 0 980 300" role="img" class="mchart"
+             aria-label="Агаарын тээврийн зорчигчдын тоо сараар, 2023 оны 1 дүгээр сараас 2026 оны 9 дүгээр сар хүртэл">
+            <text x="2" y="12" class="ax">мянган хүн</text>
+            <line x1="54" x2="970" y1="248.0" y2="248.0" class="gl" stroke-opacity=".6"/><text x="46" y="251.5" class="ax" text-anchor="end">0</text><line x1="54" x2="970" y1="215.1" y2="215.1" class="gl"/><text x="46" y="218.6" class="ax" text-anchor="end">50</text><line x1="54" x2="970" y1="182.3" y2="182.3" class="gl"/><text x="46" y="185.8" class="ax" text-anchor="end">100</text><line x1="54" x2="970" y1="149.4" y2="149.4" class="gl"/><text x="46" y="152.9" class="ax" text-anchor="end">150</text><line x1="54" x2="970" y1="116.6" y2="116.6" class="gl"/><text x="46" y="120.1" class="ax" text-anchor="end">200</text><line x1="54" x2="970" y1="83.7" y2="83.7" class="gl"/><text x="46" y="87.2" class="ax" text-anchor="end">250</text><line x1="54" x2="970" y1="50.9" y2="50.9" class="gl"/><text x="46" y="54.4" class="ax" text-anchor="end">300</text><line x1="54" x2="970" y1="18.0" y2="18.0" class="gl"/><text x="46" y="21.5" class="ax" text-anchor="end">350</text><line x1="298.3" x2="298.3" y1="18" y2="248" class="yr"/><line x1="542.5" x2="542.5" y1="18" y2="248" class="yr"/><line x1="786.8" x2="786.8" y1="18" y2="248" class="yr"/><g><title>2023 оны 1 сар — олон улс 82 648, орон нутаг 29 651 (нийт 112 299)</title><rect x="56.8" y="174.2" width="14.7" height="54.3" fill="var(--s1)"/><rect x="56.8" y="228.5" width="14.7" height="19.5" fill="var(--gold)"/></g><g><title>2023 оны 2 сар — олон улс 71 304, орон нутаг 27 397 (нийт 98 701)</title><rect x="77.2" y="183.1" width="14.7" height="46.9" fill="var(--s1)"/><rect x="77.2" y="230.0" width="14.7" height="18.0" fill="var(--gold)"/></g><g><title>2023 оны 3 сар — олон улс 75 355, орон нутаг 32 006 (нийт 107 361)</title><rect x="97.6" y="177.4" width="14.7" height="49.5" fill="var(--s1)"/><rect x="97.6" y="227.0" width="14.7" height="21.0" fill="var(--gold)"/></g><g><title>2023 оны 4 сар — олон улс 72 923, орон нутаг 30 352 (нийт 103 275)</title><rect x="117.9" y="180.1" width="14.7" height="47.9" fill="var(--s1)"/><rect x="117.9" y="228.1" width="14.7" height="19.9" fill="var(--gold)"/></g><g><title>2023 оны 5 сар — олон улс 85 576, орон нутаг 33 727 (нийт 119 303)</title><rect x="138.3" y="169.6" width="14.7" height="56.2" fill="var(--s1)"/><rect x="138.3" y="225.8" width="14.7" height="22.2" fill="var(--gold)"/></g><g><title>2023 оны 6 сар — олон улс 132 384, орон нутаг 35 027 (нийт 167 411)</title><rect x="158.6" y="138.0" width="14.7" height="87.0" fill="var(--s1)"/><rect x="158.6" y="225.0" width="14.7" height="23.0" fill="var(--gold)"/></g><g><title>2023 оны 7 сар — олон улс 172 008, орон нутаг 42 806 (нийт 214 814)</title><rect x="179.0" y="106.8" width="14.7" height="113.0" fill="var(--s1)"/><rect x="179.0" y="219.9" width="14.7" height="28.1" fill="var(--gold)"/></g><g><title>2023 оны 8 сар — олон улс 187 450, орон нутаг 43 546 (нийт 230 996)</title><rect x="199.3" y="96.2" width="14.7" height="123.2" fill="var(--s1)"/><rect x="199.3" y="219.4" width="14.7" height="28.6" fill="var(--gold)"/></g><g><title>2023 оны 9 сар — олон улс 136 291, орон нутаг 37 283 (нийт 173 574)</title><rect x="219.7" y="133.9" width="14.7" height="89.6" fill="var(--s1)"/><rect x="219.7" y="223.5" width="14.7" height="24.5" fill="var(--gold)"/></g><g><title>2023 оны 10 сар — олон улс 107 518, орон нутаг 38 146 (нийт 145 664)</title><rect x="240.0" y="152.3" width="14.7" height="70.7" fill="var(--s1)"/><rect x="240.0" y="222.9" width="14.7" height="25.1" fill="var(--gold)"/></g><g><title>2023 оны 11 сар — олон улс 90 183, орон нутаг 34 819 (нийт 125 002)</title><rect x="260.4" y="165.9" width="14.7" height="59.3" fill="var(--s1)"/><rect x="260.4" y="225.1" width="14.7" height="22.9" fill="var(--gold)"/></g><g><title>2023 оны 12 сар — олон улс 98 527, орон нутаг 34 364 (нийт 132 891)</title><rect x="280.8" y="160.7" width="14.7" height="64.7" fill="var(--s1)"/><rect x="280.8" y="225.4" width="14.7" height="22.6" fill="var(--gold)"/></g><g><title>2024 оны 1 сар — олон улс 124 530, орон нутаг 33 548 (нийт 158 078)</title><rect x="301.1" y="144.1" width="14.7" height="81.8" fill="var(--s1)"/><rect x="301.1" y="226.0" width="14.7" height="22.0" fill="var(--gold)"/></g><g><title>2024 оны 2 сар — олон улс 94 863, орон нутаг 31 465 (нийт 126 328)</title><rect x="321.5" y="165.0" width="14.7" height="62.3" fill="var(--s1)"/><rect x="321.5" y="227.3" width="14.7" height="20.7" fill="var(--gold)"/></g><g><title>2024 оны 3 сар — олон улс 95 439, орон нутаг 32 133 (нийт 127 572)</title><rect x="341.8" y="164.2" width="14.7" height="62.7" fill="var(--s1)"/><rect x="341.8" y="226.9" width="14.7" height="21.1" fill="var(--gold)"/></g><g><title>2024 оны 4 сар — олон улс 105 038, орон нутаг 33 473 (нийт 138 511)</title><rect x="362.2" y="157.0" width="14.7" height="69.0" fill="var(--s1)"/><rect x="362.2" y="226.0" width="14.7" height="22.0" fill="var(--gold)"/></g><g><title>2024 оны 5 сар — олон улс 126 585, орон нутаг 37 264 (нийт 163 849)</title><rect x="382.5" y="140.3" width="14.7" height="83.2" fill="var(--s1)"/><rect x="382.5" y="223.5" width="14.7" height="24.5" fill="var(--gold)"/></g><g><title>2024 оны 6 сар — олон улс 180 352, орон нутаг 35 241 (нийт 215 593)</title><rect x="402.9" y="106.3" width="14.7" height="118.5" fill="var(--s1)"/><rect x="402.9" y="224.8" width="14.7" height="23.2" fill="var(--gold)"/></g><g><title>2024 оны 7 сар — олон улс 230 244, орон нутаг 40 205 (нийт 270 449)</title><rect x="423.2" y="70.3" width="14.7" height="151.3" fill="var(--s1)"/><rect x="423.2" y="221.6" width="14.7" height="26.4" fill="var(--gold)"/></g><g><title>2024 оны 8 сар — олон улс 254 047, орон нутаг 39 226 (нийт 293 273)</title><rect x="443.6" y="55.3" width="14.7" height="166.9" fill="var(--s1)"/><rect x="443.6" y="222.2" width="14.7" height="25.8" fill="var(--gold)"/></g><g><title>2024 оны 9 сар — олон улс 175 761, орон нутаг 36 818 (нийт 212 579)</title><rect x="464.0" y="108.3" width="14.7" height="115.5" fill="var(--s1)"/><rect x="464.0" y="223.8" width="14.7" height="24.2" fill="var(--gold)"/></g><g><title>2024 оны 10 сар — олон улс 127 171, орон нутаг 36 091 (нийт 163 262)</title><rect x="484.3" y="140.7" width="14.7" height="83.6" fill="var(--s1)"/><rect x="484.3" y="224.3" width="14.7" height="23.7" fill="var(--gold)"/></g><g><title>2024 оны 11 сар — олон улс 107 090, орон нутаг 31 168 (нийт 138 258)</title><rect x="504.7" y="157.1" width="14.7" height="70.4" fill="var(--s1)"/><rect x="504.7" y="227.5" width="14.7" height="20.5" fill="var(--gold)"/></g><g><title>2024 оны 12 сар — олон улс 125 755, орон нутаг 33 763 (нийт 159 518)</title><rect x="525.0" y="143.2" width="14.7" height="82.6" fill="var(--s1)"/><rect x="525.0" y="225.8" width="14.7" height="22.2" fill="var(--gold)"/></g><g><title>2025 оны 1 сар — олон улс 157 332, орон нутаг 32 932 (нийт 190 264)</title><rect x="545.4" y="123.0" width="14.7" height="103.4" fill="var(--s1)"/><rect x="545.4" y="226.4" width="14.7" height="21.6" fill="var(--gold)"/></g><g><title>2025 оны 2 сар — олон улс 109 214, орон нутаг 31 758 (нийт 140 972)</title><rect x="565.7" y="155.4" width="14.7" height="71.8" fill="var(--s1)"/><rect x="565.7" y="227.1" width="14.7" height="20.9" fill="var(--gold)"/></g><g><title>2025 оны 3 сар — олон улс 114 262, орон нутаг 33 851 (нийт 148 113)</title><rect x="586.1" y="150.7" width="14.7" height="75.1" fill="var(--s1)"/><rect x="586.1" y="225.8" width="14.7" height="22.2" fill="var(--gold)"/></g><g><title>2025 оны 4 сар — олон улс 122 835, орон нутаг 34 370 (нийт 157 205)</title><rect x="606.4" y="144.7" width="14.7" height="80.7" fill="var(--s1)"/><rect x="606.4" y="225.4" width="14.7" height="22.6" fill="var(--gold)"/></g><g><title>2025 оны 5 сар — олон улс 140 591, орон нутаг 35 878 (нийт 176 469)</title><rect x="626.8" y="132.0" width="14.7" height="92.4" fill="var(--s1)"/><rect x="626.8" y="224.4" width="14.7" height="23.6" fill="var(--gold)"/></g><g><title>2025 оны 6 сар — олон улс 211 705, орон нутаг 38 577 (нийт 250 282)</title><rect x="647.2" y="83.5" width="14.7" height="139.1" fill="var(--s1)"/><rect x="647.2" y="222.6" width="14.7" height="25.4" fill="var(--gold)"/></g><g><title>2025 оны 7 сар — олон улс 250 023, орон нутаг 43 441 (нийт 293 464)</title><rect x="667.5" y="55.2" width="14.7" height="164.3" fill="var(--s1)"/><rect x="667.5" y="219.5" width="14.7" height="28.5" fill="var(--gold)"/></g><g><title>2025 оны 8 сар — олон улс 277 875, орон нутаг 43 227 (нийт 321 102)</title><rect x="687.9" y="37.0" width="14.7" height="182.6" fill="var(--s1)"/><rect x="687.9" y="219.6" width="14.7" height="28.4" fill="var(--gold)"/></g><g><title>2025 оны 9 сар — олон улс 194 688, орон нутаг 39 649 (нийт 234 337)</title><rect x="708.2" y="94.0" width="14.7" height="127.9" fill="var(--s1)"/><rect x="708.2" y="221.9" width="14.7" height="26.1" fill="var(--gold)"/></g><g><title>2025 оны 10 сар — олон улс 156 135, орон нутаг 40 219 (нийт 196 354)</title><rect x="728.6" y="119.0" width="14.7" height="102.6" fill="var(--s1)"/><rect x="728.6" y="221.6" width="14.7" height="26.4" fill="var(--gold)"/></g><g><title>2025 оны 11 сар — олон улс 124 948, орон нутаг 33 459 (нийт 158 407)</title><rect x="748.9" y="143.9" width="14.7" height="82.1" fill="var(--s1)"/><rect x="748.9" y="226.0" width="14.7" height="22.0" fill="var(--gold)"/></g><g><title>2025 оны 12 сар — олон улс 146 811, орон нутаг 34 953 (нийт 181 764)</title><rect x="769.3" y="128.6" width="14.7" height="96.5" fill="var(--s1)"/><rect x="769.3" y="225.0" width="14.7" height="23.0" fill="var(--gold)"/></g><g><title>2026 оны 1 сар — олон улс 178 237, орон нутаг 31 879 (нийт 210 116)</title><rect x="789.6" y="109.9" width="14.7" height="117.1" fill="var(--s1)"/><rect x="789.6" y="227.1" width="14.7" height="20.9" fill="var(--gold)"/></g><g><title>2026 оны 2 сар — олон улс 120 568, орон нутаг 30 221 (нийт 150 789)</title><rect x="810.0" y="148.9" width="14.7" height="79.2" fill="var(--s1)"/><rect x="810.0" y="228.1" width="14.7" height="19.9" fill="var(--gold)"/></g><g><title>2026 оны 3 сар — олон улс 138 493, орон нутаг 33 486 (нийт 171 979)</title><rect x="830.4" y="135.0" width="14.7" height="91.0" fill="var(--s1)"/><rect x="830.4" y="226.0" width="14.7" height="22.0" fill="var(--gold)"/></g><g><title>2026 оны 4 сар — олон улс 133 552, орон нутаг 33 889 (нийт 167 441)</title><rect x="850.7" y="138.0" width="14.7" height="87.8" fill="var(--s1)"/><rect x="850.7" y="225.7" width="14.7" height="22.3" fill="var(--gold)"/></g><g><title>2026 оны 5 сар — олон улс 155 093, орон нутаг 34 144 (нийт 189 237)</title><rect x="871.1" y="123.6" width="14.7" height="101.9" fill="var(--s1)"/><rect x="871.1" y="225.6" width="14.7" height="22.4" fill="var(--gold)"/></g><g><title>2026 оны 6 сар — олон улс 222 466, орон нутаг 38 036 (нийт 260 502)</title><rect x="891.4" y="76.8" width="14.7" height="146.2" fill="var(--s1)"/><rect x="891.4" y="223.0" width="14.7" height="25.0" fill="var(--gold)"/></g><g><title>2026 оны 7 сар — олон улс 276 172, орон нутаг 41 655 (нийт 317 827)</title><rect x="911.8" y="39.1" width="14.7" height="181.5" fill="var(--s1)"/><rect x="911.8" y="220.6" width="14.7" height="27.4" fill="var(--gold)"/></g><g><title>2026 оны 8 сар — олон улс 285 611, орон нутаг 40 055 (нийт 325 666)</title><rect x="932.1" y="34.0" width="14.7" height="187.7" fill="var(--s1)"/><rect x="932.1" y="221.7" width="14.7" height="26.3" fill="var(--gold)"/></g><g><title>2026 оны 9 сар — олон улс 200 149, орон нутаг 39 301 (нийт 239 450)</title><rect x="952.5" y="90.6" width="14.7" height="131.5" fill="var(--s1)"/><rect x="952.5" y="222.2" width="14.7" height="25.8" fill="var(--gold)"/></g><text x="64.2" y="263" class="ax" text-anchor="middle">1</text><text x="186.3" y="263" class="ax" text-anchor="middle">7</text><text x="308.4" y="263" class="ax" text-anchor="middle">1</text><text x="430.6" y="263" class="ax" text-anchor="middle">7</text><text x="552.7" y="263" class="ax" text-anchor="middle">1</text><text x="674.8" y="263" class="ax" text-anchor="middle">7</text><text x="797.0" y="263" class="ax" text-anchor="middle">1</text><text x="919.1" y="263" class="ax" text-anchor="middle">7</text><text x="176.1" y="285" class="yl" text-anchor="middle">2023</text><text x="420.4" y="285" class="yl" text-anchor="middle">2024</text><text x="664.7" y="285" class="yl" text-anchor="middle">2025</text><text x="878.4" y="285" class="yl" text-anchor="middle">2026 (I–IX сар)</text>
+          </svg>
+        </div>
+        <p class="note">Зун 6–9 дүгээр сард ачаалал хамгийн өндөр байдаг нь аялал жуулчлалын
+          хөдөлгөөнтэй холбоотой. 2026 оны 8 дугаар сард <b>325.7 мянган</b> зорчигч зорчсон нь
+          сарын хамгийн өндөр үзүүлэлт болов. 9 дүгээр сард 239.5 мянган зорчигч зорчиж,
+          өмнөх оны мөн үеэс 2.1%-иар өссөн.</p>
+      </div>
+    </div>
+
+    <div class="av2">
+      <div class="panel av">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg>Олон улсын чиглэл</h2>
+          <span class="hint">эхний 9 сарын зорчигчийн тоо · эрэмбэлсэн 11 чиглэл</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-kr"/></svg></span><span>Сөүл</span></div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">587 210</div>
+            <div class="bd"><span class="chip good">+12.9%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Бээжин</span></div>
+            <div class="bt"><span style="width:46.0%"></span></div>
+            <div class="bv">269 860</div>
+            <div class="bd"><span class="chip good">+10.9%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-jp"/></svg></span><span>Токио</span></div>
+            <div class="bt"><span style="width:25.8%"></span></div>
+            <div class="bv">151 332</div>
+            <div class="bd"><span class="chip good">+18.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-tr"/></svg></span><span>Истанбул</span></div>
+            <div class="bt"><span style="width:18.4%"></span></div>
+            <div class="bv">107 792</div>
+            <div class="bd"><span class="chip serious">−6.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-hk"/></svg></span><span>Хонконг</span></div>
+            <div class="bt"><span style="width:14.2%"></span></div>
+            <div class="bv">83 308</div>
+            <div class="bd"><span class="chip serious">−2.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-de"/></svg></span><span>Франкфурт</span></div>
+            <div class="bt"><span style="width:13.9%"></span></div>
+            <div class="bv">81 453</div>
+            <div class="bd"><span class="chip serious">−0.3%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Хөх хот</span></div>
+            <div class="bt"><span style="width:11.6%"></span></div>
+            <div class="bv">67 849</div>
+            <div class="bd"><span class="chip good">+56.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-kr"/></svg></span><span>Бусан</span></div>
+            <div class="bt"><span style="width:9.0%"></span></div>
+            <div class="bv">52 791</div>
+            <div class="bd"><span class="chip serious">−22.3%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Эрээн</span></div>
+            <div class="bt"><span style="width:6.9%"></span></div>
+            <div class="bv">40 799</div>
+            <div class="bd"><span class="chip good">+236.2%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Шанхай</span></div>
+            <div class="bt"><span style="width:6.7%"></span></div>
+            <div class="bv">39 275</div>
+            <div class="bd"><span class="chip good">+531.7%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="flag"><svg aria-hidden="true"><use href="#f-cn"/></svg></span><span>Санья / Хайнань</span></div>
+            <div class="bt"><span style="width:4.2%"></span></div>
+            <div class="bv">24 903</div>
+            <div class="bd"><span class="chip good">+8.7%</span></div>
+          </div>
+          <p class="note">Сөүлийн чиглэл олон улсын зорчигчийн 34.3%-ийг эзэлсээр байна.
+            Эрээн (+236.2%), Шанхай (+531.7%), Хөх хот (+56.1%) чиглэлд хамгийн өндөр өсөлт гарсан бол
+            Бусан (−22.3%), Истанбул (−6.1%) чиглэлийн зорчигч буурав.</p>
+        </div>
+      </div>
+
+      <div class="panel av">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Олон улсын тээвэрлэгч</h2>
+          <span class="hint">2026 оны эхний хагас жил · 948.4 мянган зорчигч</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/om.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“МИАТ” ТӨХК</span></div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">413 422</div>
+            <div class="bd"><span class="sh">43.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/mr.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Хүннү Эйр” ХХК</span></div>
+            <div class="bt"><span style="width:27.4%"></span></div>
+            <div class="bv">113 463</div>
+            <div class="bd"><span class="sh">12.0%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/ca.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Air China</span></div>
+            <div class="bt"><span style="width:24.4%"></span></div>
+            <div class="bv">100 975</div>
+            <div class="bd"><span class="sh">10.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/ke.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Korean Air</span></div>
+            <div class="bt"><span style="width:18.2%"></span></div>
+            <div class="bv">75 443</div>
+            <div class="bd"><span class="sh">8.0%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/m0.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Аэро Монголиа” ХХК</span></div>
+            <div class="bt"><span style="width:14.4%"></span></div>
+            <div class="bv">59 355</div>
+            <div class="bd"><span class="sh">6.3%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/7c.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Jeju Air</span></div>
+            <div class="bt"><span style="width:10.0%"></span></div>
+            <div class="bv">41 359</div>
+            <div class="bd"><span class="sh">4.4%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/tk.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Turkish Airlines</span></div>
+            <div class="bt"><span style="width:9.7%"></span></div>
+            <div class="bv">39 939</div>
+            <div class="bd"><span class="sh">4.2%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/oz.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Asiana Airlines</span></div>
+            <div class="bt"><span style="width:7.2%"></span></div>
+            <div class="bv">29 884</div>
+            <div class="bd"><span class="sh">3.2%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/9c.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Spring Airlines</span></div>
+            <div class="bt"><span style="width:4.2%"></span></div>
+            <div class="bv">17 371</div>
+            <div class="bd"><span class="sh">1.8%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="al alw" style="--a:#d8232a" aria-hidden="true">TW</span><span>T’way Air</span></div>
+            <div class="bt"><span style="width:3.5%"></span></div>
+            <div class="bv">14 446</div>
+            <div class="bd"><span class="sh">1.5%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/io.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>IRAERO</span></div>
+            <div class="bt"><span style="width:2.0%"></span></div>
+            <div class="bv">8 225</div>
+            <div class="bd"><span class="sh">0.9%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/ua.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>United Airlines</span></div>
+            <div class="bt"><span style="width:1.8%"></span></div>
+            <div class="bv">7 273</div>
+            <div class="bd"><span class="sh">0.8%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/bx.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Air Busan</span></div>
+            <div class="bt"><span style="width:1.4%"></span></div>
+            <div class="bv">5 759</div>
+            <div class="bd"><span class="sh">0.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/ho.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Juneyao Air</span></div>
+            <div class="bt"><span style="width:1.3%"></span></div>
+            <div class="bv">5 395</div>
+            <div class="bd"><span class="sh">0.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/lj.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>Jin Air</span></div>
+            <div class="bt"><span style="width:1.0%"></span></div>
+            <div class="bv">4 100</div>
+            <div class="bd"><span class="sh">0.4%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/kn.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>China United Airlines</span></div>
+            <div class="bt"><span style="width:0.8%"></span></div>
+            <div class="bv">3 300</div>
+            <div class="bd"><span class="sh">0.3%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#8a97ab"><svg aria-hidden="true"><use href="#i-plane2"/></svg></span><span>Бусад тээвэрлэгч</span></div>
+            <div class="bt"><span style="width:2.1%"></span></div>
+            <div class="bv">8 700</div>
+            <div class="bd"><span class="sh">0.9%</span></div>
+          </div>
+          <p class="note">Үндэсний тээвэрлэгч “МИАТ” ТӨХК олон улсын зорчигчийн 43.6%-ийг
+            тээвэрлэсэн. Дотоодын бусад тээвэрлэгч (Хүннү Эйр, Аэро Монголиа) нийтдээ 18.3%-ийг эзэлж байна.
+            Тээвэрлэгчийн задаргаа 9 дүгээр сарын мэдээнд ороогүй тул эхний хагас жилийн мэдээгээр харуулав.</p>
+        </div>
+      </div>
+
+      <div class="panel av">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>Орон нутгийн чиглэл</h2>
+          <span class="hint">322.7 мянган зорчигч</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Оюутолгой</span></div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">244 947</div>
+            <div class="bd"><span class="chip serious">−8.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Өлгий</span></div>
+            <div class="bt"><span style="width:6.8%"></span></div>
+            <div class="bv">16 555</div>
+            <div class="bd"><span class="chip good">+2.1%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Мөрөн</span></div>
+            <div class="bt"><span style="width:6.8%"></span></div>
+            <div class="bv">16 554</div>
+            <div class="bd"><span class="chip good">+21.8%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Ховд</span></div>
+            <div class="bt"><span style="width:6.0%"></span></div>
+            <div class="bv">14 639</div>
+            <div class="bd"><span class="chip good">+5.6%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Улиастай</span></div>
+            <div class="bt"><span style="width:2.0%"></span></div>
+            <div class="bv">4 936</div>
+            <div class="bd"><span class="chip serious">−5.5%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Улаангом</span></div>
+            <div class="bt"><span style="width:2.0%"></span></div>
+            <div class="bv">4 783</div>
+            <div class="bd"><span class="chip serious">−28.4%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Алтай</span></div>
+            <div class="bt"><span style="width:1.9%"></span></div>
+            <div class="bv">4 629</div>
+            <div class="bd"><span class="chip serious">−23.4%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Баянхонгор</span></div>
+            <div class="bt"><span style="width:1.5%"></span></div>
+            <div class="bv">3 737</div>
+            <div class="bd"><span class="chip neutral">шинэ</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><span class="lead" style="--c:#d9ad4f"><svg aria-hidden="true"><use href="#i-pin2"/></svg></span><span>Бусад чиглэл</span></div>
+            <div class="bt"><span style="width:4.8%"></span></div>
+            <div class="bv">11 741</div>
+            <div class="bd"></div>
+          </div>
+          <p class="note">Оюутолгойн чиглэл орон нутгийн зорчигчийн 75.9%-ийг эзэлдэг тул
+            тэнд гарсан 8.1%-ийн бууралт салбарын нийт үзүүлэлтэд голлон нөлөөлөв.</p>
+        </div>
+      </div>
+
+      <div class="panel av">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-plane"/></svg>Орон нутгийн тээвэрлэгч</h2>
+          <span class="hint">зорчигчийн тоо ба эзлэх хувь</span>
+        </header>
+        <div class="body">
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/om.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“МИАТ” ТӨХК</span></div>
+            <div class="bt"><span style="width:100.0%"></span></div>
+            <div class="bv">200 100</div>
+            <div class="bd"><span class="sh">62.0%</span><span class="chip good">+1.9%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/m0.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Аэро Монголиа” ХХК</span></div>
+            <div class="bt"><span style="width:30.8%"></span></div>
+            <div class="bv">61 600</div>
+            <div class="bd"><span class="sh">19.0%</span><span class="chip serious">−24.9%</span></div>
+          </div>
+          <div class="brow">
+            <div class="bn has-lead"><img class="alogo" src="../assets/airlines/mr.jpg" alt="" width="66" height="22" loading="lazy" decoding="async"><span>“Хүннү Эйр” ХХК</span></div>
+            <div class="bt"><span style="width:26.0%"></span></div>
+            <div class="bv">52 100</div>
+            <div class="bd"><span class="sh">16.0%</span><span class="chip serious">−5.4%</span></div>
+          </div>
+          <p class="note">Гурван тээвэрлэгч орон нутгийн зорчигчийн 97%-ийг тээвэрлэж байна.
+            Өмнөх оны мөн үеэс “МИАТ” ТӨХК-ийн зорчигч 1.9%-иар өссөн бол “Аэро Монголиа” ХХК
+            24.9%-иар, “Хүннү Эйр” ХХК 5.4%-иар буурсан.</p>
+        </div>
+      </div>
+
+      <div class="panel av">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-takeoff"/></svg>Нислэг гүйцэтгэл</h2>
+          <span class="hint">нислэгийн тоо, ш</span>
+        </header>
+        <div class="body">
+          <div class="tblwrap">
+            <table class="av-tbl">
+              <thead><tr><th scope="col">Үзүүлэлт</th><th scope="col">9 дүгээр сар</th><th scope="col">Өссөн дүн</th><th scope="col">2026/2025</th></tr></thead>
+              <tbody>
+              <tr>
+                <th scope="row">Нийт нислэг</th>
+                <td class="mono">11 299</td>
+                <td class="mono">92 914</td>
+                <td><span class="chip good">+15.6%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">Олон улсын өнгөрөлтийн нислэг</th>
+                <td class="mono">8 463</td>
+                <td class="mono">70 531</td>
+                <td><span class="chip good">+19.8%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">Хөөрөлт, буулт</th>
+                <td class="mono">2 836</td>
+                <td class="mono">22 383</td>
+                <td><span class="chip good">+4.0%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">— олон улсын</th>
+                <td class="mono">1 395</td>
+                <td class="mono">12 091</td>
+                <td><span class="chip good">+3.6%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">— орон нутгийн</th>
+                <td class="mono">1 441</td>
+                <td class="mono">10 292</td>
+                <td><span class="chip good">+4.5%</span></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Монголын агаарын зайг дамжин өнгөрөх нислэг нийт нислэгийн 75.9%-ийг
+            эзэлж, 19.8%-иар өссөн нь салбарын өсөлтийг голлон тодорхойлов.</p>
+        </div>
+      </div>
+
+      <div class="panel av">
+        <header>
+          <h2><svg class="pico" aria-hidden="true" focusable="false"><use href="#i-box"/></svg>Ачаа, шуудан тээвэр</h2>
+          <span class="hint">тонн</span>
+        </header>
+        <div class="body">
+          <div class="tblwrap">
+            <table class="av-tbl">
+              <thead><tr><th scope="col">Үзүүлэлт</th><th scope="col">9 дүгээр сар</th><th scope="col">Өссөн дүн</th><th scope="col">2026/2025</th></tr></thead>
+              <tbody>
+              <tr>
+                <th scope="row">Нийт ачаа, шуудан, тн</th>
+                <td class="mono">1 122.1</td>
+                <td class="mono">7 684.4</td>
+                <td><span class="chip good">+0.4%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">— олон улсад</th>
+                <td class="mono">1 118.3</td>
+                <td class="mono">7 652.6</td>
+                <td><span class="chip good">+0.3%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">— орон нутагт</th>
+                <td class="mono">3.8</td>
+                <td class="mono">31.8</td>
+                <td><span class="chip good">+17.2%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">Үүнээс: ачаа</th>
+                <td class="mono">1 100.2</td>
+                <td class="mono">7 554.8</td>
+                <td><span class="chip good">+0.5%</span></td>
+              </tr>
+              <tr class="sub">
+                <th scope="row">Үүнээс: шуудан</th>
+                <td class="mono">21.9</td>
+                <td class="mono">129.6</td>
+                <td><span class="chip serious">−5.0%</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Ачаа, шуудан эргэлт, мян.тн.км</th>
+                <td class="mono">3 224.0</td>
+                <td class="mono">23 787.4</td>
+                <td><span class="chip good">+20.2%</span></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Нийт ачаа, шуудангийн 99.6%-ийг олон улсын тээвэр эзэлж байна.
+            Ачааны биет хэмжээ 0.5%-иар өссөн боловч ачаа, шуудан эргэлт 20.2%-иар өссөн нь
+            тээврийн зай уртассаныг харуулж байна.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="src">Эх сурвалж: Зам, тээврийн яамны Бодлого, төлөвлөлтийн газар — Мэдээллийн технологи,
+      стандарт, статистикийн хэлтэс. “Зам, тээврийн салбарын статистикийн мэдээ”, 2026 оны
+      9 дүгээр сар (2026.10.20), Хүснэгт 6–10. Олон улсын тээвэрлэгчийн задаргаа — 2026 оны 6 дугаар сарын мэдээ.</p>
+  </section>
+
+  <section class="blk" id="hyanalt">
+    <div class="sec-h">
+      <h3 data-k="Хяналт">Хяналтын мэдээллийн сан</h3>
+      <p>Иргэний нисэхийн хяналт шалгалт, эрсдэлийн үнэлгээ болон
+        гэрчилгээжүүлэлтийн мэдээллийг нэгтгэсэн албан ёсны бүртгэл.</p>
+    </div>
+
+    <div class="entry">
+      <div class="eb">
+        <div>
+          <h4>Хяналт шалгалтын мэдээллийн сан</h4>
+          <p>Гэрчилгээ эзэмшигч байгууллагын бүртгэл, эрсдэлийн үнэлгээ, илэрсэн үл
+             нийцэл, залруулах арга хэмжээний хэрэгжилт, гэрчилгээжүүлэлт болон хяналт
+             шалгалтын төлөвлөгөөний мэдээлэл.</p>
+        </div>
+        <div class="acts">
+          <a class="btn pri" href="../hyanalt/">Мэдээллийн санг үзэх</a>
+          <a class="btn sec" href="../hyanalt/?admin=1">Нэвтрэх</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Зөвхөн нэвтэрсэн үед харагдана -->
+    <div class="locked" id="bookCard" hidden>
+      <div class="lt">
+        <h4>Байцаагчийн гарын авлага</h4>
+        <span class="tag">Нээлттэй</span>
+      </div>
+      <p>Чикагогийн конвенц, аюулгүй ажиллагааны удирдлагын тогтолцоо, гэрчилгээжүүлэлт,
+         хяналт шалгалтын арга зүйн 12 бүлэг бүхий сургалтын хөтөлбөр.</p>
+      <div class="meta">12 бүлэг · 48 давтлагын карт · 20 асуулт бүхий сорил</div>
+      <div style="margin-top:15px"><a class="btn pri" style="width:auto;display:inline-flex" href="../garyn-avlaga/">Гарын авлага нээх</a></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="sec-h">
+      <h3 data-k="Гүйцэтгэл">Хяналт шалгалтын гүйцэтгэл, 2026 оны I–III улирал</h3>
+    </div>
+    <dl class="figs kpi">
+      <div class="fig" style="--c:#5b9cf5"><dt><svg class="wm" aria-hidden="true"><use href="#i-check"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Хяналт шалгалт</dt>
+        <dd class="val"><span class="v">725</span></dd><dd class="note">5 хэлтсийн гүйцэтгэл</dd></div>
+      <div class="fig" style="--c:#3fc1b0"><dt><svg class="wm" aria-hidden="true"><use href="#i-cert"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-cert"/></svg></span>Гэрчилгээ, үнэмлэх</dt>
+        <dd class="val"><span class="v">1 041</span></dd><dd class="note">20 ангилал · эхний хагас жил</dd></div>
+      <div class="fig" style="--c:#f07a7a"><dt><svg class="wm" aria-hidden="true"><use href="#i-alert"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-alert"/></svg></span>Илэрсэн үл нийцэл</dt>
+        <dd class="val"><span class="v">43</span></dd><dd class="note">371 шаардлагын хамт</dd></div>
+      <div class="fig" style="--c:#d9ad4f"><dt><svg class="wm" aria-hidden="true"><use href="#i-gauge"/></svg><span class="ic"><svg aria-hidden="true"><use href="#i-gauge"/></svg></span>USOAP-CMA оноо</dt>
+        <dd class="val"><span class="v">83.06</span><span class="u">/ 100</span></dd>
+        <dd class="meter" aria-hidden="true"><i style="--p:83.06%"></i></dd>
+        <dd class="note">Аэродромын чиглэл · 153 асуулга</dd></div>
+    </dl>
+  </section>
+
+</main>
+
+<footer class="gov-foot">
+  <div class="in">
+    <div class="rule"></div>
+    <div class="foot-logo">
+      <img src="../assets/ztya-logo-light.png" width="96" height="90"
+           alt="Монгол Улсын Засгийн газар, Зам, тээврийн яам">
+      <p class="ft">Зам, тээврийн салбарын статистик үзүүлэлт.
+        Зам, тээврийн яамны албан ёсны мэдээллийн сан.</p>
+    </div>
+    <div class="cols">
+      <div>
+        <h4>Салбар</h4>
+        <p><a href="./">Иргэний нисэх</a><br>
+           <a href="../tomor-zam/">Төмөр зам</a><br>
+           <a href="../avto-teever/">Автотээвэр</a><br>
+           <a href="../avto-zam/">Авто зам</a></p>
+      </div>
+      <div>
+        <h4>Мэдээллийн сан</h4>
+        <p><a href="../">Нүүр хуудас</a><br>
+           <a href="../hyanalt/">Хяналтын мэдээллийн сан</a></p>
+      </div>
+      <div>
+        <h4>Тайлант хугацаа</h4>
+        <p>2026 оны I–III улирал<br>2026.01.01 – 2026.09.30</p>
+      </div>
+    </div>
+    <div class="base">Зам, тээврийн яам · Иргэний нисэхийн салбарын үзүүлэлт</div>
+  </div>
+</footer>
+
+<script src="../hyanalt/config.js"></script>
+<script src="../assets/visit.js" defer></script>
+<script src="../assets/motion.js"></script>
+<script src="../assets/ui-fx.js" defer></script>
+<script src="../assets/geo-dots.js" defer></script>
+<script src="../assets/route-globe.js" defer></script>
+<script src="../assets/sector-page.js"></script>
+<script>
+/* Байцаагчийн гарын авлагыг зөвхөн нэвтэрсэн үед харуулна */
+(function(){
+  var CFG=window.INEG_CONFIG||{}, BASE=String(CFG.supabaseUrl||"").replace(/\/+$/,""), K=String(CFG.supabaseAnonKey||"");
+  var card=document.getElementById("bookCard");
+  if(!card||!BASE||K.length<20) return;
+  var ses=null; try{ ses=JSON.parse(localStorage.getItem("ineg.session")||"null"); }catch(e){}
+  if(!ses||!ses.access_token) return;
+  fetch(BASE+"/auth/v1/user",{headers:{apikey:K,Authorization:"Bearer "+ses.access_token}})
+    .then(function(r){ if(r.ok) card.hidden=false; }).catch(function(){});
+})();
+</script>
+</body>
+</html>
